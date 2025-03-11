@@ -1,0 +1,19 @@
+#+title: RPGHP-RS Readme
+#+author: Dennis Lawter
+#+email: (concat "bytomancer" at-sign "gmail.com")
+#+date: 2025-03-10
+
+* About
+A simple companion website for tabletop games.
+Game Masters can set initiative, track HP, and manage statuses on the players and monsters. 
+
+* Development
+** NixOS
+#+begin_src bash :eval no
+nix develop --command codium .
+#+end_src
+
+** Dev/Test Server
+#+begin_src bash :eval no
+make test
+#+end_src
