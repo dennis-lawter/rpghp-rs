@@ -5,5 +5,7 @@ edition = "2021"
 
 [dependencies]
 actix-web = "4.10.2"
+dotenv = "0.15.0"
 sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio", "uuid", "time"] }
+thiserror = "2.0.12"
 tokio = { version = "1.44.0", features = ["macros", "rt-multi-thread"] }

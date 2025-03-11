@@ -14,6 +14,18 @@ nix develop --command codium .
 #+end_src
 
 ** Dev/Test Server
+Start your DB:
 #+begin_src bash :eval no
-make test
+make db-up
+#+end_src
+
+Then start the server:
+#+begin_src bash :eval no
+make local-run
+#+end_src
+
+** Testing
+Basic curl tests are available, for example:
+#+begin_src bash :eval no
+curl_tests/hello.sh
 #+end_src

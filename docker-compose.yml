@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    user: "${UID}:${GID}"
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    ports:
+      - "25432:5432"
+
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db/${POSTGRES_DB}
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+volumes:
+  db-data:
+  cargo-cache:
