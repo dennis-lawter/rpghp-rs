@@ -1,1 +1,1 @@
-drop table creature;
+drop table rpghp_creature;

@@ -1,1 +1,1 @@
-drop table session;
+drop table rpghp_session;

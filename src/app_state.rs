@@ -18,14 +18,14 @@ impl AppState {
     async fn get_pool(cfg: &Config) -> CrateResult<PgPool> {
         sqlx::Pool::<sqlx::Postgres>::connect(&cfg.db_url)
             .await
-            .map_err(|error| CrateError::SqlxConnectError(error))
+            .map_err(CrateError::SqlxConnectError)
     }
 
     async fn migrate_db(pool: &PgPool) -> CrateResult<()> {
         sqlx::migrate!("./migrations")
             .run(pool)
             .await
-            .map_err(|error| CrateError::SqlxMigrationError(error))?;
+            .map_err(CrateError::SqlxMigrationError)?;
         Ok(())
     }
 }

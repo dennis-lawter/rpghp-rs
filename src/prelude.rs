@@ -23,4 +23,6 @@ pub(crate) enum CrateError {
     SqlxConnectError(sqlx::Error),
     #[error("SQLx Migration Error: {0}")]
     SqlxMigrationError(sqlx::migrate::MigrateError),
+    #[error("SQLx Query Error: {0}")]
+    SqlxQueryError(sqlx::Error),
 }
