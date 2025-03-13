@@ -1,6 +1,6 @@
 use crate::prelude::*;
 
-use sqlx::PgConnection;
+use sqlx::PgPool;
 use sqlx::types::Uuid;
 
 pub(crate) mod session;
@@ -9,5 +9,6 @@ pub(crate) mod session;
 pub trait Record: Sized {
     const TABLE: &'static str;
 
-    async fn find_by_id(conn: &mut PgConnection, id: &Uuid) -> CrateResult<Option<Self>>;
+    async fn find_by_id(conn: &PgPool, id: &Uuid) -> CrateResult<Option<Self>>;
+    async fn save(&self, conn: &PgPool) -> CrateResult<()>;
 }

@@ -13,7 +13,7 @@ local-run: cargo-clippy cargo-build cargo-run
 
 cargo-clippy:
 	@printf "$(banner)Code scan running...$(reset)\\n"
-	cargo clippy
+	cargo clippy -- -D warnings
 
 cargo-build:
 	@printf "$(banner)Project building...$(reset)\\n"

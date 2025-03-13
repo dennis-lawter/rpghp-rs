@@ -7,32 +7,18 @@
 
 use actix_web::App;
 use actix_web::HttpServer;
-use actix_web::Responder;
-use actix_web::get;
 use actix_web::web;
 
 mod app_state;
 mod config;
 mod prelude;
 mod records;
+mod routes;
 
 use crate::prelude::*;
 
 use app_state::AppState;
 use config::Config;
-
-#[get("/hello/{name}")]
-async fn greet(state: web::Data<AppState>, name: web::Path<String>) -> impl Responder {
-    if let Ok(result) = sqlx::query!("select count(*) as cnt from rpghp_session")
-        .fetch_one(&state.pool)
-        .await
-    {
-        let cnt = result.cnt.unwrap_or_default();
-        format!("Hello {name}! There are {cnt} sessions!")
-    } else {
-        "Query error".to_owned()
-    }
-}
 
 #[tokio::main]
 async fn main() -> CrateResult<()> {
@@ -41,8 +27,7 @@ async fn main() -> CrateResult<()> {
     HttpServer::new(move || {
         App::new()
             .app_data(web::Data::new(state.clone()))
-            // endpoints
-            .service(greet)
+            .service(routes::session::make_session_resource())
     })
     .bind(("0.0.0.0", 8080))
     .map_err(CrateError::ActixBindError)?
