@@ -99,4 +99,28 @@ WHERE
         .await
         .map_err(CrateError::SqlxQueryError)
     }
+
+    pub async fn find_by_secret_or_id(
+        conn: &PgPool,
+        secret: &Uuid,
+    ) -> crate::CrateResult<Option<Self>> {
+        sqlx::query_as!(
+            Self,
+            r#"
+SELECT
+    rpghp_session_id,
+    secret
+FROM
+    rpghp_session
+WHERE
+    secret = $1
+    OR rpghp_session_id = $1
+LIMIT 1
+        "#,
+            secret
+        )
+        .fetch_optional(conn)
+        .await
+        .map_err(CrateError::SqlxQueryError)
+    }
 }
