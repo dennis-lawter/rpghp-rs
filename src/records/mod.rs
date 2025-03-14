@@ -11,4 +11,5 @@ pub trait Record: Sized {
 
     async fn find_by_id(conn: &PgPool, id: &Uuid) -> CrateResult<Option<Self>>;
     async fn save(&self, conn: &PgPool) -> CrateResult<()>;
+    async fn delete(self, conn: &PgPool) -> CrateResult<()>;
 }

@@ -23,11 +23,11 @@ impl Dto<SessionRecord> for SessionDto {
 }
 
 #[derive(serde::Serialize)]
-pub(crate) struct FullSessionDto {
+pub(crate) struct SessionWithSecretDto {
     pub(crate) rpghp_session_id: String,
     pub(crate) secret: String,
 }
-impl Dto<SessionRecord> for FullSessionDto {
+impl Dto<SessionRecord> for SessionWithSecretDto {
     fn from_record(record: &SessionRecord) -> Self {
         let rpghp_session_id = format!("{}", record.rpghp_session_id);
         let secret = format!("{}", record.secret);

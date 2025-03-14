@@ -1,3 +1,4 @@
+use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::CrateError;
@@ -14,7 +15,7 @@ pub(crate) struct SessionRecord {
 impl Record for SessionRecord {
     const TABLE: &'static str = "rpghp_session";
 
-    async fn find_by_id(conn: &sqlx::PgPool, id: &Uuid) -> crate::CrateResult<Option<Self>> {
+    async fn find_by_id(conn: &PgPool, id: &Uuid) -> crate::CrateResult<Option<Self>> {
         sqlx::query_as!(
             Self,
             r#"
@@ -33,7 +34,7 @@ WHERE
         .map_err(CrateError::SqlxQueryError)
     }
 
-    async fn save(&self, conn: &sqlx::PgPool) -> CrateResult<()> {
+    async fn save(&self, conn: &PgPool) -> CrateResult<()> {
         sqlx::query!(
             r#"
 INSERT INTO
@@ -52,7 +53,24 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
         .map_err(CrateError::SqlxQueryError)?;
         Ok(())
     }
+
+    async fn delete(self, conn: &PgPool) -> CrateResult<()> {
+        sqlx::query!(
+            r#"
+DELETE FROM
+    rpghp_session
+WHERE
+    secret=$1
+        "#,
+            self.secret
+        )
+        .execute(conn)
+        .await
+        .map_err(CrateError::SqlxQueryError)?;
+        Ok(())
+    }
 }
+
 impl SessionRecord {
     pub fn new() -> Self {
         let rpghp_session_id = Uuid::new_v4();
@@ -61,5 +79,24 @@ impl SessionRecord {
             rpghp_session_id,
             secret,
         }
+    }
+
+    pub async fn find_by_secret(conn: &PgPool, secret: &Uuid) -> crate::CrateResult<Option<Self>> {
+        sqlx::query_as!(
+            Self,
+            r#"
+SELECT
+    rpghp_session_id,
+    secret
+FROM
+    rpghp_session
+WHERE
+    secret = $1
+        "#,
+            secret
+        )
+        .fetch_optional(conn)
+        .await
+        .map_err(CrateError::SqlxQueryError)
     }
 }
