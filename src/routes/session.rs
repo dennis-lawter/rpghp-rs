@@ -41,25 +41,6 @@ async fn get_session(state: web::Data<AppState>, session_id: web::Path<String>) 
         Err(response) => return response,
     };
 
-    // Get by id or secret
-
-    // let session_record = match SessionRecord::find_by_id(&state.pool, &uuid).await {
-    //     Ok(Some(session_record)) => session_record,
-    //     _ => match SessionRecord::find_by_secret(&state.pool, &uuid).await {
-    //         Ok(Some(session_record)) => session_record,
-    //         _ => return HttpResponse::NotFound().body(""),
-    //     },
-    // };
-
-    // let session_record = match (
-    //     SessionRecord::find_by_id(&state.pool, &uuid).await,
-    //     SessionRecord::find_by_secret(&state.pool, &uuid).await,
-    // ) {
-    //     (Ok(Some(session_record)), _) => session_record,
-    //     (_, Ok(Some(session_record))) => session_record,
-    //     _ => return HttpResponse::NotFound().body(""),
-    // };
-
     let session_record = match SessionRecord::find_by_secret_or_id(&state.pool, &uuid).await {
         Ok(Some(session_record)) => session_record,
         _ => return HttpResponse::NotFound().body(""),
