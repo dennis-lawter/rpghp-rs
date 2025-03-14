@@ -8,6 +8,9 @@ use actix_web::web;
 use uuid::Uuid;
 
 use crate::AppState;
+use crate::dto::Dto;
+use crate::dto::session::FullSessionDto;
+use crate::dto::session::SessionDto;
 use crate::records::Record;
 use crate::records::session::SessionRecord;
 
@@ -20,7 +23,7 @@ pub(crate) fn make_session_resource() -> actix_web::Scope {
 }
 
 #[post("/")]
-async fn create_session(state: web::Data<AppState>) -> impl Responder {
+async fn create_session(state: web::Data<AppState>) -> HttpResponse {
     let session_record = SessionRecord::new();
     match session_record.save(&state.pool).await {
         Ok(_) => {}
@@ -28,13 +31,9 @@ async fn create_session(state: web::Data<AppState>) -> impl Responder {
             return HttpResponse::InternalServerError().body("An unexpected error occurred.");
         }
     }
-    let session_str = match serde_json::to_string_pretty(&session_record) {
-        Ok(session_str) => session_str,
-        _ => {
-            return HttpResponse::InternalServerError().body("An unexpected error occurred.");
-        }
-    };
-    HttpResponse::Created().body(session_str)
+    let session_dto = FullSessionDto::from_record(&session_record);
+
+    session_dto.to_response()
 }
 
 #[get("/{session_id}/")]
@@ -51,13 +50,9 @@ async fn get_session(state: web::Data<AppState>, session_id: web::Path<String>) 
         _ => return HttpResponse::NotFound().body(""),
     };
 
-    let session_str = match serde_json::to_string_pretty(&session_record) {
-        Ok(session_str) => session_str,
-        _ => {
-            return HttpResponse::InternalServerError().body("An unexpected error occurred.");
-        }
-    };
-    HttpResponse::Ok().body(session_str)
+    let session_dto = SessionDto::from_record(&session_record);
+
+    session_dto.to_response()
 }
 
 #[put("/{session_id}/")]

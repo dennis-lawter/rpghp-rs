@@ -6,7 +6,7 @@ use crate::CrateResult;
 use super::Record;
 
 #[allow(dead_code)]
-#[derive(sqlx::FromRow, serde::Serialize)]
+#[derive(sqlx::FromRow)]
 pub(crate) struct SessionRecord {
     pub rpghp_session_id: Uuid,
     pub secret: Uuid,

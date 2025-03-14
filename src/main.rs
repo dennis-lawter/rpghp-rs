@@ -11,6 +11,7 @@ use actix_web::web;
 
 mod app_state;
 mod config;
+mod dto;
 mod prelude;
 mod records;
 mod routes;
