@@ -5,6 +5,7 @@ use actix_web::get;
 use actix_web::post;
 use actix_web::put;
 use actix_web::web;
+use uuid::Uuid;
 
 use crate::AppState;
 use crate::records::Record;
@@ -27,22 +28,46 @@ async fn create_session(state: web::Data<AppState>) -> impl Responder {
             return HttpResponse::InternalServerError().body("An unexpected error occurred.");
         }
     }
-    let session_record_body = serde_json::json!(session_record);
-    let session_str = format!("{}", session_record_body);
+    let session_str = match serde_json::to_string_pretty(&session_record) {
+        Ok(session_str) => session_str,
+        _ => {
+            return HttpResponse::InternalServerError().body("An unexpected error occurred.");
+        }
+    };
     HttpResponse::Created().body(session_str)
 }
 
-#[get("/{id}")]
-async fn get_session(id: web::Path<String>) -> impl Responder {
-    format!("Get session {}", id)
+#[get("/{session_id}/")]
+async fn get_session(state: web::Data<AppState>, session_id: web::Path<String>) -> impl Responder {
+    let parse = Uuid::parse_str(&session_id);
+    let uuid = match parse {
+        Ok(uuid) => uuid,
+        Err(_) => {
+            return HttpResponse::BadRequest().body("invalid session_id");
+        }
+    };
+    let session_record = match SessionRecord::find_by_id(&state.pool, &uuid).await {
+        Ok(Some(session_record)) => session_record,
+        _ => return HttpResponse::NotFound().body(""),
+    };
+
+    let session_str = match serde_json::to_string_pretty(&session_record) {
+        Ok(session_str) => session_str,
+        _ => {
+            return HttpResponse::InternalServerError().body("An unexpected error occurred.");
+        }
+    };
+    HttpResponse::Ok().body(session_str)
 }
 
-#[put("/{id}")]
-async fn update_session(id: web::Path<String>) -> impl Responder {
-    format!("Update session {}", id)
+#[put("/{session_id}/")]
+async fn update_session(session_id: web::Path<String>) -> impl Responder {
+    let _ = session_id;
+    HttpResponse::ImATeapot().body("todo")
 }
 
-#[delete("/{id}")]
-async fn delete_session(id: web::Path<String>) -> impl Responder {
-    format!("Delete session {}", id)
+#[delete("/{session_id}/")]
+async fn delete_session(session_id: web::Path<String>) -> impl Responder {
+    let _ = session_id;
+    HttpResponse::ImATeapot().body("todo")
 }

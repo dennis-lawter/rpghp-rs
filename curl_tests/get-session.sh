@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-URL=http://0.0.0.0:8080/session/
-METHOD=POST
+URL=http://0.0.0.0:8080/session/$1/
+METHOD=GET
 
 echo $METHOD $URL
 
