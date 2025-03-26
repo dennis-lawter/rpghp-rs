@@ -1,10 +1,12 @@
-pub(crate) type CrateResult<T> = Result<T, CrateError>;
+pub type CrateResult<T> = Result<T, CrateError>;
 
 #[derive(thiserror::Error, Debug)]
-pub(crate) enum CrateError {
+pub enum CrateError {
     /// Initialization errors
     #[error("DotEnv install failed")]
     DotEnvInstallError,
+    #[error("ColorEyre install failed")]
+    ColorEyreInstallError(#[from] color_eyre::eyre::ErrReport),
 
     /// Configuration errors
     #[error("{var} not set in .env")]
@@ -13,16 +15,12 @@ pub(crate) enum CrateError {
     UnrecognizedEnvLvl { lvl: String },
 
     /// Runtime framework errors
-    #[error("An error occured while running the actix server: {0}")]
-    ActixRuntimeError(std::io::Error),
-    #[error("An error occured while binding the port: {0}")]
-    ActixBindError(std::io::Error),
+    #[error("Poem runtime error: {0}")]
+    PoemRuntimeError(std::io::Error),
 
     /// SQLx errors
-    #[error("SQLx Connect Error: {0}")]
-    SqlxConnectError(sqlx::Error),
+    #[error("SQLx Error: {0}")]
+    SqlxError(#[from] sqlx::Error),
     #[error("SQLx Migration Error: {0}")]
-    SqlxMigrationError(sqlx::migrate::MigrateError),
-    #[error("SQLx Query Error: {0}")]
-    SqlxQueryError(sqlx::Error),
+    SqlxMigrationError(#[from] sqlx::migrate::MigrateError),
 }

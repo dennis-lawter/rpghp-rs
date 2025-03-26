@@ -3,7 +3,7 @@ use crate::prelude::*;
 use sqlx::PgPool;
 use sqlx::types::Uuid;
 
-pub(crate) mod session;
+pub mod session_record;
 
 #[allow(dead_code)]
 pub trait Record: Sized {

@@ -8,7 +8,7 @@ use super::Record;
 
 #[allow(dead_code)]
 #[derive(sqlx::FromRow)]
-pub(crate) struct SessionRecord {
+pub struct SessionRecord {
     pub rpghp_session_id: Uuid,
     pub secret: Uuid,
 }
@@ -31,7 +31,7 @@ WHERE
         )
         .fetch_optional(conn)
         .await
-        .map_err(CrateError::SqlxQueryError)
+        .map_err(CrateError::SqlxError)
     }
 
     async fn save(&self, conn: &PgPool) -> CrateResult<()> {
@@ -50,7 +50,7 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
         )
         .execute(conn)
         .await
-        .map_err(CrateError::SqlxQueryError)?;
+        .map_err(CrateError::SqlxError)?;
         Ok(())
     }
 
@@ -66,7 +66,7 @@ WHERE
         )
         .execute(conn)
         .await
-        .map_err(CrateError::SqlxQueryError)?;
+        .map_err(CrateError::SqlxError)?;
         Ok(())
     }
 }
@@ -97,7 +97,7 @@ WHERE
         )
         .fetch_optional(conn)
         .await
-        .map_err(CrateError::SqlxQueryError)
+        .map_err(CrateError::SqlxError)
     }
 
     pub async fn find_by_secret_or_id(
@@ -121,6 +121,6 @@ LIMIT 1
         )
         .fetch_optional(conn)
         .await
-        .map_err(CrateError::SqlxQueryError)
+        .map_err(CrateError::SqlxError)
     }
 }

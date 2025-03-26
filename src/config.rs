@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 #[derive(Debug)]
-pub(crate) enum EnvLevel {
+pub enum EnvLevel {
     Dev,
     Prod,
 }
@@ -17,12 +17,14 @@ impl EnvLevel {
     }
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
-pub(crate) struct Config {
-    #[allow(dead_code)]
+pub struct Config {
     pub db_url: String,
-    #[allow(dead_code)]
     pub env_lvl: EnvLevel,
+    pub cargo_pkg_description: String,
+    pub cargo_pkg_version: String,
+    pub base_url: String,
 }
 impl Config {
     pub fn new() -> CrateResult<Self> {
@@ -30,7 +32,16 @@ impl Config {
         let env_lvl_raw = Self::get_env("ENVIRONMENT_LEVEL")?;
         let env_lvl = EnvLevel::from_str(&env_lvl_raw)?;
         let db_url = Self::get_env("DATABASE_URL")?;
-        Ok(Self { db_url, env_lvl })
+        let cargo_pkg_description = Self::get_env("CARGO_PKG_DESCRIPTION")?;
+        let cargo_pkg_version = Self::get_env("CARGO_PKG_VERSION")?;
+        let base_url = Self::get_env("BASE_URL")?;
+        Ok(Self {
+            db_url,
+            env_lvl,
+            cargo_pkg_description,
+            cargo_pkg_version,
+            base_url,
+        })
     }
 
     fn init_dot_env() -> CrateResult<()> {

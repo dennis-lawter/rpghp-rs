@@ -6,10 +6,10 @@ use crate::Config;
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub(crate) struct AppState {
+pub struct ApiSharedState {
     pub pool: PgPool,
 }
-impl AppState {
+impl ApiSharedState {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
         let pool = Self::get_pool(cfg).await?;
         Self::migrate_db(&pool).await?;
@@ -19,7 +19,7 @@ impl AppState {
     async fn get_pool(cfg: &Config) -> CrateResult<PgPool> {
         sqlx::Pool::<sqlx::Postgres>::connect(&cfg.db_url)
             .await
-            .map_err(CrateError::SqlxConnectError)
+            .map_err(CrateError::SqlxError)
     }
 
     async fn migrate_db(pool: &PgPool) -> CrateResult<()> {

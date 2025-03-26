@@ -22,3 +22,7 @@ cargo-build:
 cargo-run:
 	@printf "$(banner)Running...$(reset)\\n"
 	cargo run
+
+hot-reload:
+	@printf "$(banner)Hot reloading...$(reset)\\n"
+	cargo watch -x "clippy -- -D warnings" -x "build" -x "run"
