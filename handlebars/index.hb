@@ -1,4 +1,4 @@
 <link rel="stylesheet" href="/assets/style.css">
-<h1>
+<button>
     {{header}}
-</h1>
+</button>

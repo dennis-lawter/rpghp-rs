@@ -1,3 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Handjet&display=swap');
+
+:root {
+    font-family: "Handjet", sans-serif;
+    font-optical-sizing: auto;
+    font-size: 64px;
+    font-weight: 400;
+    font-style: normal;
+    font-variation-settings:
+        "ELGR" 1,
+        "ELSH" 2;
+    background-color: white;
+}
+
+* {
+    font-family: inherit;
+    font-optical-sizing: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    font-style: inherit;
+    font-variation-settings: inherit;
+}
+
 h1 {
     color: red;
+}
+
+button {
+    border: 8px solid black;
+    padding: 8px;
+    font-family: inherit;
+}
+
+button:disabled {
+    background-color: grey;
+}
+
+button:hover,
+button:focus,
+button:focus-visible,
+button:focus-within {
+    background-color: burlywood;
+}
+
+button:active {
+    background-color: goldenrod;
+}
+
+button:required {
+    border-color: tomato;
 }
