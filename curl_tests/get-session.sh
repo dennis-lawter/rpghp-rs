@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-URL=http://0.0.0.0:8080/v1/session/$1/
+URL=http://0.0.0.0:8080/api/v1/session/$1/
 METHOD=GET
 
 echo $METHOD $URL

@@ -20,8 +20,11 @@ impl WebServer {
 
     pub async fn serve(self) -> CrateResult<()> {
         let api_route = Api::create_route(&self.cfg).await?;
+        let frontend_route = frontend::create_route(&self.cfg);
 
-        let full_routing = Route::new().nest("/", api_route);
+        let full_routing = Route::new()
+            .nest("/api", api_route)
+            .nest("/", frontend_route);
 
         Server::new(TcpListener::bind(self.cfg.base_url.clone()))
             .run(full_routing)
