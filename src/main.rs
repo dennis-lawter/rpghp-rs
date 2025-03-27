@@ -1,3 +1,4 @@
+#![allow(clippy::result_large_err)]
 #![deny(
     clippy::unwrap_used,
     clippy::expect_used,

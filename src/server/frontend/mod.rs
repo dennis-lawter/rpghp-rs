@@ -1,24 +1,23 @@
+use crate::prelude::*;
+
 use frontend_shared_state::FrontendSharedState;
 use poem::EndpointExt;
+use poem::IntoResponse;
 use poem::Route;
 use poem::handler;
 use poem::middleware::AddDataEndpoint;
-use poem_openapi::payload;
+use poem::web::Data;
+use serde_json::json;
 
 mod frontend_shared_state;
 
 #[handler]
-fn index() -> payload::Html<String> {
-    let idx_html = r#"
-<link rel="stylesheet" href="/assets/style.css">
-<h1>
-    Hello, World!
-</h1>
-"#;
-    payload::Html(idx_html.to_owned())
+fn index(state: Data<&FrontendSharedState>) -> poem::Result<impl IntoResponse> {
+    let data = json!({ "header": "Hello, World!" });
+    state.render("index", data)
 }
 
-pub fn create_route() -> AddDataEndpoint<Route, FrontendSharedState<'static>> {
-    let frontend_shared_state = FrontendSharedState::new();
-    Route::new().nest("/", index).data(frontend_shared_state)
+pub fn create_route() -> CrateResult<AddDataEndpoint<Route, FrontendSharedState>> {
+    let frontend_shared_state = FrontendSharedState::new()?;
+    Ok(Route::new().nest("/", index).data(frontend_shared_state))
 }

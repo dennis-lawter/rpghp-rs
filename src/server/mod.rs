@@ -21,7 +21,7 @@ impl WebServer {
 
     pub async fn serve(self) -> CrateResult<()> {
         let api_route = Api::create_route(&self.cfg).await?;
-        let frontend_route = frontend::create_route();
+        let frontend_route = frontend::create_route()?;
         let assets = StaticFilesEndpoint::new("./assets");
 
         let full_routing = Route::new()
