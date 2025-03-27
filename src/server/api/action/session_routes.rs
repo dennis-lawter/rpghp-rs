@@ -1,3 +1,4 @@
+use crate::server::api::api_shared_state::ApiSharedState;
 use crate::server::api::domain::Record;
 use crate::server::api::domain::session_record::SessionRecord;
 use crate::server::api::render::View;
@@ -6,7 +7,6 @@ use crate::server::api::render::session_view::SessionDeleteResponse;
 use crate::server::api::render::session_view::SessionGetResponse;
 use crate::server::api::render::session_view::SessionView;
 use crate::server::api::render::session_view::SessionWithSecretView;
-use crate::server::api::shared_state::ApiSharedState;
 
 use poem::web::Data;
 use poem_openapi::OpenApi;

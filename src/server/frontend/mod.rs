@@ -1,8 +1,11 @@
+use frontend_shared_state::FrontendSharedState;
+use poem::EndpointExt;
 use poem::Route;
 use poem::handler;
+use poem::middleware::AddDataEndpoint;
 use poem_openapi::payload;
 
-use crate::config::Config;
+mod frontend_shared_state;
 
 #[handler]
 fn index() -> payload::Html<String> {
@@ -15,6 +18,7 @@ fn index() -> payload::Html<String> {
     payload::Html(idx_html.to_owned())
 }
 
-pub fn create_route(_cfg: &Config) -> Route {
-    Route::new().nest("/", index)
+pub fn create_route() -> AddDataEndpoint<Route, FrontendSharedState<'static>> {
+    let frontend_shared_state = FrontendSharedState::new();
+    Route::new().nest("/", index).data(frontend_shared_state)
 }

@@ -4,8 +4,7 @@ use sqlx::PgPool;
 
 use crate::Config;
 
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
+#[derive(Clone)]
 pub struct ApiSharedState {
     pub pool: PgPool,
 }
