@@ -20,6 +20,7 @@
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
           rust
+          cargo-watch
           gnumake
           docker
           dbeaver-bin
