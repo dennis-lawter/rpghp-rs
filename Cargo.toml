@@ -6,6 +6,7 @@ edition = "2024"
 [dependencies]
 color-eyre = "0.6.3"
 dotenv = "0.15.0"
+handlebars = "6.3.2"
 poem = "3.1.7"
 poem-openapi = { version = "5.1.8", features = ["rapidoc"] }
 serde = { version = "1.0.219", features = ["derive"] }
