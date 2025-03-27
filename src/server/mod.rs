@@ -1,6 +1,7 @@
 use api::Api;
 use poem::Route;
 use poem::Server;
+use poem::endpoint::StaticFilesEndpoint;
 use poem::listener::TcpListener;
 
 use crate::prelude::*;
@@ -21,9 +22,11 @@ impl WebServer {
     pub async fn serve(self) -> CrateResult<()> {
         let api_route = Api::create_route(&self.cfg).await?;
         let frontend_route = frontend::create_route(&self.cfg);
+        let assets = StaticFilesEndpoint::new("./assets");
 
         let full_routing = Route::new()
             .nest("/api", api_route)
+            .nest("/assets", assets)
             .nest("/", frontend_route);
 
         Server::new(TcpListener::bind(self.cfg.base_url.clone()))
