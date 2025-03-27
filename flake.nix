@@ -25,6 +25,7 @@
           dbeaver-bin
           sqlx-cli
           insomnia
+          tokei
         ];
 
         shellHook = ''
