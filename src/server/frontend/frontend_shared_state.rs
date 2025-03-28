@@ -12,7 +12,7 @@ pub struct FrontendSharedState {
 impl FrontendSharedState {
     pub fn new() -> CrateResult<Self> {
         let mut hb = Handlebars::new();
-        hb.register_template_file("index", "./handlebars/index.hb")?;
+        hb.register_template_file("index", "./handlebars/index.hbs")?;
         Ok(Self { hb })
     }
 

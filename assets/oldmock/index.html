@@ -1,0 +1,153 @@
+<html class="nes-container" lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Bits Of Info">
+    <meta name="keywords" content="D&D, tabletop gaming, rpg, hp tracker">
+    <meta name="author" content="© 2020 Dennis Lawter, Bryan Barreto">
+
+    <link href="/assets/oldmock/style.css" rel="stylesheet">
+    <script type="text/javascript" src="/assets/oldmock/theme.js"></script>
+
+    <link href="https://unpkg.com/nes.css@2.3.0/css/nes.min.css" rel="stylesheet">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+        crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        @import url(https://fonts.googleapis.com/css?family=Press+Start+2P);
+
+        * {
+            font-family: "Press Start 2P"
+        }
+    </style>
+</head>
+
+<body class="nes-table no-border is-dark">
+    <main class="container">
+        <div class="col nes-container is-dark with-title">
+            <p class="title creature-name">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Drizzt Do'urden
+                </span>
+            </p>
+            <i class="snes-logo"></i> R. A. Salvatore
+            <div class="nes-field is-inline">
+                <label for="p1"><i class="nes-icon is-medium heart is-half is-inline"></i></label>
+                <progress id="p1" class="nes-progress is-error" value="20" max="108"></progress>
+            </div>
+            <p class="nes-text">20/108</p>
+            <p class="nes-text"><img class="nes-avatar" src="" style="image-rendering: pixelated;"> Bloodied</p>
+        </div>
+
+        <div class="col nes-container is-dark with-title">
+            <p class="title creature-name">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Elminster
+                </span>
+            </p>
+            <i class="snes-logo"></i> Ed Greenwood
+            <div class="nes-field is-inline">
+                <label for="p1_hp"><i class="nes-icon is-medium heart is-inline"></i></label>
+                <progress id="p1_hp" class="nes-progress is-primary" value="62" max="62"></progress>
+                <i class="nes-icon is-medium heart is-empty is-inline"></i>+4
+            </div>
+            <p class="nes-text">66/62</p>
+        </div>
+
+        <div class="col nes-container is-dark with-title is-dark-monster">
+            <p class="title is-dark-monster">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Beholder
+                </span>
+            </p>
+            <div class="nes-field is-inline">
+                <label for="p1_hp"><i class="nes-icon is-medium heart is-half is-inline"></i></label>
+                <progress id="p1_hp" class="nes-progress is-warning" value="70" max="189"></progress>
+            </div>
+            <p class="nes-text"><img class="nes-avatar" src="" style="image-rendering: pixelated;"> Bloodied</p>
+        </div>
+
+        <div class="col nes-container is-dark with-title is-dark-monster">
+            <p class="title is-dark-monster">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Gazer A
+                </span>
+            </p>
+            <div class="nes-field is-inline">
+                <label for="p1_hp"><i class="nes-icon is-medium heart is-inline"></i></label>
+                <progress id="p1_hp" class="nes-progress is-primary" value="13" max="13"></progress>
+            </div>
+        </div>
+
+        <div class="col nes-container is-dark with-title is-dark-monster">
+            <p class="title is-dark-monster">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Gazer B
+                </span>
+            </p>
+            <div class="nes-field is-inline">
+                <label for="p1_hp"><i class="nes-icon is-medium heart is-inline"></i></label>
+                <progress id="p1_hp" class="nes-progress is-primary" value="13" max="13"></progress>
+            </div>
+        </div>
+
+        <div class="col nes-container is-dark with-title">
+            <p class="title creature-name">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Mordenkainen
+                </span>
+            </p>
+            <i class="snes-logo"></i> Gary Gygax
+            <div class="nes-field is-inline">
+                <label for="p1"><i class="nes-icon is-medium heart is-transparent is-inline"></i></label>
+                <progress id="p1" class="nes-progress is-dark" value="92" max="92"></progress>
+            </div>
+            <p class="nes-text">0/92</p>
+            <p class="nes-text"><img class="nes-avatar" src="" style="image-rendering: pixelated;"> Dead</p>
+        </div>
+
+        <div class="col nes-container is-dark with-title">
+            <p class="title creature-name">
+                <span class="nes-text">
+                    <img class="nes-avatar" src="" style="image-rendering: pixelated;">
+                    Raistlin Majere
+                </span>
+            </p>
+            <i class="snes-logo"></i> Margaret Weis
+            <div class="nes-field is-inline">
+                <label for="p1"><i class="nes-icon is-medium heart is-inline"></i></label>
+                <progress id="p1" class="nes-progress is-primary" value="30" max="48"></progress>
+            </div>
+            <p class="nes-text">30/48</p>
+        </div>
+    </main>
+    <footer>
+        <div class="footer">
+            <button type="button" class="nes-btn is-primary" id="changeTheme" onclick="changeToLight()">Light
+                Mode</button>
+        </div>
+
+
+        <div class="footer" style="float: right;">
+            © Dennis Lawter, Bryan Barreto 2020
+            <a href='https://ko-fi.com/Q5Q71WB1J' target='_blank'>
+                <div type="button" class="nes-btn is-primary">
+                    Support us on Ko-fi
+                </div>
+            </a>
+        </div>
+    </footer>
+</body>
+
+</html>

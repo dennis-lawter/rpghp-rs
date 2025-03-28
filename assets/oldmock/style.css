@@ -1,0 +1,62 @@
+.creature-name {
+    margin-bottom: 4px !important;
+}
+
+.support-link {
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    display: flex;
+}
+
+.nes-pixelated {
+    image-rendering: pixelated;
+}
+
+.kofi-button {
+    height: 32px;
+    width: 32px;
+}
+
+.admin-container>button {
+    font-size: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.footer {
+    display: inline;
+    font-size: 0.5em;
+}
+
+.nes-container {
+    margin: 4px;
+}
+
+html.nes-container {
+    border: 0px;
+    margin: 0px;
+}
+
+.is-dark-monster {
+    background-color: maroon !important;
+}
+
+.is-light-monster {
+    background-color: tomato !important;
+}
+
+.bonus-heart {
+    margin-left: 6px;
+}
+
+.banner {
+    width: 100%;
+}
+
+.modal-dialog {
+    padding: 8px;
+}
+
+.modal-dialog.is-light {
+    background-color: white !important;
+}
