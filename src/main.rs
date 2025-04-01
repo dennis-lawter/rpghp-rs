@@ -16,7 +16,7 @@ use config::Config;
 use server::WebServer;
 
 #[tokio::main]
-async fn main() -> CrateResult<()> {
+async fn main() -> Result<(), color_eyre::Report> {
     color_eyre::install()?;
     let cfg = Config::new()?;
 
