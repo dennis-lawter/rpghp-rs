@@ -1,3 +1,7 @@
-/db-data
+# Rust builds
 /target
+# App data
+/db-data
 .env
+# Emacs backups
+.#*
