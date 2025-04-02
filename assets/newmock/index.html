@@ -1,4 +1,5 @@
-<html>
+<!doctype html>
+<html lang="en">
 <link href="/assets/rpgui/rpgui.css" rel="stylesheet" type="text/css">
 <script src="/assets/rpgui/rpgui.js"></script>
 
@@ -26,6 +27,51 @@
                             <li><a href="#cursors">Cursors</a></li>
 
                         </ul>
+
+                        <div id="progress" class="rpgui-container framed-grey">
+                            <h1>Progress Bars</h1>
+                            <p>This example shows the RPGUI progress bar class.</p>
+                            <hr>
+
+                            <div style="width: 40%; margin-left: 30%">
+
+                                <label>Health:</label>
+                                <div id="hp-bar" data-value="0.4" class="rpgui-progress red" data-rpguitype="progress">
+                                    <div class=" rpgui-progress-track">
+                                        <div class=" rpgui-progress-fill red" style="left: 0px;"></div>
+                                    </div>
+                                    <div class=" rpgui-progress-left-edge"></div>
+                                    <div class=" rpgui-progress-right-edge"></div>
+                                </div>
+                                <label>Mana:</label>
+                                <div id="mana-bar" data-value="0.8" class="rpgui-progress blue"
+                                    data-rpguitype="progress">
+                                    <div class=" rpgui-progress-track">
+                                        <div class=" rpgui-progress-fill blue" style="left: 0px; width: 80%;"></div>
+                                    </div>
+                                    <div class=" rpgui-progress-left-edge"></div>
+                                    <div class=" rpgui-progress-right-edge"></div>
+                                </div>
+                                <label>Stamina:</label>
+                                <div id="stamina-bar" data-value="0.2" class="rpgui-progress green"
+                                    data-rpguitype="progress">
+                                    <div class=" rpgui-progress-track">
+                                        <div class=" rpgui-progress-fill green" style="left: 0px; width: 20%;"></div>
+                                    </div>
+                                    <div class=" rpgui-progress-left-edge"></div>
+                                    <div class=" rpgui-progress-right-edge"></div>
+                                </div>
+                                <label>Experience:</label>
+                                <div id="stamina-bar" data-value="0.5" class="rpgui-progress" data-rpguitype="progress">
+                                    <div class=" rpgui-progress-track">
+                                        <div class=" rpgui-progress-fill" style="left: 0px; width: 50%;"></div>
+                                    </div>
+                                    <div class=" rpgui-progress-left-edge"></div>
+                                    <div class=" rpgui-progress-right-edge"></div>
+                                </div>
+                            </div>
+
+                        </div>
 
 
                         <div id="containers" class="rpgui-container framed-grey">

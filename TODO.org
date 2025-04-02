@@ -1,0 +1,6 @@
+#+TODO: TODO(t) | DONE(d)
+* DONE Improve error handling
+* DONE Import old mockup
+* TODO Create a new mockup
+* TODO Document code
+* TODO Add logging

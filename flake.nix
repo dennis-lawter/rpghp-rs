@@ -27,6 +27,7 @@
           sqlx-cli
           insomnia
           tokei
+          emacs
         ];
 
         shellHook = ''
