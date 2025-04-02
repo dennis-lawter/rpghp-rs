@@ -13,8 +13,24 @@
             --progress-disabled: #939393;
         }
 
+        * {
+            user-select: text !important;
+        }
+
         body {
             background-color: #222;
+        }
+
+        p {
+            line-height: 0em !important;
+        }
+
+        label {
+            line-height: 1em !important;
+        }
+
+        hr {
+            margin: 2em;
         }
     </style>
 </head>
@@ -23,23 +39,32 @@
     <div class="rpgui-content" style="overflow-y:scroll">
         <div class="rpgui-container framed rpgui-centered" style="width:100%;position:relative">
             <label style="font-size: 1.5em;">Dead Guy</label>
-            <p style="line-height: 0em; color: var(--progress-disabled)">HP: 0/81</p>
+            <br>
+            <p style="color: var(--progress-disabled)">HP: 0/81</p>
             <div data-value="0" class="rpgui-progress rpgui-disabled"></div>
             <hr class="golden">
             <label style="font-size: 1.5em;">Low HP Guy</label>
-            <p style="line-height: 0em; color: var(--progress-red)">HP: 8/81</p>
+            <br>
+            <p style="color: var(--progress-red)">HP: 8/81</p>
             <div data-value="0.1" class="rpgui-progress red"></div>
             <hr class="golden">
             <label style="font-size: 1.5em;">Statused Guy</label>
-            <p style="line-height: 0em; color: var(--progress-green)">HP: ?</p>
+            <p style="text-indent: 2em">
+                <img src="/assets/oldmock/img/Misc_08.png" style="transform: scale(2.0); height: 1em; object-fit: none">
+                Bloodied
+            </p>
+            <br>
+            <p style="color: var(--progress-green)">HP: ?</p>
             <div data-value="0.4" class="rpgui-progress green"></div>
             <hr class="golden">
             <label style="font-size: 1.5em;">Healthy</label>
+            <br>
             <p style="line-height: 0em">HP: 100/100</p>
             <div data-value="1.0" class="rpgui-progress red"></div>
             <hr class="golden">
             <label style="font-size: 1.5em;">Overhealed</label>
-            <p style="line-height: 0em; color: var(--progress-blue)">HP: 105/100 (+5 over)</p>
+            <br>
+            <p style="color: var(--progress-blue)">HP: 105/100 (+5 over)</p>
             <div data-value="1.0" class="rpgui-progress blue" data-rpguitype="progress">
             </div>
         </div>
