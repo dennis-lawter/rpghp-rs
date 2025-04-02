@@ -4,4 +4,4 @@
 /db-data
 .env
 # Emacs backups
-.#*
+#*
