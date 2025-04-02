@@ -5,6 +5,9 @@
     <link href="/assets/rpgui/rpgui.css" rel="stylesheet" type="text/css">
     <script src="/assets/rpgui/rpgui.js"></script>
     <style>
+        /* @import url('https://fonts.googleapis.com/css2?family=Handjet&display=swap'); */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
         :root {
             --progress-normal: #6833a3;
             --progress-blue: #597dce;
@@ -14,6 +17,18 @@
         }
 
         * {
+            /* font-family: "Handjet", sans-serif !important; */
+            /* letter-spacing: 0.05em; */
+            font-family: "VT323", sans-serif !important;
+            font-optical-sizing: auto;
+            font-size: 24px;
+            font-weight: 400;
+            font-style: normal;
+            font-variation-settings:
+                "ELGR" 1,
+                "ELSH" 2;
+            line-height: 0.5em !important;
+
             user-select: text !important;
         }
 
@@ -21,16 +36,12 @@
             background-color: #222;
         }
 
-        p {
-            line-height: 0em !important;
-        }
-
-        label {
-            line-height: 1em !important;
-        }
-
         hr {
-            margin: 2em;
+            margin: .2em;
+        }
+
+        br {
+            height: 0.5em;
         }
     </style>
 </head>
@@ -38,37 +49,42 @@
 <body>
     <div class="rpgui-content" style="overflow-y:scroll">
         <div class="rpgui-container framed rpgui-centered" style="width:100%;position:relative">
-            <label style="font-size: 1.5em;">Dead Guy</label>
-            <br>
-            <p style="color: var(--progress-disabled)">HP: 0/81</p>
-            <div data-value="0" class="rpgui-progress rpgui-disabled"></div>
-            <hr class="golden">
-            <label style="font-size: 1.5em;">Low HP Guy</label>
-            <br>
-            <p style="color: var(--progress-red)">HP: 8/81</p>
-            <div data-value="0.1" class="rpgui-progress red"></div>
-            <hr class="golden">
-            <label style="font-size: 1.5em;">Statused Guy</label>
-            <p style="text-indent: 2em">
-                <img src="/assets/oldmock/img/Misc_08.png" style="transform: scale(2.0); height: 1em; object-fit: none">
-                Bloodied
-            </p>
-            <br>
-            <p style="color: var(--progress-green)">HP: ?</p>
-            <div data-value="0.4" class="rpgui-progress green"></div>
-            <hr class="golden">
-            <label style="font-size: 1.5em;">Healthy</label>
-            <br>
-            <p style="line-height: 0em">HP: 100/100</p>
-            <div data-value="1.0" class="rpgui-progress red"></div>
-            <hr class="golden">
-            <label style="font-size: 1.5em;">Overhealed</label>
-            <br>
-            <p style="color: var(--progress-blue)">HP: 105/100 (+5 over)</p>
-            <div data-value="1.0" class="rpgui-progress blue" data-rpguitype="progress">
+            <div class="rpgui-container framed-grey">
+                <label style="font-size: 1.5em;">Dead Guy</label>
+                <br>
+                <p style="color: var(--progress-disabled)">HP: 0 / 81</p>
+                <div data-value="0" class="rpgui-progress rpgui-disabled"></div>
+            </div>
+            <div class="rpgui-container framed-grey">
+                <label style="font-size: 1.5em;">Low HP Guy</label>
+                <br>
+                <p style="color: var(--progress-red)">HP: 8 / 81</p>
+                <div data-value="0.1" class="rpgui-progress red"></div>
+            </div>
+            <div class="rpgui-container framed-grey">
+                <label style="font-size: 1.5em;">Statused Guy</label>
+                <p style="text-indent: 1em">
+                    <img src="/assets/oldmock/img/Misc_08.png"
+                        style="transform: scale(2.0); height: 0.5em; object-fit: none">
+                    Bloodied
+                </p>
+                <p style="color: var(--progress-green)">HP: ?</p>
+                <div data-value="0.4" class="rpgui-progress green"></div>
+            </div>
+            <div class="rpgui-container framed-grey">
+                <label style="font-size: 1.5em;">Healthy</label>
+                <br>
+                <p style="line-height: 0em">HP: 100 / 100</p>
+                <div data-value="1.0" class="rpgui-progress red"></div>
+            </div>
+            <div class="rpgui-container framed-grey">
+                <label style="font-size: 1.5em;">Overhealed</label>
+                <br>
+                <p style="color: var(--progress-blue)">HP: 105 / 100 (+5 overheal)</p>
+                <div data-value="1.0" class="rpgui-progress blue" data-rpguitype="progress">
+                </div>
             </div>
         </div>
-    </div>
 </body>
 
 </html>
