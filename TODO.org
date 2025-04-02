@@ -1,11 +1,10 @@
-#+TODO: TODO(t) | DONE(d) CANCELLED(c)
+#+TODO: TODO(t) WIP(w) | DONE(d) CANCELLED(c)
 * DONE Improve error handling
 * DONE Import old mockup
-* TODO Create a new mockup
+* WIP Create a new mockup
 ** DONE Install rpgui
 ** DONE Figure out why rpgui mockup won't scroll
 ** DONE Figure out why rpgui progress bars don't respond to values
 ** TODO Convert old mockup to rpgui
 * TODO Document code
 * TODO Add logging
-
