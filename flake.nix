@@ -3,7 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs?ref=nixos-unstable";
-    rust-overlay.url = "github:oxalica/rust-overlay"; # Add rust-overlay for pinned Rust
+    rust-overlay.url = "github:oxalica/rust-overlay";
   };
 
   outputs = { self, nixpkgs, rust-overlay }:
@@ -11,14 +11,15 @@
       system = "x86_64-linux";
       pkgs = import nixpkgs {
         inherit system;
-        overlays = [ rust-overlay.overlays.default ]; # Apply Rust overlay
+        overlays = [ rust-overlay.overlays.default ];
       };
 
-      rust = pkgs.rust-bin.nightly.latest.default; # Pinned Rust Nightly
+      rust = pkgs.rust-bin.nightly.latest.default;
     in
     {
       devShells.${system}.default = pkgs.mkShell {
         packages = with pkgs; [
+          vscodium
           rust
           cargo-watch
           gnumake

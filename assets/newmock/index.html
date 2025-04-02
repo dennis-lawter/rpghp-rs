@@ -12,6 +12,10 @@
             --progress-red: #d04648;
             --progress-disabled: #939393;
         }
+
+        body {
+            background-color: #222;
+        }
     </style>
 </head>
 
@@ -21,19 +25,19 @@
             <label style="font-size: 1.5em;">Dead Guy</label>
             <p style="line-height: 0em; color: var(--progress-disabled)">HP: 0/81</p>
             <div data-value="0" class="rpgui-progress rpgui-disabled"></div>
-            <hr>
+            <hr class="golden">
             <label style="font-size: 1.5em;">Low HP Guy</label>
             <p style="line-height: 0em; color: var(--progress-red)">HP: 8/81</p>
             <div data-value="0.1" class="rpgui-progress red"></div>
-            <hr>
+            <hr class="golden">
             <label style="font-size: 1.5em;">Statused Guy</label>
             <p style="line-height: 0em; color: var(--progress-green)">HP: ?</p>
             <div data-value="0.4" class="rpgui-progress green"></div>
-            <hr>
+            <hr class="golden">
             <label style="font-size: 1.5em;">Healthy</label>
             <p style="line-height: 0em">HP: 100/100</p>
-            <div data-value="1" class="rpgui-progress red"></div>
-            <hr>
+            <div data-value="1.0" class="rpgui-progress red"></div>
+            <hr class="golden">
             <label style="font-size: 1.5em;">Overhealed</label>
             <p style="line-height: 0em; color: var(--progress-blue)">HP: 105/100 (+5 over)</p>
             <div data-value="1.0" class="rpgui-progress blue" data-rpguitype="progress">
