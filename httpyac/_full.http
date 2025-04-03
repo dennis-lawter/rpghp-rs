@@ -1,0 +1,23 @@
+/*
+To test in httpyac w/ vscodium...
+open the command pallette (C-S-p)
+then run `httpYac: Send All`
+
+For a more granular approach...
+Hover each item individually and do C-M-r
+*/
+
+# @name json
+POST http://0.0.0.0:8080/api/v1/session
+
+###
+# @ref json
+GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}
+
+###
+# @ref json
+GET http://0.0.0.0:8080/api/v1/session/{{json.secret}}
+
+###
+# @ref json
+DELETE http://0.0.0.0:8080/api/v1/session/{{json.secret}}
