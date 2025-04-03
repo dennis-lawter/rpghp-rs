@@ -14,7 +14,9 @@
         overlays = [ rust-overlay.overlays.default ];
       };
 
-      rust = pkgs.rust-bin.nightly.latest.default;
+      rust = pkgs.rust-bin.nightly.latest.default.override {
+        extensions = [ "rust-src" ];
+      };
     in
     {
       devShells.${system}.default = pkgs.mkShell {

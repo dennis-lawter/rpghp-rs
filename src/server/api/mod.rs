@@ -14,6 +14,7 @@ use poem_openapi::OpenApiService;
 use crate::config::Config;
 
 mod action;
+mod action_input;
 mod api_shared_state;
 mod domain;
 mod render;
