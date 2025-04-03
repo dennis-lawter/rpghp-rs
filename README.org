@@ -29,3 +29,6 @@ Basic curl tests are available, for example:
 #+begin_src bash :eval no
 curl_tests/hello.sh
 #+end_src
+
+* Attribution
+Icons provided by https://game-icons.net/
