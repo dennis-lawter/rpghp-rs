@@ -18,7 +18,10 @@ pub struct ApiSessionRoutesV1;
 #[OpenApi]
 impl ApiSessionRoutesV1 {
     #[oai(path = "/session", method = "post")]
-    async fn create_session(&self, state: Data<&ApiSharedState>) -> SessionCreateResponse {
+    async fn create_session(
+        &self,
+        state: Data<&ApiSharedState>,
+    ) -> SessionCreateResponse {
         let session_record = SessionRecord::new();
         let res = session_record.save(&state.pool).await;
         let view = SessionWithSecretView::from_record(&session_record);

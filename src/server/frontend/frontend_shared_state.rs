@@ -16,7 +16,11 @@ impl FrontendSharedState {
         Ok(Self { hb })
     }
 
-    pub fn render(&self, id: &str, json: serde_json::Value) -> poem::Result<impl IntoResponse> {
+    pub fn render(
+        &self,
+        id: &str,
+        json: serde_json::Value,
+    ) -> poem::Result<impl IntoResponse> {
         let html = self.hb.render(id, &json).map_err(|e| {
             poem::Error::from_string(e.to_string(), StatusCode::INTERNAL_SERVER_ERROR)
         })?;

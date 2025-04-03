@@ -1,5 +1,6 @@
 use crate::prelude::*;
 
+use action::creature_routes::ApiCreatureRoutesV1;
 use action::session_routes::ApiSessionRoutesV1;
 use api_shared_state::ApiSharedState;
 use poem::EndpointExt;
@@ -30,7 +31,7 @@ pub struct Api;
 impl Api {
     pub async fn create_route(cfg: &Config) -> CrateResult<AddDataEndpoint<Route, ApiSharedState>> {
         let api_shared_state = ApiSharedState::new(cfg).await?;
-        let v1_endpoints = (ApiHelloWorldV1, ApiSessionRoutesV1);
+        let v1_endpoints = (ApiHelloWorldV1, ApiSessionRoutesV1, ApiCreatureRoutesV1);
         let v1 = OpenApiService::new(v1_endpoints, "RPGHP API", "1.0")
             .server("/api/v1")
             .contact(

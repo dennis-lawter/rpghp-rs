@@ -3,5 +3,8 @@
     "files.eol": "\n",
     "files.encoding": "utf8",
     "editor.formatOnPaste": true,
-    "editor.formatOnSave": true
+    "editor.formatOnSave": true,
+    "workbench.editor.customLabels.patterns": {
+        "**/mod.rs": "${dirname}/mod.rs"
+    },
 }

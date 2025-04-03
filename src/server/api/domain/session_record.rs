@@ -15,7 +15,10 @@ pub struct SessionRecord {
 impl Record for SessionRecord {
     const TABLE: &'static str = "rpghp_session";
 
-    async fn find_by_id(conn: &PgPool, id: &Uuid) -> crate::CrateResult<Option<Self>> {
+    async fn find_by_id(
+        conn: &PgPool,
+        id: &Uuid,
+    ) -> crate::CrateResult<Option<Self>> {
         sqlx::query_as!(
             Self,
             r#"
@@ -34,7 +37,10 @@ WHERE
         .map_err(CrateError::SqlxError)
     }
 
-    async fn save(&self, conn: &PgPool) -> CrateResult<()> {
+    async fn save(
+        &self,
+        conn: &PgPool,
+    ) -> CrateResult<()> {
         sqlx::query!(
             r#"
 INSERT INTO
@@ -54,7 +60,10 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
         Ok(())
     }
 
-    async fn delete(self, conn: &PgPool) -> CrateResult<()> {
+    async fn delete(
+        self,
+        conn: &PgPool,
+    ) -> CrateResult<()> {
         sqlx::query!(
             r#"
 DELETE FROM
@@ -81,7 +90,10 @@ impl SessionRecord {
         }
     }
 
-    pub async fn find_by_secret(conn: &PgPool, secret: &Uuid) -> crate::CrateResult<Option<Self>> {
+    pub async fn find_by_secret(
+        conn: &PgPool,
+        secret: &Uuid,
+    ) -> crate::CrateResult<Option<Self>> {
         sqlx::query_as!(
             Self,
             r#"
