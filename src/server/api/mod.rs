@@ -32,7 +32,7 @@ impl Api {
         let api_shared_state = ApiSharedState::new(cfg).await?;
         let v1_endpoints = (ApiHelloWorldV1, ApiSessionRoutesV1);
         let v1 = OpenApiService::new(v1_endpoints, "RPGHP API", "1.0")
-            .server("/v1")
+            .server("/api/v1")
             .contact(
                 ContactObject::new()
                     .email("bytomancer@gmail.com")
