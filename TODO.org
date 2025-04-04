@@ -8,3 +8,6 @@
 ** TODO Convert old mockup to rpgui
 * TODO Document code
 * TODO Add logging
+* WIP Creature endpoint
+** DONE Stub out the creature resources
+** TODO Add creature saving

@@ -25,6 +25,8 @@ pub struct Config {
     pub cargo_pkg_description: String,
     pub cargo_pkg_version: String,
     pub base_url: String,
+    pub contact_name: String,
+    pub contact_email: String,
 }
 impl Config {
     pub fn new() -> CrateResult<Self> {
@@ -35,12 +37,16 @@ impl Config {
         let cargo_pkg_description = Self::get_env("CARGO_PKG_DESCRIPTION")?;
         let cargo_pkg_version = Self::get_env("CARGO_PKG_VERSION")?;
         let base_url = Self::get_env("BASE_URL")?;
+        let contact_name = Self::get_env("CONTACT_NAME")?;
+        let contact_email = Self::get_env("CONTACT_EMAIL")?;
         Ok(Self {
             db_url,
             env_lvl,
             cargo_pkg_description,
             cargo_pkg_version,
             base_url,
+            contact_name,
+            contact_email,
         })
     }
 
