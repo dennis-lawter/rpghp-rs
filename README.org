@@ -1,7 +1,7 @@
-#+title: RPGHP-RS Readme
-#+author: Dennis Lawter
-#+email: (concat "bytomancer" at-sign "gmail.com")
-#+date: 2025-03-10
+#+AUTHOR: Dennis Lawter
+#+EMAIL: (concat "bytomancer" at-sign "gmail.com")
+#+DATE: 2025-03-10
+#+TITLE: RPGHP-RS Readme
 
 * About
 A simple companion website for tabletop games.
@@ -29,6 +29,10 @@ Basic curl tests are available, for example:
 #+begin_src bash :eval no
 curl_tests/hello.sh
 #+end_src
+
+** Contributing
+There's an incomplete todo list available:
+[[./TODO.org][TODO.org]]
 
 * Attribution
 Icons provided by https://game-icons.net/
