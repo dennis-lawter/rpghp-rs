@@ -51,8 +51,8 @@ impl View<SessionRecord> for SessionView {
 
 #[derive(ApiResponse)]
 pub enum SessionDeleteResponse {
-    #[oai(status = 200)]
-    Ok,
+    #[oai(status = 201)]
+    Created,
 
     #[oai(status = 404)]
     NotFound,

@@ -3,6 +3,6 @@
         "rust-lang.rust-analyzer",
         "anweber.vscode-httpyac",
         "vscode-org-mode.org-mode",
-        "bbenoist.Nix"
+        "bbenoist.Nix",
     ]
 }

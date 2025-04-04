@@ -1,0 +1,6 @@
+{
+    "creature_name": "jon",
+    "max_hp": 9999,
+    "curr_hp": 9999,
+    "hp_hidden": false
+}

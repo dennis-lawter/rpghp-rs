@@ -65,7 +65,7 @@ impl ApiSessionRoutesV1 {
 
         match SessionRecord::find_by_secret(&state.pool, &uuid).await {
             Ok(Some(session_record)) => match session_record.delete(&state.pool).await {
-                Ok(()) => SessionDeleteResponse::Ok,
+                Ok(()) => SessionDeleteResponse::Created,
                 Err(_) => SessionDeleteResponse::NotFound,
             },
             _ => SessionDeleteResponse::NotFound,

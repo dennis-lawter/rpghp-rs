@@ -5,7 +5,7 @@ use crate::server::api::render::creature_view::CreatureCreateResponse;
 use poem::web::Data;
 use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
-use poem_openapi::payload::Form;
+use poem_openapi::payload::Json;
 use uuid::Uuid;
 
 pub struct ApiCreatureRoutesV1;
@@ -16,12 +16,14 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
-        _data: Form<CreateCreatureRequest>,
+        data: Json<CreateCreatureRequest>,
     ) -> CreatureCreateResponse {
         let uuid = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
             _ => return CreatureCreateResponse::NotFound,
         };
+
+        let _data = data;
 
         let session: SessionRecord = match SessionRecord::find_by_secret(&state.pool, &uuid).await {
             Ok(Some(session)) => session,
@@ -29,6 +31,6 @@ impl ApiCreatureRoutesV1 {
         };
         let _session_id = session.rpghp_session_id;
 
-        CreatureCreateResponse::Ok
+        CreatureCreateResponse::Created
     }
 }
