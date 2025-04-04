@@ -32,7 +32,7 @@ curl_tests/hello.sh
 
 ** Contributing
 There's an incomplete todo list available:
-[[./TODO.org][TODO.org]]
+[[./TODO.org]]
 
 * Attribution
 Icons provided by https://game-icons.net/
