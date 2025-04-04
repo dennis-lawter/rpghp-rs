@@ -1,8 +1,8 @@
 use crate::prelude::*;
 
 use super::api_shared_state::ApiSharedState;
-use super::resources_v1::creature::ApiCreatureRoutesV1;
-use super::resources_v1::session::ApiSessionRoutesV1;
+use super::resources::creature::ApiCreatureRoutesV1;
+use super::resources::session::ApiSessionRoutesV1;
 use poem::EndpointExt;
 use poem::IntoEndpoint;
 use poem::Route;

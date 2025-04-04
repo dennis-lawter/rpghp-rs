@@ -1,3 +1,3 @@
 mod api_shared_state;
-mod resources_v1;
+mod resources;
 pub mod rpghp_api;
