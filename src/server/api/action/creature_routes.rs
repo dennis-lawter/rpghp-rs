@@ -1,4 +1,4 @@
-use crate::server::api::action_input::CreateCreatureRequest;
+use crate::server::api::action_input::creature_inputs::CreateCreatureRequest;
 use crate::server::api::api_shared_state::ApiSharedState;
 use crate::server::api::domain::session_record::SessionRecord;
 use crate::server::api::render::creature_view::CreatureCreateResponse;
