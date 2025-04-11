@@ -17,11 +17,21 @@
 
 * TODO Add logging
 
+* TODO Consider adding creatures to a detailed session view and attach it to the GET endpoint
+    - This is kind of a violation of the "resource" aspect of the API
+    - It does reduce total endpoint hits to get the full details though
+    - Alternatively provide a "detailed" param
+
 * TODO Creature endpoint
 ** DONE Stub out the creature resources
 ** DONE Add creature saving logic to the create endpoint
-** TODO Get creature endpoint
-** TODO List creature endpoint
+** DONE Get creature endpoint
+** DONE List creature endpoint
+** TODO Create creature returns the record or redirect header
+    - If redirect header, make the session act the same
+** TODO Change the way HP is handled in CreatureView
+    - Always display approx_hp
+    - Restrict max_hp and curr_hp response to *secret provided* or *show_hp = true*
 ** TODO Creature deletion endpoint, need to decide if deletes should be soft or hard
 ** TODO Creature update endpoint
 
@@ -29,6 +39,14 @@
     - In my previous rpghp project, I created a uuidv4 for the session secret, then the sha1 of that was the session id
     - Only the session id is stored in the DB, meaning secrets cannot be retrieved
     - The uuidv4 and sha1 of the uuidv4 can both be represented by a relatively small base64 in the url
+    - Currently the secret being in the URL is insecure; however I don't think too critically today about the security of a tabletop RPG helper...
+    - I recently discovered the path of /session/:session_id/... must always have the same named parameter
+        + This means that the random swap between :session_id_or_secret and :secret is not allowed
+        + Could move the "admin" endpoints
+        + Could make secret an auth header or something
+        + Could ditch the whole idea of the generated password
+        + Maybe the frontend just deals with this?
+            + I think the frontend will be /playerview/SESSION_ID and /gmview/SECRET
 
 * TODO Decide on a framework for the frontend, I'm leaning toward htmx
     - Can htmx use json bodies for the api, or is it only multiforms?

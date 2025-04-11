@@ -23,7 +23,6 @@ impl ApiCreatureRoutesV1 {
         session_id: Path<String>,
         data: Json<CreateCreatureRequest>,
     ) -> CreatureCreateResponse {
-        log::info!("Huh??");
         let session_id = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
             _ => return CreatureCreateResponse::NotFound,
