@@ -16,7 +16,7 @@ impl Record for CreatureRecord {
     async fn find_by_id(
         conn: &sqlx::PgPool,
         id: &uuid::Uuid,
-    ) -> crate::prelude::CrateResult<Option<Self>> {
+    ) -> CrateResult<Option<Self>> {
         sqlx::query_as!(
             Self,
             r#"
@@ -42,7 +42,7 @@ WHERE
     async fn save(
         &self,
         conn: &sqlx::PgPool,
-    ) -> crate::prelude::CrateResult<()> {
+    ) -> CrateResult<()> {
         sqlx::query!(
             r#"
 INSERT INTO
@@ -88,13 +88,13 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
     async fn delete(
         self,
         conn: &sqlx::PgPool,
-    ) -> crate::prelude::CrateResult<()> {
+    ) -> CrateResult<()> {
         sqlx::query!(
             r#"
 DELETE FROM
     rpghp_creature
 WHERE
-    rpghp_creature_id=$1
+    rpghp_creature_id = $1
         "#,
             self.rpghp_creature_id,
         )
@@ -102,5 +102,28 @@ WHERE
         .await
         .map_err(CrateError::SqlxError)?;
         Ok(())
+    }
+}
+
+impl CreatureRecord {
+    pub async fn find_by_session_id(
+        conn: &sqlx::PgPool,
+        session_id: &uuid::Uuid,
+    ) -> CrateResult<Vec<Self>> {
+        sqlx::query_as!(
+            Self,
+            r#"
+SELECT
+    *
+FROM
+    rpghp_creature
+WHERE
+    session_id = $1
+            "#,
+            session_id,
+        )
+        .fetch_all(conn)
+        .await
+        .map_err(CrateError::SqlxError)
     }
 }

@@ -25,7 +25,7 @@ impl Api {
                     .name("Bytomancer"),
             )
             .description("API backend for the RPGHP application.");
-        let docs = v1.redoc();
+        let docs = v1.rapidoc();
         Ok(Route::new()
             .nest("/v1", v1.into_endpoint())
             .nest("/docs/v1", docs)

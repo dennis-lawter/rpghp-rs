@@ -36,12 +36,12 @@ impl ApiSessionRoutesV1 {
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
-        let uuid = match Uuid::parse_str(&session_id) {
+        let session_id = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
             Err(_) => return SessionGetResponse::NotFound,
         };
 
-        match SessionRecord::find_by_secret_or_id(&state.pool, &uuid).await {
+        match SessionRecord::find_by_secret_or_id(&state.pool, &session_id).await {
             Ok(Some(session_record)) => {
                 let view = SessionView::from_record(&session_record);
                 SessionGetResponse::Ok(Json(view))
@@ -56,12 +56,12 @@ impl ApiSessionRoutesV1 {
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
     ) -> SessionDeleteResponse {
-        let uuid = match Uuid::parse_str(&session_id) {
+        let session_id = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
             Err(_) => return SessionDeleteResponse::NotFound,
         };
 
-        match SessionRecord::find_by_secret(&state.pool, &uuid).await {
+        match SessionRecord::find_by_secret(&state.pool, &session_id).await {
             Ok(Some(session_record)) => match session_record.delete(&state.pool).await {
                 Ok(()) => SessionDeleteResponse::Created,
                 Err(_) => SessionDeleteResponse::NotFound,
@@ -103,6 +103,16 @@ enum SessionGetResponse {
     #[oai(status = 404)]
     NotFound,
 }
+
+#[derive(ApiResponse)]
+enum SessionDeleteResponse {
+    #[oai(status = 201)]
+    Created,
+
+    #[oai(status = 404)]
+    NotFound,
+}
+
 #[derive(Object, serde::Serialize)]
 struct SessionView {
     pub rpghp_session_id: String,
@@ -112,13 +122,4 @@ impl super::View<SessionRecord> for SessionView {
         let rpghp_session_id = format!("{}", record.rpghp_session_id);
         Self { rpghp_session_id }
     }
-}
-
-#[derive(ApiResponse)]
-enum SessionDeleteResponse {
-    #[oai(status = 201)]
-    Created,
-
-    #[oai(status = 404)]
-    NotFound,
 }

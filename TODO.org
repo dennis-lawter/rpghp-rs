@@ -20,6 +20,8 @@
 * TODO Creature endpoint
 ** DONE Stub out the creature resources
 ** DONE Add creature saving logic to the create endpoint
+** TODO Get creature endpoint
+** TODO List creature endpoint
 ** TODO Creature deletion endpoint, need to decide if deletes should be soft or hard
 ** TODO Creature update endpoint
 
