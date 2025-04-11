@@ -6,6 +6,8 @@ use poem_openapi::payload::Json;
 use uuid::Uuid;
 
 use crate::server::api::api_shared_state::ApiSharedState;
+use crate::server::api::domain::Record;
+use crate::server::api::domain::creature::CreatureRecord;
 use crate::server::api::domain::session::SessionRecord;
 
 pub struct ApiCreatureRoutesV1;
@@ -16,7 +18,7 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
-        _data: Json<CreateCreatureRequest>,
+        data: Json<CreateCreatureRequest>,
     ) -> CreatureCreateResponse {
         let uuid = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
@@ -27,11 +29,21 @@ impl ApiCreatureRoutesV1 {
             Ok(Some(session)) => session,
             _ => return CreatureCreateResponse::NotFound,
         };
-        let _session_id = session.rpghp_session_id;
+        let session_id = session.rpghp_session_id;
 
-        // TODO: Add creature saving
+        let creature = CreatureRecord {
+            rpghp_creature_id: Uuid::new_v4(),
+            session_id,
+            creature_name: data.creature_name.clone(),
+            max_hp: data.max_hp,
+            curr_hp: data.curr_hp,
+            hp_hidden: data.hp_hidden,
+        };
 
-        CreatureCreateResponse::Created
+        match creature.save(&state.pool).await {
+            Ok(_) => CreatureCreateResponse::Created,
+            Err(_) => CreatureCreateResponse::BadRequest,
+        }
     }
 }
 
@@ -47,6 +59,9 @@ struct CreateCreatureRequest {
 enum CreatureCreateResponse {
     #[oai(status = 201)]
     Created,
+
+    #[oai(status = 400)]
+    BadRequest,
 
     #[oai(status = 404)]
     NotFound,

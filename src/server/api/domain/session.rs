@@ -9,8 +9,6 @@ pub struct SessionRecord {
     pub secret: Uuid,
 }
 impl super::Record for SessionRecord {
-    const TABLE: &'static str = "rpghp_session";
-
     async fn find_by_id(
         conn: &PgPool,
         id: &Uuid,
@@ -41,11 +39,18 @@ WHERE
             r#"
 INSERT INTO
     rpghp_session
-    (rpghp_session_id,secret)
+    (
+        rpghp_session_id,
+        secret
+    )
     VALUES
-    ($1, $2)
+    (
+        $1,
+        $2
+    )
 ON CONFLICT (rpghp_session_id) DO UPDATE
-    SET secret=$2
+    SET
+        secret = $2
         "#,
             self.rpghp_session_id,
             self.secret

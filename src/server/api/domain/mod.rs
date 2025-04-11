@@ -5,8 +5,6 @@ use crate::prelude::*;
 
 #[allow(dead_code)]
 pub trait Record: Sized {
-    const TABLE: &'static str;
-
     async fn find_by_id(
         conn: &sqlx::PgPool,
         id: &uuid::Uuid,
