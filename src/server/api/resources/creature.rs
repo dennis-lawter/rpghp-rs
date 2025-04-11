@@ -5,8 +5,8 @@ use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 use uuid::Uuid;
 
-use super::super::api_shared_state::ApiSharedState;
-use super::session::SessionRecord;
+use crate::server::api::api_shared_state::ApiSharedState;
+use crate::server::api::domain::session::SessionRecord;
 
 pub struct ApiCreatureRoutesV1;
 #[OpenApi]

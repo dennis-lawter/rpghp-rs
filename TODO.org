@@ -1,27 +1,36 @@
 #+STARTUP: showall
-#+TODO: TODO(t) WIP(w) | DONE(d) CANCELLED(c)
+#+TODO: TODO(t) | DONE(d)
 #+TITLE: Todo
 
 * DONE Improve error handling
 * DONE Import old mockup
-* WIP Create a new mockup
+* DONE Extract domain
+
+* TODO Create a new mockup
 ** DONE Install rpgui
 ** DONE Figure out why rpgui mockup won't scroll
 ** DONE Figure out why rpgui progress bars don't respond to values
 ** TODO Convert old mockup to rpgui
+** TODO Populate mockup with handlebars
+
 * TODO Document code
+
 * TODO Add logging
-* WIP Creature endpoint
+
+* TODO Creature endpoint
 ** DONE Stub out the creature resources
 ** TODO Add creature saving logic to the create endpoint
 ** TODO Creature deletion endpoint, need to decide if deletes should be soft or hard
 ** TODO Creature update endpoint
+
 * TODO Improve session secret/id system
     - In my previous rpghp project, I created a uuidv4 for the session secret, then the sha1 of that was the session id
     - Only the session id is stored in the DB, meaning secrets cannot be retrieved
     - The uuidv4 and sha1 of the uuidv4 can both be represented by a relatively small base64 in the url
+
 * TODO Decide on a framework for the frontend, I'm leaning toward htmx
     - Can htmx use json bodies for the api, or is it only multiforms?
+
 * TODO Probably need a new module for frontend intermediates, little ajaxable HTML pieces that can be queried
     - The POST endpoints on this intermediate?
         + If htmx can't construct json easily, this intermediate layer might be a place to do multiforms
