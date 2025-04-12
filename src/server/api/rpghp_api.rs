@@ -21,8 +21,8 @@ impl Api {
             .server("/api/v1")
             .contact(
                 ContactObject::new()
-                    .email("bytomancer@gmail.com")
-                    .name("Bytomancer"),
+                    .email(cfg.contact_email.clone())
+                    .name(cfg.contact_name.clone()),
             )
             .description("API backend for the RPGHP application.");
         let docs = v1.rapidoc();
