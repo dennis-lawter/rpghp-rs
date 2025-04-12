@@ -60,7 +60,7 @@ impl ApiCreatureRoutesV1 {
         session_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
-        let session = match auth {
+        let session = match &auth {
             ApiV1AuthSchemeOptional::NoAuth => {
                 // When no auth is provided, you'll have a more restricted view...
                 // However, obviously, you can skip much of the auth for the session object.
@@ -98,7 +98,16 @@ impl ApiCreatureRoutesV1 {
             Err(_) => return CreatureListResponse::NotFound,
         };
 
-        let views: Vec<CreatureView> = creatures.iter().map(CreatureView::from_record).collect();
+        let views: Vec<CreatureView> = match &auth {
+            ApiV1AuthSchemeOptional::Bearer(_) => {
+                creatures.iter().map(CreatureView::from_record).collect()
+            }
+            ApiV1AuthSchemeOptional::NoAuth => creatures
+                .iter()
+                .map(CreatureView::from_record)
+                .map(CreatureView::simplified_if_hp_hidden)
+                .collect(),
+        };
 
         CreatureListResponse::Ok(Json(views))
     }
@@ -176,25 +185,36 @@ struct CreatureView {
     creature_name: String,
     max_hp: Option<i32>,
     curr_hp: Option<i32>,
-    approx_hp: Option<f32>,
+    approx_hp: f32,
+    hp_hidden: bool,
 }
 impl super::View<CreatureRecord> for CreatureView {
     fn from_record(record: &CreatureRecord) -> Self {
-        let (max_hp, curr_hp, approx_hp) = match record.hp_hidden {
-            true => (
-                None,
-                None,
-                Some(record.curr_hp as f32 / record.max_hp as f32),
-            ),
-            false => (Some(record.max_hp), Some(record.curr_hp), None),
-        };
         let id = format!("{}", record.rpghp_creature_id);
+        let approx_hp = record.curr_hp as f32 / record.max_hp as f32;
         Self {
             creature_id: id,
             creature_name: record.creature_name.clone(),
-            max_hp,
-            curr_hp,
+            max_hp: Some(record.max_hp),
+            curr_hp: Some(record.curr_hp),
             approx_hp,
+            hp_hidden: record.hp_hidden,
+        }
+    }
+}
+impl CreatureView {
+    fn simplified_if_hp_hidden(self) -> Self {
+        if self.hp_hidden {
+            Self {
+                creature_id: self.creature_id,
+                creature_name: self.creature_name,
+                max_hp: None,
+                curr_hp: None,
+                approx_hp: self.approx_hp,
+                hp_hidden: self.hp_hidden,
+            }
+        } else {
+            self
         }
     }
 }

@@ -70,7 +70,10 @@ impl ApiSessionRoutesV1 {
 
         match session.delete(&state.pool).await {
             Ok(_) => SessionDeleteResponse::Ok,
-            _ => SessionDeleteResponse::Forbidden,
+            Err(_) => {
+                // TODO: Consider a verbose error, as this failure should not occur
+                SessionDeleteResponse::Forbidden
+            }
         }
     }
 }
