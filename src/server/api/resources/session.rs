@@ -58,18 +58,15 @@ impl ApiSessionRoutesV1 {
         session_id: Path<String>,
         auth: super::ApiV1AuthScheme,
     ) -> SessionDeleteResponse {
-        let session = match SessionRecord::get_by_id_and_secret(
-            &session_id,
-            &auth.0.token,
-            &state.pool,
-        )
-        .await
-        {
-            Err(RecordQueryError::Forbidden) => return SessionDeleteResponse::Forbidden,
-            Err(RecordQueryError::NotFound) => return SessionDeleteResponse::NotFound,
-            Err(RecordQueryError::Unauthorized) => return SessionDeleteResponse::Unauthorized,
-            Ok(session) => session,
-        };
+        let session =
+            match SessionRecord::find_by_id_and_secret(&session_id, &auth.0.token, &state.pool)
+                .await
+            {
+                Err(RecordQueryError::Forbidden) => return SessionDeleteResponse::Forbidden,
+                Err(RecordQueryError::NotFound) => return SessionDeleteResponse::NotFound,
+                Err(RecordQueryError::Unauthorized) => return SessionDeleteResponse::Unauthorized,
+                Ok(session) => session,
+            };
 
         match session.delete(&state.pool).await {
             Ok(_) => SessionDeleteResponse::Ok,

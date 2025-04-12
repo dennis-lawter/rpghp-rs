@@ -27,18 +27,15 @@ impl ApiCreatureRoutesV1 {
         data: Json<CreateCreatureRequest>,
         auth: ApiV1AuthScheme,
     ) -> CreatureCreateResponse {
-        let session = match SessionRecord::get_by_id_and_secret(
-            &session_id,
-            &auth.0.token,
-            &state.pool,
-        )
-        .await
-        {
-            Err(RecordQueryError::Forbidden) => return CreatureCreateResponse::Forbidden,
-            Err(RecordQueryError::NotFound) => return CreatureCreateResponse::NotFound,
-            Err(RecordQueryError::Unauthorized) => return CreatureCreateResponse::Unauthorized,
-            Ok(session) => session,
-        };
+        let session =
+            match SessionRecord::find_by_id_and_secret(&session_id, &auth.0.token, &state.pool)
+                .await
+            {
+                Err(RecordQueryError::Forbidden) => return CreatureCreateResponse::Forbidden,
+                Err(RecordQueryError::NotFound) => return CreatureCreateResponse::NotFound,
+                Err(RecordQueryError::Unauthorized) => return CreatureCreateResponse::Unauthorized,
+                Ok(session) => session,
+            };
         let session_id = session.rpghp_session_id;
 
         let creature = CreatureRecord {
@@ -61,16 +58,36 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
-        _auth: ApiV1AuthSchemeOptional,
+        auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
-        let session_id = match Uuid::parse_str(&session_id) {
-            Ok(uuid) => uuid,
-            _ => return CreatureListResponse::NotFound,
+        let session = match auth {
+            ApiV1AuthSchemeOptional::NoAuth => {
+                // When no auth is provided, you'll have a more restricted view...
+                // However, obviously, you can skip much of the auth for the session object.
+                // We'll just look your session up by id or 404 you.
+                let session_id = match Uuid::parse_str(&session_id) {
+                    Ok(uuid) => uuid,
+                    _ => return CreatureListResponse::NotFound,
+                };
+                match SessionRecord::find_by_id(&state.pool, &session_id).await {
+                    Ok(Some(session)) => session,
+                    _ => return CreatureListResponse::NotFound,
+                }
+            }
+            ApiV1AuthSchemeOptional::Bearer(token) => {
+                match SessionRecord::find_by_id_and_secret(&session_id, &token.0.token, &state.pool)
+                    .await
+                {
+                    Ok(session) => session,
+                    Err(RecordQueryError::Forbidden) => return CreatureListResponse::Forbidden,
+                    Err(RecordQueryError::NotFound) => return CreatureListResponse::NotFound,
+                    Err(RecordQueryError::Unauthorized) => {
+                        return CreatureListResponse::Unauthorized;
+                    }
+                }
+            }
         };
-        let session = match SessionRecord::find_by_id(&state.pool, &session_id).await {
-            Ok(Some(session)) => session,
-            _ => return CreatureListResponse::NotFound,
-        };
+
         let creatures = match CreatureRecord::find_by_session_id(
             &state.pool,
             &session.rpghp_session_id,
@@ -102,7 +119,7 @@ impl ApiCreatureRoutesV1 {
             Ok(uuid) => uuid,
             _ => return CreatureGetResponse::NotFound,
         };
-        CreatureGetResponse::NotFound
+        todo!()
     }
 }
 
@@ -136,6 +153,12 @@ enum CreatureCreateResponse {
 enum CreatureListResponse {
     #[oai(status = 200)]
     Ok(Json<Vec<CreatureView>>),
+
+    #[oai(status = 401)]
+    Unauthorized,
+
+    #[oai(status = 403)]
+    Forbidden,
 
     #[oai(status = 404)]
     NotFound,

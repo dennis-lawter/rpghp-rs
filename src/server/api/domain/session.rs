@@ -94,7 +94,7 @@ impl SessionRecord {
         }
     }
 
-    pub async fn get_by_id_and_secret(
+    pub async fn find_by_id_and_secret(
         session_id_str: &str,
         auth_token_str: &str,
         pool: &PgPool,
