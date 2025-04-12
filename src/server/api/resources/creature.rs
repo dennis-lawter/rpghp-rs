@@ -28,11 +28,11 @@ impl ApiCreatureRoutesV1 {
             _ => return CreatureCreateResponse::NotFound,
         };
 
-        let session: SessionRecord =
-            match SessionRecord::find_by_secret(&state.pool, &session_id).await {
-                Ok(Some(session)) => session,
-                _ => return CreatureCreateResponse::NotFound,
-            };
+        let session: SessionRecord = match SessionRecord::find_by_id(&state.pool, &session_id).await
+        {
+            Ok(Some(session)) => session,
+            _ => return CreatureCreateResponse::NotFound,
+        };
         let session_id = session.rpghp_session_id;
 
         let creature = CreatureRecord {
@@ -60,7 +60,7 @@ impl ApiCreatureRoutesV1 {
             Ok(uuid) => uuid,
             _ => return CreatureListResponse::NotFound,
         };
-        let session = match SessionRecord::find_by_secret_or_id(&state.pool, &session_id).await {
+        let session = match SessionRecord::find_by_id(&state.pool, &session_id).await {
             Ok(Some(session)) => session,
             _ => return CreatureListResponse::NotFound,
         };

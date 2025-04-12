@@ -41,7 +41,7 @@ impl ApiSessionRoutesV1 {
             Err(_) => return SessionGetResponse::NotFound,
         };
 
-        match SessionRecord::find_by_secret_or_id(&state.pool, &session_id).await {
+        match SessionRecord::find_by_id(&state.pool, &session_id).await {
             Ok(Some(session_record)) => {
                 let view = SessionView::from_record(&session_record);
                 SessionGetResponse::Ok(Json(view))
@@ -55,18 +55,30 @@ impl ApiSessionRoutesV1 {
         &self,
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
+        auth: super::ApiV1AuthScheme,
     ) -> SessionDeleteResponse {
         let session_id = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
             Err(_) => return SessionDeleteResponse::NotFound,
         };
 
-        match SessionRecord::find_by_secret(&state.pool, &session_id).await {
-            Ok(Some(session_record)) => match session_record.delete(&state.pool).await {
-                Ok(()) => SessionDeleteResponse::Created,
-                Err(_) => SessionDeleteResponse::NotFound,
-            },
-            _ => SessionDeleteResponse::NotFound,
+        let session = match SessionRecord::find_by_id(&state.pool, &session_id).await {
+            Ok(Some(session_record)) => session_record,
+            _ => return SessionDeleteResponse::NotFound,
+        };
+
+        let bearer_token = match Uuid::parse_str(&auth.0.token) {
+            Ok(uuid) => uuid,
+            Err(_) => return SessionDeleteResponse::Unauthorized,
+        };
+
+        if bearer_token != session.secret {
+            return SessionDeleteResponse::Forbidden;
+        }
+
+        match session.delete(&state.pool).await {
+            Ok(_) => SessionDeleteResponse::Ok,
+            _ => SessionDeleteResponse::Forbidden,
         }
     }
 }
@@ -106,8 +118,14 @@ enum SessionGetResponse {
 
 #[derive(ApiResponse)]
 enum SessionDeleteResponse {
-    #[oai(status = 201)]
-    Created,
+    #[oai(status = 200)]
+    Ok,
+
+    #[oai(status = 401)]
+    Unauthorized,
+
+    #[oai(status = 403)]
+    Forbidden,
 
     #[oai(status = 404)]
     NotFound,
