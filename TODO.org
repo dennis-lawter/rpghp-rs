@@ -28,7 +28,7 @@
 ** DONE Get creature endpoint
 ** DONE List creature endpoint
 ** TODO Create creature returns the record or a redirect header
-    - If it redirect header, make the session do the same
+    - If we choose the redirect header, make the session do the same
 ** DONE Change the way HP is handled in CreatureView
     - Always display approx_hp
     - Restrict max_hp and curr_hp response to *secret provided* or *show_hp = true*

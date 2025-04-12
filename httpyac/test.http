@@ -1,14 +1,15 @@
 /*
-To test in httpyac w/ vscodium...
-open the command pallette (C-S-p)
-then run `httpYac: Send All`
+    To test in httpyac w/ vscodium...
+    open the command pallette (C-S-p)
+    then run `httpYac: Send All`
 
-For a more granular approach...
-Hover each item individually and do C-M-r
+    For a more granular approach...
+    Hover each item individually and do C-M-r
 */
 
 @assetsDir=./
 
+###
 # @name json
 POST http://0.0.0.0:8080/api/v1/session
 
