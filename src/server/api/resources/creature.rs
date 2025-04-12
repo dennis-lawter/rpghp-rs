@@ -8,6 +8,7 @@ use uuid::Uuid;
 
 use crate::server::api::api_shared_state::ApiSharedState;
 use crate::server::api::domain::Record;
+use crate::server::api::domain::RecordQueryError;
 use crate::server::api::domain::creature::CreatureRecord;
 use crate::server::api::domain::session::SessionRecord;
 
@@ -23,17 +24,19 @@ impl ApiCreatureRoutesV1 {
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
         data: Json<CreateCreatureRequest>,
-        _auth: ApiV1AuthScheme,
+        auth: ApiV1AuthScheme,
     ) -> CreatureCreateResponse {
-        let session_id = match Uuid::parse_str(&session_id) {
-            Ok(uuid) => uuid,
-            _ => return CreatureCreateResponse::NotFound,
-        };
-
-        let session: SessionRecord = match SessionRecord::find_by_id(&state.pool, &session_id).await
+        let session = match SessionRecord::get_by_id_and_secret(
+            &session_id,
+            &auth.0.token,
+            &state.pool,
+        )
+        .await
         {
-            Ok(Some(session)) => session,
-            _ => return CreatureCreateResponse::NotFound,
+            Err(RecordQueryError::Forbidden) => return CreatureCreateResponse::Forbidden,
+            Err(RecordQueryError::NotFound) => return CreatureCreateResponse::NotFound,
+            Err(RecordQueryError::Unauthorized) => return CreatureCreateResponse::Unauthorized,
+            Ok(session) => session,
         };
         let session_id = session.rpghp_session_id;
 
@@ -115,6 +118,12 @@ enum CreatureCreateResponse {
 
     #[oai(status = 400)]
     BadRequest,
+
+    #[oai(status = 401)]
+    Unauthorized,
+
+    #[oai(status = 403)]
+    Forbidden,
 
     #[oai(status = 404)]
     NotFound,
