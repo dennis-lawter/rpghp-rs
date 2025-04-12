@@ -15,6 +15,7 @@ pub trait View<T: Record>: Sized {
 pub struct ApiV1AuthScheme(Bearer);
 
 #[derive(SecurityScheme)]
+#[allow(dead_code)]
 pub enum ApiV1AuthSchemeOptional {
     Bearer(ApiV1AuthScheme),
     #[oai(fallback)]
