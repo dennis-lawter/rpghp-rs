@@ -12,9 +12,13 @@ Hover each item individually and do C-M-r
 # @name json
 POST http://0.0.0.0:8080/api/v1/session
 
+?? status == 201
+
 ###
 # @ref json
 GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}
+
+?? status == 200
 
 ###
 # @ref json
@@ -23,11 +27,24 @@ Authorization: Bearer {{json.secret}}
 Content-Type: application/json
 < {{assetsDir}}jon_creature.json
 
+?? status == 201
+
 ###
 # @ref json
 GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}/creature
+
+?? status == 200
+
+###
+# @ref json
+GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}/creature
+Authorization: Bearer {{json.secret}}
+
+?? status == 200
 
 ###
 # @ref json
 DELETE http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}
 Authorization: Bearer {{json.secret}}
+
+?? status == 200

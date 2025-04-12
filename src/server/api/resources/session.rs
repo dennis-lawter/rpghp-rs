@@ -80,7 +80,7 @@ impl ApiSessionRoutesV1 {
 
 #[derive(ApiResponse)]
 enum SessionCreateResponse {
-    #[oai(status = 200)]
+    #[oai(status = 201)]
     Ok(Json<SessionWithSecretView>),
 
     #[oai(status = 404)]
