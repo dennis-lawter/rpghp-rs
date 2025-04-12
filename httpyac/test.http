@@ -1,7 +1,8 @@
 /*
     To test in httpyac w/ vscodium...
     open the command pallette (C-S-p)
-    then run `httpYac: Send All`
+    first run `> Test: Clear All Results`
+    then run `> Test: Run All Tests`
 
     For a more granular approach...
     Hover each item individually and do C-M-r
@@ -10,42 +11,53 @@
 @assetsDir=./
 
 ###
-# @name json
+# @name json_session
 POST http://0.0.0.0:8080/api/v1/session
 
 ?? status == 201
 
 ###
-# @ref json
-GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}
+# @ref json_session
+GET http://0.0.0.0:8080/api/v1/session/{{json_session.rpghp_session_id}}
 
 ?? status == 200
 
 ###
-# @ref json
-POST http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}/creature
-Authorization: Bearer {{json.secret}}
+# @ref json_session
+POST http://0.0.0.0:8080/api/v1/session/{{json_session.rpghp_session_id}}/creature
+Authorization: Bearer {{json_session.secret}}
 Content-Type: application/json
-< {{assetsDir}}jon_creature.json
+< {{assetsDir}}jon_visible.json
 
 ?? status == 201
 
 ###
-# @ref json
-GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}/creature
+# @ref json_session
+POST http://0.0.0.0:8080/api/v1/session/{{json_session.rpghp_session_id}}/creature
+Authorization: Bearer {{json_session.secret}}
+Content-Type: application/json
+< {{assetsDir}}jon_hidden.json
+
+?? status == 201
+
+###
+# @ref json_session
+GET http://0.0.0.0:8080/api/v1/session/{{json_session.rpghp_session_id}}/creature
+
+?? status == 200
+?? body contains "jon visible"
+?? body contains "jon hidden"
+
+###
+# @ref json_session
+GET http://0.0.0.0:8080/api/v1/session/{{json_session.rpghp_session_id}}/creature
+Authorization: Bearer {{json_session.secret}}
 
 ?? status == 200
 
 ###
-# @ref json
-GET http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}/creature
-Authorization: Bearer {{json.secret}}
-
-?? status == 200
-
-###
-# @ref json
-DELETE http://0.0.0.0:8080/api/v1/session/{{json.rpghp_session_id}}
-Authorization: Bearer {{json.secret}}
+# @ref json_session
+DELETE http://0.0.0.0:8080/api/v1/session/{{json_session.rpghp_session_id}}
+Authorization: Bearer {{json_session.secret}}
 
 ?? status == 200

@@ -1,5 +1,5 @@
 {
-    "creature_name": "jon",
+    "creature_name": "jon hidden",
     "max_hp": 777,
     "curr_hp": 666,
     "hp_hidden": true
