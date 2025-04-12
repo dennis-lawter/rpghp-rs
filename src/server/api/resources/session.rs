@@ -70,10 +70,7 @@ impl ApiSessionRoutesV1 {
 
         match session.delete(&state.pool).await {
             Ok(_) => SessionDeleteResponse::Ok,
-            Err(_) => {
-                // TODO: Consider a verbose error, as this failure should not occur
-                SessionDeleteResponse::Forbidden
-            }
+            Err(_) => SessionDeleteResponse::InternalError,
         }
     }
 }
@@ -124,6 +121,9 @@ enum SessionDeleteResponse {
 
     #[oai(status = 404)]
     NotFound,
+
+    #[oai(status = 500)]
+    InternalError,
 }
 
 #[derive(Object, serde::Serialize)]

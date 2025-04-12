@@ -60,12 +60,8 @@ impl ApiCreatureRoutesV1 {
         session_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
-        // TODO: reduce duplication
         let session = match &auth {
             ApiV1AuthSchemeOptional::NoAuth => {
-                // When no auth is provided, you'll have a more restricted view...
-                // However, obviously, you can skip much of the auth for the session object.
-                // We'll just look your session up by id or 404 you.
                 let session_id = match Uuid::parse_str(&session_id) {
                     Ok(uuid) => uuid,
                     _ => return CreatureListResponse::NotFound,
@@ -80,11 +76,7 @@ impl ApiCreatureRoutesV1 {
                     .await
                 {
                     Ok(session) => session,
-                    Err(RecordQueryError::Forbidden) => return CreatureListResponse::Forbidden,
-                    Err(RecordQueryError::NotFound) => return CreatureListResponse::NotFound,
-                    Err(RecordQueryError::Unauthorized) => {
-                        return CreatureListResponse::Unauthorized;
-                    }
+                    Err(e) => return CreatureListResponse::from_record_query_error(&e),
                 }
             }
         };
@@ -123,9 +115,6 @@ impl ApiCreatureRoutesV1 {
     ) -> CreatureGetResponse {
         let session = match &auth {
             ApiV1AuthSchemeOptional::NoAuth => {
-                // When no auth is provided, you'll have a more restricted view...
-                // However, obviously, you can skip much of the auth for the session object.
-                // We'll just look your session up by id or 404 you.
                 let session_id = match Uuid::parse_str(&session_id) {
                     Ok(uuid) => uuid,
                     _ => return CreatureGetResponse::NotFound,
@@ -140,11 +129,7 @@ impl ApiCreatureRoutesV1 {
                     .await
                 {
                     Ok(session) => session,
-                    Err(RecordQueryError::Forbidden) => return CreatureGetResponse::Forbidden,
-                    Err(RecordQueryError::NotFound) => return CreatureGetResponse::NotFound,
-                    Err(RecordQueryError::Unauthorized) => {
-                        return CreatureGetResponse::Unauthorized;
-                    }
+                    Err(e) => return CreatureGetResponse::from_record_query_error(&e),
                 }
             }
         };
@@ -214,6 +199,15 @@ enum CreatureListResponse {
     #[oai(status = 404)]
     NotFound,
 }
+impl CreatureListResponse {
+    fn from_record_query_error(e: &RecordQueryError) -> Self {
+        match e {
+            RecordQueryError::NotFound => Self::NotFound,
+            RecordQueryError::Unauthorized => Self::Unauthorized,
+            RecordQueryError::Forbidden => Self::Forbidden,
+        }
+    }
+}
 
 #[derive(ApiResponse)]
 enum CreatureGetResponse {
@@ -228,6 +222,15 @@ enum CreatureGetResponse {
 
     #[oai(status = 404)]
     NotFound,
+}
+impl CreatureGetResponse {
+    fn from_record_query_error(e: &RecordQueryError) -> Self {
+        match e {
+            RecordQueryError::NotFound => Self::NotFound,
+            RecordQueryError::Unauthorized => Self::Unauthorized,
+            RecordQueryError::Forbidden => Self::Forbidden,
+        }
+    }
 }
 
 #[derive(Object, serde::Serialize)]
