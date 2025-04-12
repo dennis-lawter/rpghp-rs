@@ -1,4 +1,5 @@
 use crate::server::api::api_shared_state::ApiSharedState;
+use crate::server::api::domain::RecordQueryError;
 use crate::server::api::domain::session::SessionRecord;
 
 use poem::web::Data;
@@ -57,24 +58,18 @@ impl ApiSessionRoutesV1 {
         session_id: Path<String>,
         auth: super::ApiV1AuthScheme,
     ) -> SessionDeleteResponse {
-        let session_id = match Uuid::parse_str(&session_id) {
-            Ok(uuid) => uuid,
-            Err(_) => return SessionDeleteResponse::NotFound,
+        let session = match SessionRecord::get_by_id_and_secret(
+            &session_id,
+            &auth.0.token,
+            &state.pool,
+        )
+        .await
+        {
+            Err(RecordQueryError::Forbidden) => return SessionDeleteResponse::Forbidden,
+            Err(RecordQueryError::NotFound) => return SessionDeleteResponse::NotFound,
+            Err(RecordQueryError::Unauthorized) => return SessionDeleteResponse::Unauthorized,
+            Ok(session) => session,
         };
-
-        let session = match SessionRecord::find_by_id(&state.pool, &session_id).await {
-            Ok(Some(session_record)) => session_record,
-            _ => return SessionDeleteResponse::NotFound,
-        };
-
-        let bearer_token = match Uuid::parse_str(&auth.0.token) {
-            Ok(uuid) => uuid,
-            Err(_) => return SessionDeleteResponse::Unauthorized,
-        };
-
-        if bearer_token != session.secret {
-            return SessionDeleteResponse::Forbidden;
-        }
 
         match session.delete(&state.pool).await {
             Ok(_) => SessionDeleteResponse::Ok,

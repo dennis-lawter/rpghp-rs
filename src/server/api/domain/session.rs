@@ -3,6 +3,9 @@ use crate::prelude::*;
 use sqlx::PgPool;
 use uuid::Uuid;
 
+use super::Record;
+use super::RecordQueryError;
+
 #[derive(sqlx::FromRow)]
 pub struct SessionRecord {
     pub rpghp_session_id: Uuid,
@@ -89,5 +92,32 @@ impl SessionRecord {
             rpghp_session_id,
             secret,
         }
+    }
+
+    pub async fn get_by_id_and_secret(
+        session_id_str: &str,
+        auth_token_str: &str,
+        pool: &PgPool,
+    ) -> Result<Self, RecordQueryError> {
+        let session_id = match Uuid::parse_str(session_id_str) {
+            Ok(uuid) => uuid,
+            Err(_) => return Err(RecordQueryError::NotFound),
+        };
+
+        let session = match SessionRecord::find_by_id(pool, &session_id).await {
+            Ok(Some(session_record)) => session_record,
+            _ => return Err(RecordQueryError::NotFound),
+        };
+
+        let bearer_token = match Uuid::parse_str(auth_token_str) {
+            Ok(uuid) => uuid,
+            Err(_) => return Err(RecordQueryError::Unauthorized),
+        };
+
+        if bearer_token != session.secret {
+            return Err(RecordQueryError::Forbidden);
+        }
+
+        Ok(session)
     }
 }

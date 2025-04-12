@@ -3,6 +3,12 @@ pub mod session;
 
 use crate::prelude::*;
 
+pub enum RecordQueryError {
+    NotFound,
+    Unauthorized,
+    Forbidden,
+}
+
 #[allow(dead_code)]
 pub trait Record: Sized {
     async fn find_by_id(

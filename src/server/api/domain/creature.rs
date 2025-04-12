@@ -2,6 +2,8 @@ use crate::prelude::*;
 
 use uuid::Uuid;
 
+use super::Record;
+
 pub struct CreatureRecord {
     pub rpghp_creature_id: Uuid,
     pub session_id: Uuid,
@@ -10,7 +12,7 @@ pub struct CreatureRecord {
     pub curr_hp: i32,
     pub hp_hidden: bool,
 }
-impl super::Record for CreatureRecord {
+impl Record for CreatureRecord {
     async fn find_by_id(
         conn: &sqlx::PgPool,
         id: &uuid::Uuid,
