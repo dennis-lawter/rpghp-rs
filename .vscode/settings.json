@@ -7,4 +7,10 @@
     "workbench.editor.customLabels.patterns": {
         "**": "${dirname}/${filename}",
     },
+    "org.todoKeywords": [
+        "TODO",
+        "WIP",
+        "DONE",
+        "CANCELLED",
+    ],
 }
