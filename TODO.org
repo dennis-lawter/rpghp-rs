@@ -57,6 +57,6 @@
         + otherwise the API could probably accept multiple input types
 
 * TODO External asset cleanup
-** TODO Move external assets to a separate folder
+** DONE Move external assets to a separate folder
 ** TODO Attribute external assets properly
 ** TODO Make a tokei Makefile target, exclude the external assets
