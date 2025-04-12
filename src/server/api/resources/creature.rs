@@ -13,6 +13,7 @@ use crate::server::api::domain::creature::CreatureRecord;
 use crate::server::api::domain::session::SessionRecord;
 
 use super::ApiV1AuthScheme;
+use super::ApiV1AuthSchemeOptional;
 use super::View;
 
 pub struct ApiCreatureRoutesV1;
@@ -60,6 +61,7 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: Data<&ApiSharedState>,
         session_id: Path<String>,
+        _auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
         let session_id = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
@@ -90,6 +92,7 @@ impl ApiCreatureRoutesV1 {
         _state: Data<&ApiSharedState>,
         session_id: Path<String>,
         creature_id: Path<String>,
+        _auth: ApiV1AuthSchemeOptional,
     ) -> CreatureGetResponse {
         let _id = match Uuid::parse_str(&session_id) {
             Ok(uuid) => uuid,
