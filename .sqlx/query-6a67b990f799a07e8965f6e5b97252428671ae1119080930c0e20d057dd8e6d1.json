@@ -1,0 +1,52 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nSELECT\n    rpghp_creature_id,\n    session_id,\n    creature_name,\n    max_hp,\n    curr_hp,\n    hp_hidden\nFROM\n    rpghp_creature\nWHERE\n    rpghp_creature_id = $1\n        ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "rpghp_creature_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "session_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "creature_name",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "max_hp",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "curr_hp",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 5,
+        "name": "hp_hidden",
+        "type_info": "Bool"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "6a67b990f799a07e8965f6e5b97252428671ae1119080930c0e20d057dd8e6d1"
+}

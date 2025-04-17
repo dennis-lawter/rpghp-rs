@@ -1,0 +1,15 @@
+/.vscode
+/db-data
+/httpyac
+/target
+/.dockerignore
+/.gitignore
+/.rustfmt.toml
+/docker-compose.yml
+/Dockerfile
+/example.env
+/flake.nix
+/flake.lock
+/Makefile
+/Makehelp.Makefile
+/*.org
