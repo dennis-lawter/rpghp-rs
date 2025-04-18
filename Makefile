@@ -1,6 +1,7 @@
 include Makehelp.mk
 
 banner := $(shell tput bold)$(shell tput setab 4)
+releasebanner := $(shell tput bold)$(shell tput setab 5)
 reset := $(shell tput sgr0)
 
 ########################################
@@ -45,3 +46,38 @@ cargo-build:
 cargo-run:
 	@printf "$(banner)Running...$(reset)\\n"
 	cargo run
+
+## @Buildchain Prepare a report of macro checking
+cargo-sqlx-prep:
+	@printf "$(banner)SQL Preparation in progress...$(reset)\\n"
+	cargo sqlx prepare
+
+## @Buildchain Build the docker image for the app
+docker-build:
+	@printf "$(banner)Building docker image...$(reset)\\n"
+	docker compose build app
+
+########################################
+#   Docker                             #
+########################################
+
+## @Docker Runs the latest built docker image for the app
+docker-up:
+	@printf "$(banner)Starting docker container...$(reset)\\n"
+	docker compose up -d app
+
+## @Docker Brings any running instance of docker down
+docker-down:
+	@printf "$(banner)Stopping docker container...$(reset)\\n"
+	docker compose up -d app
+
+########################################
+#   RELEASE                            #
+########################################
+
+## @Release 
+release: release-pre-banner db-up docker-build docker-down docker-up release-post-banner
+release-pre-banner:
+	@printf "$(releasebanner)REBUILDING AND RESTARTING SERVER$(reset)\\n"
+release-post-banner:
+	@printf "$(releasebanner)SERVER IS LIVE$(reset)\\n"

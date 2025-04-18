@@ -11,20 +11,9 @@ COPY . .
 
 RUN ls -la
 
-# For our build to succeed the sqlx checks
-#RUN echo $DATABASE_URL
-#RUN cargo install sqlx-cli --no-default-features --features native-tls,postgres
-# RUN mv .env tmp.env
-#RUN cargo sqlx migrate run
-# RUN mv tmp.env .env
-
 RUN rm .env
 RUN mv .env.docker .env
 
-#RUN echo $DATABASE_URL
-
-# Build the application
-# RUN cargo +nightly rustc -- -Z macro-backtrace
 RUN cargo build --release
 
 ########################################
