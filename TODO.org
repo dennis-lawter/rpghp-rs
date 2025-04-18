@@ -58,5 +58,21 @@
 
 * TODO External asset cleanup
 ** DONE Move external assets to a separate folder
+** TODO Consider pulling the external assets in another way
+    - Git submodules?
+    - A wget for the icons?
 ** TODO Attribute external assets properly
 ** TODO Make a tokei Makefile target, exclude the external assets
+
+* TODO Test the REST framework with httpyac
+** DONE Setup a basic end to end test
+** TODO Setup w/ environment to define host/port
+
+* TODO Create an endpoint that generates icons more programatically
+    - Reads in a base svg
+    - Can alter the stroke color
+    - Can blit the SVG over a background
+    - Can decorate with a second svg overlay or mask maybe?
+    - Need to give players the ability to set these icons for creatures
+    - May want the ability to save icon configurations for later or copy from existing
+** TODO Add an icon url to the creature, must be a local url
