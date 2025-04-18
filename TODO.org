@@ -6,7 +6,7 @@
 * DONE Import old mockup
 * DONE Extract domain
 
-* TODO Create a new mockup
+* WIP Create a new mockup
 ** DONE Install rpgui
 ** DONE Figure out why rpgui mockup won't scroll
 ** DONE Figure out why rpgui progress bars don't respond to values
@@ -22,7 +22,7 @@
     - It does reduce total endpoint hits to get the full details though
     - Alternatively provide a "detailed" param
 
-* TODO Creature endpoint
+* WIP Creature endpoint
 ** DONE Stub out the creature resources
 ** DONE Add creature saving logic to the create endpoint
 ** DONE Get creature endpoint
@@ -56,7 +56,7 @@
         + If htmx can't construct json easily, this intermediate layer might be a place to do multiforms
         + otherwise the API could probably accept multiple input types
 
-* TODO External asset cleanup
+* WIP External asset cleanup
 ** DONE Move external assets to a separate folder
 ** TODO Consider pulling the external assets in another way
     - Git submodules?
@@ -64,7 +64,7 @@
 ** TODO Attribute external assets properly
 ** TODO Make a tokei Makefile target, exclude the external assets
 
-* TODO Test the REST framework with httpyac
+* WIP Test the REST framework with httpyac
 ** DONE Setup a basic end to end test
 ** TODO Setup w/ environment to define host/port
 
