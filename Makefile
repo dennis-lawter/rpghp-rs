@@ -75,7 +75,7 @@ docker-down:
 #   RELEASE                            #
 ########################################
 
-## @Release 
+## @RELEASE Performs every option to update a production release
 release: release-pre-banner db-up docker-build docker-down docker-up release-post-banner
 release-pre-banner:
 	@printf "$(releasebanner)REBUILDING AND RESTARTING SERVER$(reset)\\n"
