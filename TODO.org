@@ -68,7 +68,9 @@
 ** DONE Setup a basic end to end test
 ** TODO Setup w/ environment to define host/port
 
-* TODO Create an endpoint that generates icons more programatically
+* TODO Create a more expressive icon system
+** TODO /api/v1/icon?base=some_svg&color=some_hex
+    - Should this even live in /api? It's probably fine, it is a resource...
     - Reads in a base svg
     - Can alter the stroke color
     - Can blit the SVG over a background
