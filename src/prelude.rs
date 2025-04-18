@@ -11,8 +11,6 @@ pub enum CrateError {
     /// Configuration errors
     #[error("{var} not set in .env")]
     EnvMissing { var: String },
-    #[error("Unrecognized environment level: {lvl}")]
-    UnrecognizedEnvLvl { lvl: String },
 
     /// Runtime framework errors
     #[error("Poem runtime error: {0}")]
