@@ -5,7 +5,10 @@
 
 * About
 A simple companion website for tabletop games.
-Game Masters can set initiative, track HP, and manage statuses on the players and monsters. 
+Game Masters can set initiative, track HP, and manage statuses on the players and monsters.
+
+* Environment
+Make sure to copy the example.env to .env. If you intend to run the app over Docker, you must copy example.env.docker to .env.docker.
 
 * Development
 ** NixOS
@@ -25,10 +28,7 @@ make local-run
 #+end_src
 
 ** Testing
-Basic curl tests are available, for example:
-#+begin_src bash :eval no
-curl_tests/hello.sh
-#+end_src
+Refer to ./httpyac/test.http
 
 ** Contributing
 There's an incomplete todo list available:
