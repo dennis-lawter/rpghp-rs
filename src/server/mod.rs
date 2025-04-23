@@ -1,3 +1,6 @@
+#[allow(unused_imports)]
+use crate::prelude::*;
+
 mod api;
 mod frontend;
 mod partials;

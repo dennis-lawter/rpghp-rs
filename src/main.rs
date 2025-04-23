@@ -10,6 +10,7 @@ mod prelude;
 use prelude::*;
 
 mod config;
+mod domain;
 mod server;
 
 use config::Config;

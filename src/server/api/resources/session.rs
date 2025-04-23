@@ -1,7 +1,10 @@
+#[allow(unused_imports)]
+use crate::prelude::*;
+
 use std::sync::Arc;
 
-use crate::server::api::records::RecordQueryError;
-use crate::server::api::records::session::SessionRecord;
+use crate::domain::DomainError;
+use crate::domain::records::session::SessionRecord;
 use crate::server::shared_state::SharedState;
 
 use poem::web::Data;
@@ -10,9 +13,7 @@ use poem_openapi::Object;
 use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
-use uuid::Uuid;
 
-use super::Record;
 use super::View;
 
 pub struct ApiSessionRoutesV1;
@@ -23,13 +24,12 @@ impl ApiSessionRoutesV1 {
         &self,
         state: Data<&Arc<SharedState>>,
     ) -> SessionCreateResponse {
-        let session_record = SessionRecord::new();
-        let res = session_record.save(&state.pool).await;
-        let view = SessionWithSecretView::from_record(&session_record);
-
-        match res {
-            Ok(_) => SessionCreateResponse::Ok(Json(view)),
-            Err(_) => SessionCreateResponse::NotFound,
+        match state.domain.create_session().await {
+            Ok(record) => {
+                let view = SessionWithSecretView::from_record(&record);
+                SessionCreateResponse::Ok(Json(view))
+            }
+            Err(err) => SessionCreateResponse::from_domain_error(err),
         }
     }
 
@@ -39,17 +39,16 @@ impl ApiSessionRoutesV1 {
         state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
-        let session_id = match Uuid::parse_str(&session_id) {
-            Ok(uuid) => uuid,
-            Err(_) => return SessionGetResponse::NotFound,
-        };
-
-        match SessionRecord::find_by_id(&state.pool, &session_id).await {
-            Ok(Some(session_record)) => {
-                let view = SessionView::from_record(&session_record);
+        match state.domain.get_session(&session_id).await {
+            Ok(Some(record)) => {
+                let view = SessionView::from_record(&record);
                 SessionGetResponse::Ok(Json(view))
             }
-            _ => SessionGetResponse::NotFound,
+            Ok(None) => SessionGetResponse::NotFound,
+            Err(err) => match err {
+                DomainError::InvalidUuid(_) => SessionGetResponse::NotFound,
+                _ => SessionGetResponse::NotFound,
+            },
         }
     }
 
@@ -60,30 +59,36 @@ impl ApiSessionRoutesV1 {
         session_id: Path<String>,
         auth: super::ApiV1AuthScheme,
     ) -> SessionDeleteResponse {
-        let session =
-            match SessionRecord::find_by_id_and_secret(&session_id, &auth.0.token, &state.pool)
-                .await
-            {
-                Err(RecordQueryError::Forbidden) => return SessionDeleteResponse::Forbidden,
-                Err(RecordQueryError::NotFound) => return SessionDeleteResponse::NotFound,
-                Err(RecordQueryError::Unauthorized) => return SessionDeleteResponse::Unauthorized,
-                Ok(session) => session,
-            };
-
-        match session.delete(&state.pool).await {
+        match state
+            .domain
+            .delete_session(&session_id, &auth.0.token)
+            .await
+        {
             Ok(_) => SessionDeleteResponse::Ok,
-            Err(_) => SessionDeleteResponse::InternalError,
+            Err(err) => SessionDeleteResponse::from_domain_error(err),
         }
     }
 }
+
+// Create
 
 #[derive(ApiResponse)]
 enum SessionCreateResponse {
     #[oai(status = 201)]
     Ok(Json<SessionWithSecretView>),
-
     #[oai(status = 404)]
     NotFound,
+}
+impl SessionCreateResponse {
+    fn from_domain_error(err: DomainError) -> Self {
+        match err {
+            DomainError::NotFound => Self::NotFound,
+            DomainError::Unauthorized => Self::NotFound,
+            DomainError::Forbidden => Self::NotFound,
+            DomainError::SqlxError(_) => Self::NotFound,
+            DomainError::InvalidUuid(_) => Self::NotFound,
+        }
+    }
 }
 #[derive(Object, serde::Serialize)]
 struct SessionWithSecretView {
@@ -101,33 +106,26 @@ impl super::View<SessionRecord> for SessionWithSecretView {
     }
 }
 
+// Get
+
 #[derive(ApiResponse)]
 enum SessionGetResponse {
     #[oai(status = 200)]
     Ok(Json<SessionView>),
-
     #[oai(status = 404)]
     NotFound,
 }
-
-#[derive(ApiResponse)]
-enum SessionDeleteResponse {
-    #[oai(status = 200)]
-    Ok,
-
-    #[oai(status = 401)]
-    Unauthorized,
-
-    #[oai(status = 403)]
-    Forbidden,
-
-    #[oai(status = 404)]
-    NotFound,
-
-    #[oai(status = 500)]
-    InternalError,
+impl SessionGetResponse {
+    fn from_domain_error(err: DomainError) -> Self {
+        match err {
+            DomainError::NotFound => Self::NotFound,
+            DomainError::Unauthorized => Self::NotFound,
+            DomainError::Forbidden => Self::NotFound,
+            DomainError::SqlxError(_) => Self::NotFound,
+            DomainError::InvalidUuid(_) => Self::NotFound,
+        }
+    }
 }
-
 #[derive(Object, serde::Serialize)]
 struct SessionView {
     pub rpghp_session_id: String,
@@ -136,5 +134,34 @@ impl super::View<SessionRecord> for SessionView {
     fn from_record(record: &SessionRecord) -> Self {
         let rpghp_session_id = format!("{}", record.rpghp_session_id);
         Self { rpghp_session_id }
+    }
+}
+
+// Delete
+
+#[derive(ApiResponse)]
+enum SessionDeleteResponse {
+    #[oai(status = 200)]
+    Ok,
+    #[oai(status = 400)]
+    BadRequest,
+    #[oai(status = 401)]
+    Unauthorized,
+    #[oai(status = 403)]
+    Forbidden,
+    #[oai(status = 404)]
+    NotFound,
+    #[oai(status = 500)]
+    InternalError,
+}
+impl SessionDeleteResponse {
+    fn from_domain_error(err: DomainError) -> Self {
+        match err {
+            DomainError::NotFound => Self::NotFound,
+            DomainError::Unauthorized => Self::Unauthorized,
+            DomainError::Forbidden => Self::Forbidden,
+            DomainError::SqlxError(_) => Self::InternalError,
+            DomainError::InvalidUuid(_) => Self::BadRequest,
+        }
     }
 }

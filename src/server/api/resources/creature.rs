@@ -1,3 +1,8 @@
+use crate::domain::DomainError;
+use crate::domain::records::creature::CreatureRecord;
+#[allow(unused_imports)]
+use crate::prelude::*;
+
 use std::sync::Arc;
 
 use poem::web::Data;
@@ -8,10 +13,6 @@ use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 use uuid::Uuid;
 
-use crate::server::api::records::Record;
-use crate::server::api::records::RecordQueryError;
-use crate::server::api::records::creature::CreatureRecord;
-use crate::server::api::records::session::SessionRecord;
 use crate::server::shared_state::SharedState;
 
 use super::ApiV1AuthScheme;
@@ -26,32 +27,23 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
-        data: Json<CreateCreatureRequest>,
+        data: Json<CreatureCreateRequest>,
         auth: ApiV1AuthScheme,
     ) -> CreatureCreateResponse {
-        let session =
-            match SessionRecord::find_by_id_and_secret(&session_id, &auth.0.token, &state.pool)
-                .await
-            {
-                Err(RecordQueryError::Forbidden) => return CreatureCreateResponse::Forbidden,
-                Err(RecordQueryError::NotFound) => return CreatureCreateResponse::NotFound,
-                Err(RecordQueryError::Unauthorized) => return CreatureCreateResponse::Unauthorized,
-                Ok(session) => session,
-            };
-        let session_id = session.rpghp_session_id;
-
-        let creature = CreatureRecord {
-            rpghp_creature_id: Uuid::new_v4(),
-            session_id,
-            creature_name: data.creature_name.clone(),
-            max_hp: data.max_hp,
-            curr_hp: data.curr_hp,
-            hp_hidden: data.hp_hidden,
-        };
-
-        match creature.save(&state.pool).await {
+        match state
+            .domain
+            .create_creature(
+                &session_id,
+                &auth.0.token,
+                &data.creature_name,
+                data.max_hp,
+                data.curr_hp,
+                data.hp_hidden,
+            )
+            .await
+        {
             Ok(_) => CreatureCreateResponse::Created,
-            Err(_) => CreatureCreateResponse::BadRequest,
+            Err(err) => CreatureCreateResponse::from_domain_error(err),
         }
     }
 
@@ -62,49 +54,22 @@ impl ApiCreatureRoutesV1 {
         session_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
-        let session = match &auth {
-            ApiV1AuthSchemeOptional::NoAuth => {
-                let session_id = match Uuid::parse_str(&session_id) {
-                    Ok(uuid) => uuid,
-                    _ => return CreatureListResponse::NotFound,
-                };
-                match SessionRecord::find_by_id(&state.pool, &session_id).await {
-                    Ok(Some(session)) => session,
-                    _ => return CreatureListResponse::NotFound,
-                }
-            }
-            ApiV1AuthSchemeOptional::Bearer(token) => {
-                match SessionRecord::find_by_id_and_secret(&session_id, &token.0.token, &state.pool)
-                    .await
-                {
-                    Ok(session) => session,
-                    Err(e) => return CreatureListResponse::from_record_query_error(&e),
-                }
-            }
+        let token = match auth {
+            ApiV1AuthSchemeOptional::Bearer(bearer_auth) => Some(bearer_auth.0.token),
+            ApiV1AuthSchemeOptional::NoAuth => None,
         };
-
-        let creatures = match CreatureRecord::find_by_session_id(
-            &state.pool,
-            &session.rpghp_session_id,
-        )
-        .await
+        match state
+            .domain
+            .get_all_creatures_for_session(&session_id, &token)
+            .await
         {
-            Ok(creatures) => creatures,
-            Err(_) => return CreatureListResponse::NotFound,
-        };
-
-        let views: Vec<CreatureView> = match &auth {
-            ApiV1AuthSchemeOptional::Bearer(_) => {
-                creatures.iter().map(CreatureView::from_record).collect()
+            Ok(creatures) => {
+                let views: Vec<CreatureView> =
+                    creatures.iter().map(CreatureView::from_record).collect();
+                CreatureListResponse::Ok(Json(views))
             }
-            ApiV1AuthSchemeOptional::NoAuth => creatures
-                .iter()
-                .map(CreatureView::from_record)
-                .map(CreatureView::simplified_if_hp_hidden)
-                .collect(),
-        };
-
-        CreatureListResponse::Ok(Json(views))
+            Err(err) => CreatureListResponse::from_domain_error(err),
+        }
     }
 
     #[oai(path = "/session/:session_id/creature/:creature_id", method = "get")]
@@ -161,8 +126,10 @@ impl ApiCreatureRoutesV1 {
     }
 }
 
+// Create
+
 #[derive(serde::Deserialize, poem_openapi::Object)]
-struct CreateCreatureRequest {
+struct CreatureCreateRequest {
     creature_name: String,
     max_hp: i32,
     curr_hp: i32,
@@ -173,64 +140,83 @@ struct CreateCreatureRequest {
 enum CreatureCreateResponse {
     #[oai(status = 201)]
     Created,
-
     #[oai(status = 400)]
     BadRequest,
-
     #[oai(status = 401)]
     Unauthorized,
-
     #[oai(status = 403)]
     Forbidden,
-
     #[oai(status = 404)]
     NotFound,
+    #[oai(status = 500)]
+    InternalError,
 }
+impl CreatureCreateResponse {
+    fn from_domain_error(err: DomainError) -> Self {
+        match err {
+            DomainError::NotFound => Self::NotFound,
+            DomainError::Unauthorized => Self::Unauthorized,
+            DomainError::Forbidden => Self::Forbidden,
+            DomainError::SqlxError(_) => Self::InternalError,
+            DomainError::InvalidUuid(_) => Self::BadRequest,
+        }
+    }
+}
+
+// List
 
 #[derive(ApiResponse)]
 enum CreatureListResponse {
     #[oai(status = 200)]
     Ok(Json<Vec<CreatureView>>),
-
+    #[oai(status = 400)]
+    BadRequest,
     #[oai(status = 401)]
     Unauthorized,
-
     #[oai(status = 403)]
     Forbidden,
-
     #[oai(status = 404)]
     NotFound,
+    #[oai(status = 500)]
+    InternalError,
 }
 impl CreatureListResponse {
-    fn from_record_query_error(e: &RecordQueryError) -> Self {
-        match e {
-            RecordQueryError::NotFound => Self::NotFound,
-            RecordQueryError::Unauthorized => Self::Unauthorized,
-            RecordQueryError::Forbidden => Self::Forbidden,
+    fn from_domain_error(err: DomainError) -> Self {
+        match err {
+            DomainError::NotFound => Self::NotFound,
+            DomainError::Unauthorized => Self::Unauthorized,
+            DomainError::Forbidden => Self::Forbidden,
+            DomainError::SqlxError(_) => Self::InternalError,
+            DomainError::InvalidUuid(_) => Self::BadRequest,
         }
     }
 }
+
+// Get
 
 #[derive(ApiResponse)]
 enum CreatureGetResponse {
     #[oai(status = 200)]
     Ok(Json<CreatureView>),
-
+    #[oai(status = 400)]
+    BadRequest,
     #[oai(status = 401)]
     Unauthorized,
-
     #[oai(status = 403)]
     Forbidden,
-
     #[oai(status = 404)]
     NotFound,
+    #[oai(status = 500)]
+    InternalError,
 }
 impl CreatureGetResponse {
-    fn from_record_query_error(e: &RecordQueryError) -> Self {
-        match e {
-            RecordQueryError::NotFound => Self::NotFound,
-            RecordQueryError::Unauthorized => Self::Unauthorized,
-            RecordQueryError::Forbidden => Self::Forbidden,
+    fn from_domain_error(err: DomainError) -> Self {
+        match err {
+            DomainError::NotFound => Self::NotFound,
+            DomainError::Unauthorized => Self::Unauthorized,
+            DomainError::Forbidden => Self::Forbidden,
+            DomainError::SqlxError(_) => Self::InternalError,
+            DomainError::InvalidUuid(_) => Self::BadRequest,
         }
     }
 }
