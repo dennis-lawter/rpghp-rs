@@ -1,7 +1,7 @@
 use poem_openapi::SecurityScheme;
 use poem_openapi::auth::Bearer;
 
-use super::domain::Record;
+use super::records::Record;
 
 pub mod creature;
 pub mod session;

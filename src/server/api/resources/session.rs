@@ -1,6 +1,8 @@
-use crate::server::api::api_shared_state::ApiSharedState;
-use crate::server::api::domain::RecordQueryError;
-use crate::server::api::domain::session::SessionRecord;
+use std::sync::Arc;
+
+use crate::server::api::records::RecordQueryError;
+use crate::server::api::records::session::SessionRecord;
+use crate::server::shared_state::SharedState;
 
 use poem::web::Data;
 use poem_openapi::ApiResponse;
@@ -19,7 +21,7 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session", method = "post")]
     async fn create_session(
         &self,
-        state: Data<&ApiSharedState>,
+        state: Data<&Arc<SharedState>>,
     ) -> SessionCreateResponse {
         let session_record = SessionRecord::new();
         let res = session_record.save(&state.pool).await;
@@ -34,7 +36,7 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session/:session_id", method = "get")]
     async fn get_session(
         &self,
-        state: Data<&ApiSharedState>,
+        state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
         let session_id = match Uuid::parse_str(&session_id) {
@@ -54,7 +56,7 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session/:session_id", method = "delete")]
     async fn delete_session(
         &self,
-        state: Data<&ApiSharedState>,
+        state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
         auth: super::ApiV1AuthScheme,
     ) -> SessionDeleteResponse {

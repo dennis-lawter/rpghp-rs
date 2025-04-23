@@ -8,7 +8,7 @@ use serde_json::json;
 use crate::server::shared_state::SharedState;
 
 #[handler]
-pub fn index(state: Data<&Arc<SharedState>>) -> poem::Result<impl IntoResponse> {
+pub fn example(state: Data<&Arc<SharedState>>) -> poem::Result<impl IntoResponse> {
     let data = json!({ "header": "Hello, World!" });
-    state.render("index", data)
+    state.render("partials/example", data)
 }
