@@ -2,13 +2,6 @@
 #+TODO: TODO(t) WIP(w) | DONE(d) CANCELLED(c)
 #+TITLE: Todo
 
-* WIP Create a new mockup
-** DONE Install rpgui
-** DONE Figure out why rpgui mockup won't scroll
-** DONE Figure out why rpgui progress bars don't respond to values
-** TODO Convert old mockup to rpgui
-** TODO Populate mockup with handlebars
-
 * TODO Document code
 
 * TODO Add logging
@@ -24,6 +17,31 @@
     - Alternatively provide a "detailed" param
     - For internal use, I expect the partials layer will do much of the aggregation
 
+* TODO Domain error handling
+** TODO Introduce a trait for the ApiResponses to enforce from_domain_error
+** TODO See if there's any way to DRY or otherwise organize the responses
+
+* TODO Create a more expressive icon system
+** TODO /api/v1/icon?base=some_svg&color=some_hex
+    - Should this even live in /api? It's probably fine, it is a resource...
+    - Reads in a base svg
+    - Can alter the stroke color
+    - Can blit the SVG over a background
+    - Can decorate with a second svg overlay or mask maybe?
+    - Need to give players the ability to set these icons for creatures
+    - May want the ability to save icon configurations for later or copy from existing
+** TODO Add an icon url to the creature, must be a local url
+
+-----
+
+* WIP Create a new mockup
+** DONE Install rpgui
+** DONE Figure out why rpgui mockup won't scroll
+** DONE Figure out why rpgui progress bars don't respond to values
+** TODO Convert old mockup to rpgui
+** TODO Populate mockup with handlebars
+
+
 * WIP Creature endpoint
 ** DONE Stub out the creature resources
 ** DONE Add creature saving logic to the create endpoint
@@ -38,6 +56,9 @@
 ** TODO Creature update endpoint
 
 * WIP Partials layer
+** DONE Create the layer
+** TODO Create the playerview creature partial
+** TODO Create the gmview creature partial
 
 * WIP External asset cleanup
 ** DONE Move external assets to a separate folder
@@ -51,18 +72,7 @@
 ** DONE Setup a basic end to end test
 ** TODO Setup w/ environment to define host/port
 
-* TODO Create a more expressive icon system
-** TODO /api/v1/icon?base=some_svg&color=some_hex
-    - Should this even live in /api? It's probably fine, it is a resource...
-    - Reads in a base svg
-    - Can alter the stroke color
-    - Can blit the SVG over a background
-    - Can decorate with a second svg overlay or mask maybe?
-    - Need to give players the ability to set these icons for creatures
-    - May want the ability to save icon configurations for later or copy from existing
-** TODO Add an icon url to the creature, must be a local url
-
-
+-----
 
 * DONE Improve error handling
 * DONE Import old mockup
