@@ -1,41 +1,27 @@
+#[allow(unused_imports)]
 use crate::prelude::*;
 
 use handlebars::Handlebars;
 use poem::IntoResponse;
 use poem::http::StatusCode;
 use poem_openapi::payload;
-use sqlx::PgPool;
 
 use crate::Config;
+use crate::domain::Domain;
 
 #[derive(Clone)]
 pub struct SharedState {
-    pub pool: PgPool,
+    pub domain: Domain,
     pub hb: Handlebars<'static>,
 }
 impl SharedState {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
-        let pool = Self::get_pool(cfg).await?;
-        Self::migrate_db(&pool).await?;
-
         let mut hb = Handlebars::new();
         Self::register_all_templates(&mut hb)?;
 
-        Ok(Self { pool, hb })
-    }
+        let domain = Domain::new(cfg).await?;
 
-    async fn get_pool(cfg: &Config) -> CrateResult<PgPool> {
-        sqlx::Pool::<sqlx::Postgres>::connect(&cfg.db_url)
-            .await
-            .map_err(CrateError::SqlxError)
-    }
-
-    async fn migrate_db(pool: &PgPool) -> CrateResult<()> {
-        sqlx::migrate!("./migrations")
-            .run(pool)
-            .await
-            .map_err(CrateError::SqlxMigrationError)?;
-        Ok(())
+        Ok(Self { domain, hb })
     }
 
     pub fn render(

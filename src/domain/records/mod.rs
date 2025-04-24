@@ -1,28 +1,25 @@
-pub mod creature;
-pub mod session;
-
+#[allow(unused_imports)]
 use crate::prelude::*;
 
-pub enum RecordQueryError {
-    NotFound,
-    Unauthorized,
-    Forbidden,
-}
+use super::domain_actions::DomainResult;
+
+pub mod creature;
+pub mod session;
 
 #[allow(dead_code)]
 pub trait Record: Sized {
     async fn find_by_id(
         conn: &sqlx::PgPool,
         id: &uuid::Uuid,
-    ) -> CrateResult<Option<Self>>;
+    ) -> DomainResult<Self>;
 
     async fn save(
         &self,
         conn: &sqlx::PgPool,
-    ) -> CrateResult<()>;
+    ) -> DomainResult<()>;
 
     async fn delete(
         self,
         conn: &sqlx::PgPool,
-    ) -> CrateResult<()>;
+    ) -> DomainResult<()>;
 }

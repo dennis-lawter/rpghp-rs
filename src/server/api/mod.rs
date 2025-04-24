@@ -1,6 +1,7 @@
-use std::sync::Arc;
-
+#[allow(unused_imports)]
 use crate::prelude::*;
+
+use std::sync::Arc;
 
 use super::shared_state::SharedState;
 use poem::EndpointExt;
@@ -14,8 +15,6 @@ use resources::session::ApiSessionRoutesV1;
 
 use crate::config::Config;
 
-mod domain;
-mod records;
 mod resources;
 
 pub struct Api;

@@ -1,3 +1,6 @@
+use crate::domain::domain_actions::DomainError;
+use crate::domain::domain_actions::DomainResult;
+#[allow(unused_imports)]
 use crate::prelude::*;
 
 use uuid::Uuid;
@@ -16,7 +19,7 @@ impl Record for CreatureRecord {
     async fn find_by_id(
         conn: &sqlx::PgPool,
         id: &uuid::Uuid,
-    ) -> CrateResult<Option<Self>> {
+    ) -> DomainResult<Self> {
         sqlx::query_as!(
             Self,
             r#"
@@ -36,13 +39,14 @@ WHERE
         )
         .fetch_optional(conn)
         .await
-        .map_err(CrateError::SqlxError)
+        .map_err(DomainError::SqlxError)?
+        .ok_or(DomainError::NotFound)
     }
 
     async fn save(
         &self,
         conn: &sqlx::PgPool,
-    ) -> CrateResult<()> {
+    ) -> DomainResult<()> {
         sqlx::query!(
             r#"
 INSERT INTO
@@ -81,14 +85,14 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
         )
         .execute(conn)
         .await
-        .map_err(CrateError::SqlxError)?;
+        .map_err(DomainError::SqlxError)?;
         Ok(())
     }
 
     async fn delete(
         self,
         conn: &sqlx::PgPool,
-    ) -> CrateResult<()> {
+    ) -> DomainResult<()> {
         sqlx::query!(
             r#"
 DELETE FROM
@@ -100,7 +104,7 @@ WHERE
         )
         .execute(conn)
         .await
-        .map_err(CrateError::SqlxError)?;
+        .map_err(DomainError::SqlxError)?;
         Ok(())
     }
 }
@@ -109,7 +113,7 @@ impl CreatureRecord {
     pub async fn find_by_session_id(
         conn: &sqlx::PgPool,
         session_id: &uuid::Uuid,
-    ) -> CrateResult<Vec<Self>> {
+    ) -> DomainResult<Vec<Self>> {
         sqlx::query_as!(
             Self,
             r#"
@@ -124,6 +128,6 @@ WHERE
         )
         .fetch_all(conn)
         .await
-        .map_err(CrateError::SqlxError)
+        .map_err(DomainError::SqlxError)
     }
 }

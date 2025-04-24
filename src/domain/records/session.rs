@@ -1,10 +1,13 @@
+#[allow(unused_imports)]
 use crate::prelude::*;
+
+use crate::domain::domain_actions::DomainError;
+use crate::domain::domain_actions::DomainResult;
 
 use sqlx::PgPool;
 use uuid::Uuid;
 
 use super::Record;
-use super::RecordQueryError;
 
 #[derive(sqlx::FromRow)]
 pub struct SessionRecord {
@@ -15,7 +18,7 @@ impl super::Record for SessionRecord {
     async fn find_by_id(
         conn: &PgPool,
         id: &Uuid,
-    ) -> crate::CrateResult<Option<Self>> {
+    ) -> DomainResult<Self> {
         sqlx::query_as!(
             Self,
             r#"
@@ -31,13 +34,14 @@ WHERE
         )
         .fetch_optional(conn)
         .await
-        .map_err(CrateError::SqlxError)
+        .map_err(DomainError::SqlxError)?
+        .ok_or(DomainError::NotFound)
     }
 
     async fn save(
         &self,
         conn: &PgPool,
-    ) -> CrateResult<()> {
+    ) -> DomainResult<()> {
         sqlx::query!(
             r#"
 INSERT INTO
@@ -60,14 +64,14 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
         )
         .execute(conn)
         .await
-        .map_err(CrateError::SqlxError)?;
+        .map_err(DomainError::SqlxError)?;
         Ok(())
     }
 
     async fn delete(
         self,
         conn: &PgPool,
-    ) -> CrateResult<()> {
+    ) -> DomainResult<()> {
         sqlx::query!(
             r#"
 DELETE FROM
@@ -79,7 +83,7 @@ WHERE
         )
         .execute(conn)
         .await
-        .map_err(CrateError::SqlxError)?;
+        .map_err(DomainError::SqlxError)?;
         Ok(())
     }
 }
@@ -95,27 +99,17 @@ impl SessionRecord {
     }
 
     pub async fn find_by_id_and_secret(
-        session_id_str: &str,
-        auth_token_str: &str,
         pool: &PgPool,
-    ) -> Result<Self, RecordQueryError> {
-        let session_id = match Uuid::parse_str(session_id_str) {
-            Ok(uuid) => uuid,
-            Err(_) => return Err(RecordQueryError::NotFound),
+        id: &Uuid,
+        secret: &Uuid,
+    ) -> DomainResult<Self> {
+        let session = match SessionRecord::find_by_id(pool, id).await {
+            Ok(session_record) => session_record,
+            _ => return Err(DomainError::NotFound),
         };
 
-        let session = match SessionRecord::find_by_id(pool, &session_id).await {
-            Ok(Some(session_record)) => session_record,
-            _ => return Err(RecordQueryError::NotFound),
-        };
-
-        let bearer_token = match Uuid::parse_str(auth_token_str) {
-            Ok(uuid) => uuid,
-            Err(_) => return Err(RecordQueryError::Unauthorized),
-        };
-
-        if bearer_token != session.secret {
-            return Err(RecordQueryError::Forbidden);
+        if *secret != session.secret {
+            return Err(DomainError::Forbidden);
         }
 
         Ok(session)

@@ -6,10 +6,9 @@
     clippy::indexing_slicing
 )]
 
-mod prelude;
-use prelude::*;
-
 mod config;
+mod domain;
+mod prelude;
 mod server;
 
 use config::Config;

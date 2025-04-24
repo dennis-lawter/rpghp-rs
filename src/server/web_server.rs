@@ -1,6 +1,7 @@
-use std::sync::Arc;
-
+#[allow(unused_imports)]
 use crate::prelude::*;
+
+use std::sync::Arc;
 
 use super::api::Api;
 use super::frontend::Frontend;

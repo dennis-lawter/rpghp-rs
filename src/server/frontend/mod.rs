@@ -1,6 +1,7 @@
-mod handlers;
-
+#[allow(unused_imports)]
 use crate::prelude::*;
+
+mod handlers;
 
 use std::sync::Arc;
 
