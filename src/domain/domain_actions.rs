@@ -14,8 +14,8 @@ use super::records::session::SessionRecord;
 pub enum DomainError {
     #[error("Not found")]
     NotFound,
-    #[error("Invalid auth provided")]
-    Unauthorized,
+    // #[error("Invalid auth provided")]
+    // Unauthorized,
     #[error("Provided auth does not grant permission for requested record")]
     Forbidden,
     #[error("SQL error: {0}")]
@@ -69,7 +69,7 @@ impl Domain {
         &self,
         id: &str,
     ) -> DomainResult<SessionRecord> {
-        let id = Uuid::parse_str(&id).map_err(DomainError::InvalidUuid)?;
+        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
         SessionRecord::find_by_id(&self.db, &id).await
     }
 
@@ -78,8 +78,8 @@ impl Domain {
         id: &str,
         secret: &str,
     ) -> DomainResult<()> {
-        let id = Uuid::parse_str(&id).map_err(DomainError::InvalidUuid)?;
-        let secret = Uuid::parse_str(&secret).map_err(DomainError::InvalidUuid)?;
+        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
+        let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let session = SessionRecord::find_by_id_and_secret(&self.db, &id, &secret).await?;
         session.delete(&self.db).await
     }
@@ -97,8 +97,8 @@ impl Domain {
         curr_hp: i32,
         hp_hidden: bool,
     ) -> DomainResult<CreatureRecord> {
-        let id = Uuid::parse_str(&id).map_err(DomainError::InvalidUuid)?;
-        let secret = Uuid::parse_str(&secret).map_err(DomainError::InvalidUuid)?;
+        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
+        let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let session = SessionRecord::find_by_id_and_secret(&self.db, &id, &secret).await?;
         let creature = CreatureRecord {
             rpghp_creature_id: Uuid::new_v4(),
@@ -118,11 +118,11 @@ impl Domain {
         id: &str,
         opt_secret: &Option<String>,
     ) -> DomainResult<Vec<CreatureRecord>> {
-        let id = Uuid::parse_str(&id).map_err(DomainError::InvalidUuid)?;
+        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
         let session = match opt_secret {
             None => SessionRecord::find_by_id(&self.db, &id).await?,
             Some(token) => {
-                let token = Uuid::parse_str(&token).map_err(DomainError::InvalidUuid)?;
+                let token = Uuid::parse_str(token).map_err(DomainError::InvalidUuid)?;
                 SessionRecord::find_by_id_and_secret(&self.db, &id, &token).await?
             }
         };
@@ -134,5 +134,27 @@ impl Domain {
             };
 
         Ok(creatures)
+    }
+
+    pub async fn get_creature(
+        &self,
+        session_id: &str,
+        creature_id: &str,
+        opt_secret: &Option<String>,
+    ) -> DomainResult<CreatureRecord> {
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
+        let creature_id = Uuid::parse_str(creature_id).map_err(DomainError::InvalidUuid)?;
+        let session = match opt_secret {
+            None => SessionRecord::find_by_id(&self.db, &session_id).await?,
+            Some(token) => {
+                let token = Uuid::parse_str(token).map_err(DomainError::InvalidUuid)?;
+                SessionRecord::find_by_id_and_secret(&self.db, &session_id, &token).await?
+            }
+        };
+        let creature = CreatureRecord::find_by_id(&self.db, &creature_id).await?;
+        if creature.session_id != session.rpghp_session_id {
+            return Err(DomainError::Forbidden);
+        }
+        Ok(creature)
     }
 }

@@ -40,15 +40,11 @@ impl ApiSessionRoutesV1 {
         session_id: Path<String>,
     ) -> SessionGetResponse {
         match state.domain.get_session(&session_id).await {
-            Ok(Some(record)) => {
+            Ok(record) => {
                 let view = SessionView::from_record(&record);
                 SessionGetResponse::Ok(Json(view))
             }
-            Ok(None) => SessionGetResponse::NotFound,
-            Err(err) => match err {
-                DomainError::InvalidUuid(_) => SessionGetResponse::NotFound,
-                _ => SessionGetResponse::NotFound,
-            },
+            Err(err) => SessionGetResponse::from_domain_error(err),
         }
     }
 
@@ -83,7 +79,7 @@ impl SessionCreateResponse {
     fn from_domain_error(err: DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            DomainError::Unauthorized => Self::NotFound,
+            // DomainError::Unauthorized => Self::NotFound,
             DomainError::Forbidden => Self::NotFound,
             DomainError::SqlxError(_) => Self::NotFound,
             DomainError::InvalidUuid(_) => Self::NotFound,
@@ -119,7 +115,7 @@ impl SessionGetResponse {
     fn from_domain_error(err: DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            DomainError::Unauthorized => Self::NotFound,
+            // DomainError::Unauthorized => Self::NotFound,
             DomainError::Forbidden => Self::NotFound,
             DomainError::SqlxError(_) => Self::NotFound,
             DomainError::InvalidUuid(_) => Self::NotFound,
@@ -145,8 +141,8 @@ enum SessionDeleteResponse {
     Ok,
     #[oai(status = 400)]
     BadRequest,
-    #[oai(status = 401)]
-    Unauthorized,
+    // #[oai(status = 401)]
+    // Unauthorized,
     #[oai(status = 403)]
     Forbidden,
     #[oai(status = 404)]
@@ -158,7 +154,7 @@ impl SessionDeleteResponse {
     fn from_domain_error(err: DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            DomainError::Unauthorized => Self::Unauthorized,
+            // DomainError::Unauthorized => Self::Unauthorized,
             DomainError::Forbidden => Self::Forbidden,
             DomainError::SqlxError(_) => Self::InternalError,
             DomainError::InvalidUuid(_) => Self::BadRequest,

@@ -39,10 +39,6 @@
 
 * WIP Partials layer
 
-* TODO Consider extracting the domain even higher
-    - Both the API and the partials will use the domain
-    - May want to bury the db pool inside of a Domain struct to make random querying impossible
-
 * WIP External asset cleanup
 ** DONE Move external assets to a separate folder
 ** TODO Consider pulling the external assets in another way
@@ -83,3 +79,6 @@
         + Could ditch the whole idea of the generated password
         + Maybe the frontend just deals with this?
             + I think the frontend will be /playerview/SESSION_ID and /gmview/SECRET
+* DONE Consider extracting the domain even higher
+    - Both the API and the partials will use the domain
+    - May want to bury the db pool inside of a Domain struct to make random querying impossible
