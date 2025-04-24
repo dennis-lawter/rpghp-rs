@@ -13,4 +13,5 @@
         "DONE",
         "CANCELLED",
     ],
+    "rust-analyzer.server.path": "rust-analyzer",
 }

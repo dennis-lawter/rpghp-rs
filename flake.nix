@@ -31,6 +31,7 @@
           insomnia
           tokei
           emacs
+          rust-analyzer
         ];
 
         shellHook = ''

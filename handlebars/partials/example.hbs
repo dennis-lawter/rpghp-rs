@@ -1,10 +1,61 @@
-<table>
-    <tr>
-        <td>
-            Test 1
-        </td>
-        <td>
-            Test 2
-        </td>
-    </tr>
-</table>
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <link href="/assets/ext/rpgui/rpgui.css" rel="stylesheet" type="text/css">
+    <script src="/assets/ext/rpgui/rpgui.js"></script>
+    <style>
+        /* @import url('https://fonts.googleapis.com/css2?family=Handjet&display=swap'); */
+        @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+        :root {
+            --progress-normal: #6833a3;
+            --progress-blue: #597dce;
+            --progress-green: #6daa2c;
+            --progress-red: #d04648;
+            --progress-disabled: #939393;
+        }
+
+        * {
+            /* font-family: "Handjet", sans-serif !important; */
+            /* letter-spacing: 0.05em; */
+            font-family: "VT323", sans-serif !important;
+            font-optical-sizing: auto;
+            font-size: 24px;
+            font-weight: 400;
+            font-style: normal;
+            font-variation-settings:
+                "ELGR" 1,
+                "ELSH" 2;
+            /* line-height: 0.5em !important; */
+
+            user-select: text !important;
+        }
+
+        body {
+            background-color: #222;
+        }
+
+        hr {
+            margin: .2em;
+        }
+
+        br {
+            height: 0.5em;
+        }
+    </style>
+</head>
+<div style="display: flex; align-items: stretch;">
+    <div class="rpgui-container framed-grey"
+        style="padding: 0; margin: 0; display: flex; align-items: center; justify-content: center;">
+        <img src="{{icon}}" style="width: 128px;">
+    </div>
+    <div class="rpgui-container framed-grey" style="flex-grow: 1;">
+        <label style="font-size: 1.5em;">{{name}}</label>
+        <br>
+        <p style="color: var(--progress-red)">HP: {{curr_hp}} / {{max_hp}}</p>
+        <div data-value="{{approx_hp}}" class="rpgui-progress red"></div>
+    </div>
+</div>
