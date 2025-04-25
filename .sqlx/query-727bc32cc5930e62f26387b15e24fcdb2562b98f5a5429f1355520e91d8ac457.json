@@ -32,6 +32,11 @@
         "ordinal": 5,
         "name": "hp_hidden",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "icon",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -45,7 +50,8 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
   "hash": "727bc32cc5930e62f26387b15e24fcdb2562b98f5a5429f1355520e91d8ac457"

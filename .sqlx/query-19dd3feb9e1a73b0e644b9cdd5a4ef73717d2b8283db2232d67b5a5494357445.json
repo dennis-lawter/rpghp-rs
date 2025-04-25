@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "\nSELECT\n    rpghp_creature_id,\n    session_id,\n    creature_name,\n    max_hp,\n    curr_hp,\n    hp_hidden\nFROM\n    rpghp_creature\nWHERE\n    rpghp_creature_id = $1\n        ",
+  "query": "\nSELECT\n    *\nFROM\n    rpghp_creature\nWHERE\n    rpghp_creature_id = $1\n        ",
   "describe": {
     "columns": [
       {
@@ -32,6 +32,11 @@
         "ordinal": 5,
         "name": "hp_hidden",
         "type_info": "Bool"
+      },
+      {
+        "ordinal": 6,
+        "name": "icon",
+        "type_info": "Text"
       }
     ],
     "parameters": {
@@ -45,8 +50,9 @@
       false,
       false,
       false,
-      false
+      false,
+      true
     ]
   },
-  "hash": "6a67b990f799a07e8965f6e5b97252428671ae1119080930c0e20d057dd8e6d1"
+  "hash": "19dd3feb9e1a73b0e644b9cdd5a4ef73717d2b8283db2232d67b5a5494357445"
 }

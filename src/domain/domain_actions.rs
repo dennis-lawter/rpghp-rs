@@ -96,6 +96,7 @@ impl Domain {
         max_hp: i32,
         curr_hp: i32,
         hp_hidden: bool,
+        icon: Option<String>,
     ) -> DomainResult<CreatureRecord> {
         let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
@@ -107,6 +108,7 @@ impl Domain {
             max_hp,
             curr_hp,
             hp_hidden,
+            icon,
         };
         creature.save(&self.db).await?;
 

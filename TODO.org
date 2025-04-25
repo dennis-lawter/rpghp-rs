@@ -8,6 +8,10 @@
 
 * TODO Consider switching from the uuidv4 dashed hex to a base64
 
+* TODO Implement string limits
+** TODO Switch to max width varchars for most strings
+** TODO Implement a truncate/reject system for incoming strings
+
 * TODO Consider switching from double uuidv4 creation to a hashing algorithm
     - Creating simultaneous uuidv4 values doesn't create much entropy between the two values
 
@@ -30,7 +34,7 @@
     - Can decorate with a second svg overlay or mask maybe?
     - Need to give players the ability to set these icons for creatures
     - May want the ability to save icon configurations for later or copy from existing
-** TODO Add an icon url to the creature, must be a local url
+** DONE Add an icon url to the creature, must be a local url
 
 -----
 
@@ -40,7 +44,6 @@
 ** DONE Figure out why rpgui progress bars don't respond to values
 ** TODO Convert old mockup to rpgui
 ** TODO Populate mockup with handlebars
-
 
 * WIP Creature endpoint
 ** DONE Stub out the creature resources

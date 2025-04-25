@@ -38,6 +38,7 @@ impl ApiCreatureRoutesV1 {
                 data.max_hp,
                 data.curr_hp,
                 data.hp_hidden,
+                data.icon.clone(),
             )
             .await
         {
@@ -117,6 +118,7 @@ struct CreatureCreateRequest {
     max_hp: i32,
     curr_hp: i32,
     hp_hidden: bool,
+    icon: Option<String>,
 }
 
 #[derive(ApiResponse)]
