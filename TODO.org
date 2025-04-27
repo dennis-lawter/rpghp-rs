@@ -75,15 +75,14 @@
 ** TODO Attribute external assets properly
 ** TODO Make a tokei Makefile target, exclude the external assets
 
-* WIP Test the REST framework with httpyac
-** DONE Setup a basic end to end test
-** TODO Setup w/ environment to define host/port
-
 -----
 
 * DONE Improve error handling
+
 * DONE Import old mockup
+
 * DONE Extract domain
+
 * DONE Improve session secret/id system
     - In my previous rpghp project, I created a uuidv4 for the session secret, then the sha1 of that was the session id
     - Only the session id is stored in the DB, meaning secrets cannot be retrieved
@@ -96,6 +95,11 @@
         + Could ditch the whole idea of the generated password
         + Maybe the frontend just deals with this?
             + I think the frontend will be /playerview/SESSION_ID and /gmview/SECRET
+
 * DONE Consider extracting the domain even higher
     - Both the API and the partials will use the domain
     - May want to bury the db pool inside of a Domain struct to make random querying impossible
+
+* DONE Setup tests for the REST framework with httpyac
+** DONE Setup a basic end to end test
+** DONE Setup w/ environment to define host/port
