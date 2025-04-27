@@ -61,3 +61,9 @@ DELETE http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}
 Authorization: Bearer {{json_session.secret}}
 
 ?? status == 200
+
+###
+# @ref json_session
+GET http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}
+
+?? status == 404
