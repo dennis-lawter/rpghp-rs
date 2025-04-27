@@ -12,6 +12,12 @@ use crate::server::shared_state::SharedState;
 
 #[handler]
 pub fn example(state: Data<&Arc<SharedState>>) -> poem::Result<impl IntoResponse> {
-    let data = json!({ "header": "Hello, World!" });
+    let data = json!({
+        "icon": "/assets/ext/game-icons.net.svg/icons/ffffff/transparent/1x1/lorc/pummeled.svg",
+        "name": "Low HP Guy",
+        "curr_hp": 8,
+        "max_hp": 81,
+        "approx_hp": 0.1
+    });
     state.render("partials/example", data)
 }
