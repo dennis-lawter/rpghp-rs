@@ -8,6 +8,13 @@
 
 * TODO Consider switching from the uuidv4 dashed hex to a base64
 
+* TODO Add unit testing
+** TODO Add test coverage tracker
+** TODO Extract sql to a separate mod or something to create an ideal mockable sql interface with good mocking
+** TODO Consider refactoring API & partial input/output schemas out of the endpoint mods
+** TODO Add unit testing to git automation or github actions
+** TODO Add httpyac e2e test to git automation or github actions
+
 * TODO Implement string limits
 ** TODO Switch to max width varchars for most strings
 ** TODO Implement a truncate/reject system for incoming strings
