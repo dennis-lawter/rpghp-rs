@@ -2,7 +2,11 @@
 #+TODO: TODO(t) WIP(w) | DONE(d) CANCELLED(c)
 #+TITLE: Todo
 
-* TODO Document code
+* TODO In-code docs
+
+* TODO Write a design pattern overview
+
+* TODO First time dev setup script
 
 * TODO Add logging
 
