@@ -1,11 +1,17 @@
 default_job = "run"
 env.CARGO_TERM_COLOR = "always"
 
+[jobs.kill]
+command = ["pkill", "rpghp-rs"]
+background = true
+
 [jobs.run]
 command = ["make", "local-run"]
 need_stdout = true
+background = false
 on_change_strategy = "kill_then_restart"
 kill = ["pkill", "-TERM", "-P"]
+watch = ["src", "assets", "handlebars", "migrations"]
 
 [jobs.doc]
 command = ["cargo", "doc", "--no-deps"]
@@ -24,3 +30,4 @@ on_success = "back" # so that we don't open the browser at each change
 # should go in your personal global prefs.toml file instead.
 [keybindings]
 Enter = "job:run"
+k = "job:kill"

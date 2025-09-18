@@ -23,7 +23,7 @@
         packages = with pkgs; [
           vscodium
           rust
-          cargo-watch
+          bacon
           gnumake
           docker
           dbeaver-bin
