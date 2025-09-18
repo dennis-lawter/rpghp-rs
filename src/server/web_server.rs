@@ -18,7 +18,7 @@ pub struct WebServer {
     cfg: Config,
 }
 impl WebServer {
-    pub fn new(cfg: Config) -> CrateResult<Self> {
+    pub const fn new(cfg: Config) -> CrateResult<Self> {
         Ok(Self { cfg })
     }
 

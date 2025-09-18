@@ -103,7 +103,7 @@ impl SessionRecord {
         id: &Uuid,
         secret: &Uuid,
     ) -> DomainResult<Self> {
-        let session = match SessionRecord::find_by_id(pool, id).await {
+        let session = match Self::find_by_id(pool, id).await {
             Ok(session_record) => session_record,
             _ => return Err(DomainError::NotFound),
         };

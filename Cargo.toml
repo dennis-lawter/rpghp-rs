@@ -7,7 +7,6 @@ edition = "2024"
 color-eyre = "0.6.3"
 dotenv = "0.15.0"
 handlebars = "6.3.2"
-log = "0.4.27"
 poem = { version = "3.1.7", features = ["static-files"] }
 poem-openapi = { version = "5.1.8", features = ["rapidoc"] }
 serde = { version = "1.0.219", features = ["derive"] }
@@ -16,3 +15,91 @@ sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio", "uuid", "ti
 thiserror = "2.0.12"
 tokio = { version = "1.44.0", features = ["macros", "rt-multi-thread"] }
 uuid = { version = "1.15.1", features = ["serde", "v4"] }
+
+[profile.release]
+# Optimize for size
+opt-level = 'z'
+# Enable Link Time Optimization
+lto = true
+# Reduced to increase optimizations
+codegen-units = 1
+# Abort on panic
+panic = 'abort'
+# Strip symbols from binary
+strip = "symbols"
+
+[lints.rust]
+# Unsafe code should not be necessary for a basic web application
+unsafe_code = "forbid"
+
+# Noop is not necessary for a basic web application
+noop_method_call = "deny"
+
+# Other general purpose lints
+missing_copy_implementations = "warn"
+missing_debug_implementations = "warn"
+non_ascii_idents = "warn"
+unused_import_braces = "warn"
+
+[lints.clippy]
+# Allowed because poem::Error extends our err variant to 176+ bytes
+result_large_err = "allow"
+
+# Allowed for domain actions for record instantiation
+too_many_arguments = "allow"
+
+# mod.rs usage is expected
+mod_module_files = "allow"
+
+# Const functions provide optimization benefits
+missing_const_for_fn = "warn"
+
+# Unwrap is dangerous, handle errors appropriately
+unwrap_used = "deny"
+
+# Unwrap is dangerous, handle errors appropriately
+expect_used = "deny"
+
+# Server must not exit, handle errors appropriately
+panic = "deny"
+
+# Index slicing can lead to panics
+indexing_slicing = "deny"
+
+# Floats must be compared using approximation to avoid floating point errors
+float_cmp = "deny"
+float_cmp_const = "deny"
+float_equality_without_abs = "deny"
+
+# Keep the enum name before every enumerator
+enum_glob_use = "deny"
+
+# Other general purpose lints
+cognitive_complexity = "warn"
+empty_line_after_outer_attr = "warn"
+empty_structs_with_brackets = "warn"
+option_if_let_else = "warn"
+print_stderr = "warn"
+print_stdout = "warn"
+semicolon_if_nothing_returned = "warn"
+unseparated_literal_suffix = "warn"
+shadow_unrelated = "warn"
+similar_names = "warn"
+suspicious_operation_groupings = "warn"
+unused_self = "warn"
+use_debug = "warn"
+used_underscore_binding = "warn"
+useless_let_if_seq = "warn"
+wildcard_dependencies = "warn"
+wildcard_imports = "warn"
+
+# TODO: enable pedantic clippy
+# pedantic = "deny"
+
+# TODO: enforce documentation
+# missing_docs = "warn"
+# doc_link_with_quotes = "warn"
+# doc_markdown = "warn"
+# missing_docs_in_private_items = "warn"
+# missing_errors_doc = "warn"
+# missing_panics_doc = "warn"

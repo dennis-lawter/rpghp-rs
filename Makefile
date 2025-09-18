@@ -26,7 +26,7 @@ local-run: cargo-clippy cargo-build cargo-run
 ## @Devtools Run the server locally with hot reloading
 hot-reload:
 	@printf "$(banner)Hot reload activating...$(reset)\\n"
-	cargo watch --poll -x "clippy -- -D warnings" -x "build" -x "run"
+	bacon
 
 ########################################
 #   Buildchain                         #

@@ -1737,7 +1737,6 @@ dependencies = [
  "color-eyre",
  "dotenv",
  "handlebars",
- "log",
  "poem",
  "poem-openapi",
  "serde",
