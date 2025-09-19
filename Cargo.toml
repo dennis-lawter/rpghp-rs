@@ -98,7 +98,6 @@ useless_let_if_seq = "warn"
 wildcard_dependencies = "warn"
 wildcard_imports = "warn"
 
-# TODO: enable pedantic clippy
 pedantic = { level = "warn", priority = -1 }
 
 # TODO: enforce documentation
