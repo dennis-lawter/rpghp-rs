@@ -10,12 +10,12 @@ use poem::Route;
 use poem::middleware::AddDataEndpoint;
 use poem_openapi::ContactObject;
 use poem_openapi::OpenApiService;
-use resources::creature::ApiCreatureRoutesV1;
-use resources::session::ApiSessionRoutesV1;
+use v1_resources::creature::ApiCreatureRoutesV1;
+use v1_resources::session::ApiSessionRoutesV1;
 
 use crate::config::Config;
 
-mod resources;
+mod v1_resources;
 
 pub struct Api;
 impl Api {

@@ -1,0 +1,79 @@
+#+AUTHOR: Dennis Lawter
+#+EMAIL: (concat "bytomancer" at-sign "gmail.com")
+#+DATE: 2025-09-18
+#+TITLE: RPGHP-RS Tech Overview
+#+OPTIONS: H:6
+
+* System Dependencies
+** NixOS
+If you are running NixOS, all the development dependencies are defined in a flake.
+Simply execute ~nix develop~ to load the flake.
+
+** Other OSes
+You'll need the following dependencies installed to your system to run the project.
+- git
+- docker-compose (or podman)
+- make
+- rustup
+- sqlx-cli
+- bacon
+
+** Dev Tools
+The project has been curated for the following tools:
+- VSCodium as the primary editor.
+    + Several extensions are recommended when opening the project.
+    + The end-to-end test suite is built in the httpyac extension.
+- DBeaver as a database viewer and editor.
+- Pandoc is a system requirement for the VSCodium orgmode preview.
+
+There are a few other tools you may find value in using:
+- Tokei for metrics on lines of code.
+- Emacs for the high level documentation, written for orgmode.
+
+* Overview
+The rpghp-rs project builds for a small docker-compose stack.
+- *db*: PostgreSQL
+- *app*: The rust webserver
+
+For local development, it is recommended to run the PostgreSQL,
+and launch the app with *bacon*.
+
+* Code Overview
+** rpghp
+- Prepares the configuration.
+- Constructs and serves the webserver.
+*** prelude
+- Useful constructs to be shared across all modules.
+- Currently contains an enumeration of all system level errors.
+- Provides a helpful result type which utilizes the system errors.
+*** config
+- Provides the required env vars.
+*** domain
+- Backend logic, and the only point of access to the database.
+- The ~Domain~ struct contains entry points for every logical ~Record~ within the system.
+- All crud actions can be performed on the ~Domain~, called ~Actions~.
+- The ~Domain~ typically accepts all fields necessary during creation of a ~Record~.
+- The ~Domain~ typically operates over uuidv4 primary keys.
+- The ~Domain~ typically returns a ~Record~ or a ~Vec<Record>~ after any ~Action~.
+- ~Records~ are typically 1:1 with the structure of the database.
+*** server
+- The ~WebServer~ acts as the entry point for the application after basic setup is done.
+- The ~WebServer~ creates a ~SharedState~ to pass to each endpoint.
+- The ~SharedState~ provides a reference to the domain and handlebars templating.
+- The ~WebServer~ hosts static assets (such as images) at [[/assets]].
+- The ~WebServer~ hosts all other base routes through its various submodules.
+- All submodules must define their own ~create_route~ to establish their own subroutes.
+**** api
+- The ~Api~ creates a [[/v1]] API route.
+- The ~Api~ also hosts the *rapidoc* for [[/v1]] at [[/api/docs/v1]].
+- Each ~Api~ endpoint relates to ~Resources~.
+***** resources
+- Each ~Resource~ must implement the proc macro ~poem_openapi::OpenApi~.
+- Each ~Resource~ provides typical REST resource management via handlers per request.
+**** frontend
+- The ~Frontend~ handles most of the serverside rendering served to users.
+- Every "page" of the website associates to a ~handler~ in the ~Frontend~.
+**** partials
+- The ~Partials~ build DOM widgets to be used by the ~Frontend~ or ajax requests.
+- The ~Partials~ typically build a single resource into its appropriate DOM.
+- A single ~Frontend~ page may request several ~Partials~ to complete the page.

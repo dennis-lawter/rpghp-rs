@@ -2,10 +2,6 @@
 #+TODO: TODO(t) WIP(w) | DONE(d) CANCELLED(c)
 #+TITLE: Todo
 
-* TODO In-code docs
-
-* TODO Write a design pattern overview
-
 * TODO First time dev setup script
 
 * TODO Add logging
@@ -32,22 +28,13 @@
     - Alternatively provide a "detailed" param
     - For internal use, I expect the partials layer will do much of the aggregation
 
-* TODO Domain error handling
+* TODO Improve domain error handling
 ** TODO Introduce a trait for the ApiResponses to enforce from_domain_error
 ** TODO See if there's any way to DRY or otherwise organize the responses
 
-* TODO Create a more expressive icon system
-** TODO /api/v1/icon?base=some_svg&color=some_hex
-    - Should this even live in /api? It's probably fine, it is a resource...
-    - Reads in a base svg
-    - Can alter the stroke color
-    - Can blit the SVG over a background
-    - Can decorate with a second svg overlay or mask maybe?
-    - Need to give players the ability to set these icons for creatures
-    - May want the ability to save icon configurations for later or copy from existing
-** DONE Add an icon url to the creature, must be a local url
-
 -----
+
+* WIP In-code docs
 
 * WIP Create a new mockup
 ** DONE Install rpgui
@@ -86,7 +73,20 @@
 ** TODO Attribute external assets properly
 ** TODO Make a tokei Makefile target, exclude the external assets
 
+* WIP Create a more expressive icon system
+** TODO /api/v1/icon?base=some_svg&color=some_hex
+    - Should this even live in /api? It's probably fine, it is a resource...
+    - Reads in a base svg
+    - Can alter the stroke color
+    - Can blit the SVG over a background
+    - Can decorate with a second svg overlay or mask maybe?
+    - Need to give players the ability to set these icons for creatures
+    - May want the ability to save icon configurations for later or copy from existing
+** DONE Add an icon url to the creature, must be a local url
+
 -----
+
+* DONE Write a design pattern overview
 
 * DONE Improve error handling
 
