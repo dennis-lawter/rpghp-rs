@@ -18,8 +18,8 @@ pub struct WebServer {
     cfg: Config,
 }
 impl WebServer {
-    pub const fn new(cfg: Config) -> CrateResult<Self> {
-        Ok(Self { cfg })
+    pub const fn new(cfg: Config) -> Self {
+        Self { cfg }
     }
 
     pub async fn serve(self) -> CrateResult<()> {
@@ -28,9 +28,9 @@ impl WebServer {
         let shared_state = SharedState::new(&self.cfg).await?;
         let shared_state_rc = Arc::new(shared_state);
 
-        let api_routes = Api::create_route(&self.cfg, shared_state_rc.clone()).await?;
-        let frontend_routes = Frontend::create_route(shared_state_rc.clone())?;
-        let partials_routes = Partials::create_route(shared_state_rc.clone()).await?;
+        let api_routes = Api::create_route(&self.cfg, shared_state_rc.clone());
+        let frontend_routes = Frontend::create_route(shared_state_rc.clone());
+        let partials_routes = Partials::create_route(shared_state_rc.clone());
 
         let full_routing = Route::new()
             .nest("/assets", assets_routes)

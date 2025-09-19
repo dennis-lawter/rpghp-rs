@@ -5,7 +5,7 @@
     "editor.formatOnPaste": true,
     "editor.formatOnSave": true,
     "workbench.editor.customLabels.patterns": {
-        "**": "${dirname}/${filename}",
+        "**/**.rs": "${dirname}/${filename}.${extname}",
     },
     "org.todoKeywords": [
         "TODO",

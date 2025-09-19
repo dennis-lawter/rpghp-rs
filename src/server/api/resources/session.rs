@@ -29,7 +29,7 @@ impl ApiSessionRoutesV1 {
                 let view = SessionWithSecretView::from_record(&record);
                 SessionCreateResponse::Ok(Json(view))
             }
-            Err(err) => SessionCreateResponse::from_domain_error(err),
+            Err(err) => SessionCreateResponse::from_domain_error(&err),
         }
     }
 
@@ -44,7 +44,7 @@ impl ApiSessionRoutesV1 {
                 let view = SessionView::from_record(&record);
                 SessionGetResponse::Ok(Json(view))
             }
-            Err(err) => SessionGetResponse::from_domain_error(err),
+            Err(err) => SessionGetResponse::from_domain_error(&err),
         }
     }
 
@@ -60,8 +60,8 @@ impl ApiSessionRoutesV1 {
             .delete_session(&session_id, &auth.0.token)
             .await
         {
-            Ok(_) => SessionDeleteResponse::Ok,
-            Err(err) => SessionDeleteResponse::from_domain_error(err),
+            Ok(()) => SessionDeleteResponse::Ok,
+            Err(err) => SessionDeleteResponse::from_domain_error(&err),
         }
     }
 }
@@ -76,14 +76,15 @@ enum SessionCreateResponse {
     NotFound,
 }
 impl SessionCreateResponse {
-    fn from_domain_error(err: DomainError) -> Self {
-        match err {
-            DomainError::NotFound => Self::NotFound,
-            // DomainError::Unauthorized => Self::NotFound,
-            DomainError::Forbidden => Self::NotFound,
-            DomainError::SqlxError(_) => Self::NotFound,
-            DomainError::InvalidUuid(_) => Self::NotFound,
-        }
+    const fn from_domain_error(_err: &DomainError) -> Self {
+        // match err {
+        //     DomainError::NotFound => Self::NotFound,
+        //     // DomainError::Unauthorized => Self::NotFound,
+        //     DomainError::Forbidden => Self::NotFound,
+        //     DomainError::SqlxError(_) => Self::NotFound,
+        //     DomainError::InvalidUuid(_) => Self::NotFound,
+        // }
+        Self::NotFound
     }
 }
 #[derive(Object, serde::Serialize)]
@@ -112,14 +113,15 @@ enum SessionGetResponse {
     NotFound,
 }
 impl SessionGetResponse {
-    fn from_domain_error(err: DomainError) -> Self {
-        match err {
-            DomainError::NotFound => Self::NotFound,
-            // DomainError::Unauthorized => Self::NotFound,
-            DomainError::Forbidden => Self::NotFound,
-            DomainError::SqlxError(_) => Self::NotFound,
-            DomainError::InvalidUuid(_) => Self::NotFound,
-        }
+    const fn from_domain_error(_err: &DomainError) -> Self {
+        // match err {
+        //     DomainError::NotFound => Self::NotFound,
+        //     // DomainError::Unauthorized => Self::NotFound,
+        //     DomainError::Forbidden => Self::NotFound,
+        //     DomainError::SqlxError(_) => Self::NotFound,
+        //     DomainError::InvalidUuid(_) => Self::NotFound,
+        // }
+        Self::NotFound
     }
 }
 #[derive(Object, serde::Serialize)]
@@ -151,7 +153,7 @@ enum SessionDeleteResponse {
     InternalError,
 }
 impl SessionDeleteResponse {
-    fn from_domain_error(err: DomainError) -> Self {
+    const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
             // DomainError::Unauthorized => Self::Unauthorized,

@@ -14,11 +14,9 @@ use super::shared_state::SharedState;
 
 pub struct Frontend;
 impl Frontend {
-    pub fn create_route(
-        state: Arc<SharedState>
-    ) -> CrateResult<AddDataEndpoint<Route, Arc<SharedState>>> {
-        Ok(Route::new()
+    pub fn create_route(state: Arc<SharedState>) -> AddDataEndpoint<Route, Arc<SharedState>> {
+        Route::new()
             .nest("/", get(handlers::index::index))
-            .data(state))
+            .data(state)
     }
 }

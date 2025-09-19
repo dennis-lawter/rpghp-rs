@@ -19,10 +19,10 @@ mod resources;
 
 pub struct Api;
 impl Api {
-    pub async fn create_route(
+    pub fn create_route(
         cfg: &Config,
         shared_state: Arc<SharedState>,
-    ) -> CrateResult<AddDataEndpoint<Route, Arc<SharedState>>> {
+    ) -> AddDataEndpoint<Route, Arc<SharedState>> {
         let v1_endpoints = (ApiSessionRoutesV1, ApiCreatureRoutesV1);
         let v1 = OpenApiService::new(v1_endpoints, "RPGHP API", "1.0")
             .server("/api/v1")
@@ -33,9 +33,9 @@ impl Api {
             )
             .description("API backend for the RPGHP application.");
         let docs = v1.rapidoc();
-        Ok(Route::new()
+        Route::new()
             .nest("/v1", v1.into_endpoint())
             .nest("/docs/v1", docs)
-            .data(shared_state))
+            .data(shared_state)
     }
 }

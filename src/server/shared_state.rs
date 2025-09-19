@@ -24,6 +24,7 @@ impl SharedState {
         Ok(Self { domain, hb })
     }
 
+    #[allow(clippy::needless_pass_by_value)]
     pub fn render(
         &self,
         id: &str,

@@ -43,7 +43,7 @@ impl ApiCreatureRoutesV1 {
             .await
         {
             Ok(_) => CreatureCreateResponse::Created,
-            Err(err) => CreatureCreateResponse::from_domain_error(err),
+            Err(err) => CreatureCreateResponse::from_domain_error(&err),
         }
     }
 
@@ -60,7 +60,7 @@ impl ApiCreatureRoutesV1 {
         };
         match state
             .domain
-            .get_all_creatures_for_session(&session_id, &opt_secret)
+            .get_all_creatures_for_session(&session_id, opt_secret.as_ref())
             .await
         {
             Ok(creatures) => {
@@ -71,12 +71,12 @@ impl ApiCreatureRoutesV1 {
                     ApiV1AuthSchemeOptional::NoAuth => creatures
                         .iter()
                         .map(CreatureView::from_record)
-                        .map(|view| view.simplified_if_hp_hidden())
+                        .map(CreatureView::simplified_if_hp_hidden)
                         .collect(),
                 };
                 CreatureListResponse::Ok(Json(views))
             }
-            Err(err) => CreatureListResponse::from_domain_error(err),
+            Err(err) => CreatureListResponse::from_domain_error(&err),
         }
     }
 
@@ -94,11 +94,11 @@ impl ApiCreatureRoutesV1 {
         };
         let record = match state
             .domain
-            .get_creature(&session_id, &creature_id, &opt_secret)
+            .get_creature(&session_id, &creature_id, opt_secret.as_ref())
             .await
         {
             Ok(record) => record,
-            Err(err) => return CreatureGetResponse::from_domain_error(err),
+            Err(err) => return CreatureGetResponse::from_domain_error(&err),
         };
         let view = match &auth {
             ApiV1AuthSchemeOptional::Bearer(_) => CreatureView::from_record(&record),
@@ -137,7 +137,7 @@ enum CreatureCreateResponse {
     InternalError,
 }
 impl CreatureCreateResponse {
-    fn from_domain_error(err: DomainError) -> Self {
+    const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
             // DomainError::Unauthorized => Self::Unauthorized,
@@ -166,7 +166,7 @@ enum CreatureListResponse {
     InternalError,
 }
 impl CreatureListResponse {
-    fn from_domain_error(err: DomainError) -> Self {
+    const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
             // DomainError::Unauthorized => Self::Unauthorized,
@@ -195,7 +195,7 @@ enum CreatureGetResponse {
     InternalError,
 }
 impl CreatureGetResponse {
-    fn from_domain_error(err: DomainError) -> Self {
+    const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
             // DomainError::Unauthorized => Self::Unauthorized,
@@ -218,6 +218,7 @@ struct CreatureView {
 impl super::View<CreatureRecord> for CreatureView {
     fn from_record(record: &CreatureRecord) -> Self {
         let id = format!("{}", record.rpghp_creature_id);
+        #[allow(clippy::cast_precision_loss)]
         let approx_hp = record.curr_hp as f32 / record.max_hp as f32;
         Self {
             creature_id: id,

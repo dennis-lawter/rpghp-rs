@@ -11,7 +11,7 @@ async fn main() -> color_eyre::eyre::Result<()> {
     color_eyre::install()?;
     let cfg = Config::new()?;
 
-    let server = WebServer::new(cfg)?;
+    let server = WebServer::new(cfg);
     server.serve().await?;
 
     Ok(())

@@ -24,7 +24,7 @@ make db-up
 
 Then start the server:
 #+begin_src bash :eval no
-make local-run
+bacon
 #+end_src
 
 ** Testing

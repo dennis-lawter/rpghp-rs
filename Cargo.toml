@@ -11,7 +11,12 @@ poem = { version = "3.1.7", features = ["static-files"] }
 poem-openapi = { version = "5.1.8", features = ["rapidoc"] }
 serde = { version = "1.0.219", features = ["derive"] }
 serde_json = "1.0.140"
-sqlx = { version = "0.8.3", features = ["postgres", "runtime-tokio", "uuid", "time"] }
+sqlx = { version = "0.8.3", features = [
+    "postgres",
+    "runtime-tokio",
+    "uuid",
+    "time",
+] }
 thiserror = "2.0.12"
 tokio = { version = "1.44.0", features = ["macros", "rt-multi-thread"] }
 uuid = { version = "1.15.1", features = ["serde", "v4"] }
@@ -94,7 +99,7 @@ wildcard_dependencies = "warn"
 wildcard_imports = "warn"
 
 # TODO: enable pedantic clippy
-# pedantic = "deny"
+pedantic = { level = "warn", priority = -1 }
 
 # TODO: enforce documentation
 # missing_docs = "warn"

@@ -118,7 +118,7 @@ impl Domain {
     pub async fn get_all_creatures_for_session(
         &self,
         id: &str,
-        opt_secret: &Option<String>,
+        opt_secret: Option<&String>,
     ) -> DomainResult<Vec<CreatureRecord>> {
         let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
         let session = match opt_secret {
@@ -129,11 +129,11 @@ impl Domain {
             }
         };
 
-        let creatures =
-            match CreatureRecord::find_by_session_id(&self.db, &session.rpghp_session_id).await {
-                Ok(creatures) => creatures,
-                Err(_) => return Err(DomainError::NotFound),
-            };
+        let Ok(creatures) =
+            CreatureRecord::find_by_session_id(&self.db, &session.rpghp_session_id).await
+        else {
+            return Err(DomainError::NotFound);
+        };
 
         Ok(creatures)
     }
@@ -142,7 +142,7 @@ impl Domain {
         &self,
         session_id: &str,
         creature_id: &str,
-        opt_secret: &Option<String>,
+        opt_secret: Option<&String>,
     ) -> DomainResult<CreatureRecord> {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let creature_id = Uuid::parse_str(creature_id).map_err(DomainError::InvalidUuid)?;

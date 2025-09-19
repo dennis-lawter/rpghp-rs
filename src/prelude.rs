@@ -16,7 +16,7 @@ pub enum CrateError {
     #[error("Poem runtime error: {0}")]
     PoemRuntimeError(std::io::Error),
 
-    /// SQLx errors
+    /// Sqlx errors
     #[error("SQLx Error: {0}")]
     SqlxError(#[from] sqlx::Error),
     #[error("SQLx Migration Error: {0}")]

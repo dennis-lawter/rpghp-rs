@@ -28,9 +28,9 @@
           docker
           dbeaver-bin
           sqlx-cli
-          insomnia
           tokei
           emacs
+          pandoc
         ];
 
         shellHook = ''

@@ -103,9 +103,8 @@ impl SessionRecord {
         id: &Uuid,
         secret: &Uuid,
     ) -> DomainResult<Self> {
-        let session = match Self::find_by_id(pool, id).await {
-            Ok(session_record) => session_record,
-            _ => return Err(DomainError::NotFound),
+        let Ok(session) = Self::find_by_id(pool, id).await else {
+            return Err(DomainError::NotFound);
         };
 
         if *secret != session.secret {

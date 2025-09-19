@@ -4,5 +4,7 @@
         "anweber.vscode-httpyac",
         "vscode-org-mode.org-mode",
         "bbenoist.Nix",
+        "gpoore.codebraid-preview",
+        "tamasfe.even-better-toml",
     ]
 }
