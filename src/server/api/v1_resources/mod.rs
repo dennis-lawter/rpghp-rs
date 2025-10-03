@@ -7,6 +7,7 @@ use poem_openapi::SecurityScheme;
 use poem_openapi::auth::Bearer;
 
 pub mod creature;
+pub mod init_group;
 pub mod session;
 
 pub trait View<T: Record>: Sized {

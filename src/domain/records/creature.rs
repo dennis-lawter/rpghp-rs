@@ -1,7 +1,8 @@
-use crate::domain::domain_actions::DomainError;
-use crate::domain::domain_actions::DomainResult;
 #[allow(unused_imports)]
 use crate::prelude::*;
+
+use crate::domain::domain_actions::DomainError;
+use crate::domain::domain_actions::DomainResult;
 
 use uuid::Uuid;
 
@@ -10,6 +11,7 @@ use super::Record;
 pub struct CreatureRecord {
     pub rpghp_creature_id: Uuid,
     pub session_id: Uuid,
+    pub rpghp_init_group_id: Uuid,
     pub creature_name: String,
     pub max_hp: i32,
     pub curr_hp: i32,
@@ -25,7 +27,14 @@ impl Record for CreatureRecord {
             Self,
             r#"
 SELECT
-    *
+    rpghp_creature_id,
+    session_id,
+    creature_name,
+    max_hp,
+    curr_hp,
+    hp_hidden,
+    icon,
+    rpghp_init_group_id
 FROM
     rpghp_creature
 WHERE
@@ -54,7 +63,8 @@ INSERT INTO
         max_hp,
         curr_hp,
         hp_hidden,
-        icon
+        icon,
+        rpghp_init_group_id
     )
     VALUES
     (
@@ -64,7 +74,8 @@ INSERT INTO
         $4,
         $5,
         $6,
-        $7
+        $7,
+        $8
     )
 ON CONFLICT (rpghp_creature_id) DO UPDATE
     SET
@@ -73,7 +84,8 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
         max_hp = $4,
         curr_hp = $5,
         hp_hidden = $6,
-        icon = $7
+        icon = $7,
+        rpghp_init_group_id = $8
         "#,
             self.rpghp_creature_id,
             self.session_id,
@@ -82,6 +94,7 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
             self.curr_hp,
             self.hp_hidden,
             self.icon,
+            self.rpghp_init_group_id
         )
         .execute(conn)
         .await
@@ -118,7 +131,14 @@ impl CreatureRecord {
             Self,
             r#"
 SELECT
-    *
+    rpghp_creature_id,
+    session_id,
+    creature_name,
+    max_hp,
+    curr_hp,
+    hp_hidden,
+    icon,
+    rpghp_init_group_id
 FROM
     rpghp_creature
 WHERE

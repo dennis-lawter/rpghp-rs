@@ -1,5 +1,6 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
+use crate::server::api::v1_resources::init_group::ApiInitGroupRoutesV1;
 
 use std::sync::Arc;
 
@@ -23,7 +24,11 @@ impl Api {
         cfg: &Config,
         shared_state: Arc<SharedState>,
     ) -> AddDataEndpoint<Route, Arc<SharedState>> {
-        let v1_endpoints = (ApiSessionRoutesV1, ApiCreatureRoutesV1);
+        let v1_endpoints = (
+            ApiSessionRoutesV1,
+            ApiCreatureRoutesV1,
+            ApiInitGroupRoutesV1,
+        );
         let v1 = OpenApiService::new(v1_endpoints, "RPGHP API", "1.0")
             .server("/api/v1")
             .contact(

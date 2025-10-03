@@ -1,7 +1,8 @@
-use crate::domain::DomainError;
-use crate::domain::records::creature::CreatureRecord;
 #[allow(unused_imports)]
 use crate::prelude::*;
+
+use crate::domain::DomainError;
+use crate::domain::records::creature::CreatureRecord;
 
 use std::sync::Arc;
 
@@ -39,6 +40,7 @@ impl ApiCreatureRoutesV1 {
                 data.curr_hp,
                 data.hp_hidden,
                 data.icon.clone(),
+                &data.init_group_id,
             )
             .await
         {
@@ -119,6 +121,7 @@ struct CreatureCreateRequest {
     curr_hp: i32,
     hp_hidden: bool,
     icon: Option<String>,
+    init_group_id: String,
 }
 
 #[derive(ApiResponse)]

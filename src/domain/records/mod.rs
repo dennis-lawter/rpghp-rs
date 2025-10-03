@@ -4,6 +4,7 @@ use crate::prelude::*;
 use super::domain_actions::DomainResult;
 
 pub mod creature;
+pub mod init_group;
 pub mod session;
 
 #[allow(dead_code)]

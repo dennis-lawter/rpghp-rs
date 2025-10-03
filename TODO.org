@@ -8,6 +8,9 @@
 
 * TODO Consider switching from the uuidv4 dashed hex to a base64
 
+* TODO Standardize all struct names
+    - Probably VerbResourceType, like CreateCreatureResponse
+
 * TODO Add unit testing
 ** TODO Add test coverage tracker
 ** TODO Extract sql to a separate mod or something to create an ideal mockable sql interface with good mocking
@@ -31,6 +34,43 @@
 * TODO Improve domain error handling
 ** TODO Introduce a trait for the ApiResponses to enforce from_domain_error
 ** TODO See if there's any way to DRY or otherwise organize the responses
+
+* TODO Implement initiative tracking
+    - Normalize by creating ~initiative_groups~
+    - Each creature belongs to exactly 1 initiative_group
+    - The group uses btree ordering across a size of u64 "ranks"
+    - First insertion is at 0x100..00
+    - Next insertion is at 0x0100..00 (left) or 0x1100..00 (right)
+    - Whenever a tail insertion is done, I think it's always:
+        - x = current tail
+        - new_spot = x + (x >> 1)
+        - We must rebuild when the tail is 0x11..11
+    - Whenever a head insertion is done, I think it's always:
+        - x = current head
+        - new_spot = x >> 1
+        - We must rebuild when the head is 0x00..001
+    - Whenever an inner insertion is done, find the 2 adjacent nodes
+        - x = left node
+        - y = right node
+        - dist = x - y
+        - new_spot = x + dist
+        - We must rebuild when dist = 1
+    - To rebuild:
+        - Always rebuild after the insertion that causes the need to rebuild
+        - Rebuilding is done by flattening the list, ordered
+        - Take the middle item
+            - If we have an even number, take the right-most of the two
+            - This leaves a tiny bit more space for tail insertions, which I believe to be most common
+        - Insert the middle at 0x100..00
+        - Continue recursively inserting all items
+        - Finally push the new ranks as UPDATE sql statements
+** TODO Initiative group endpoints
+    - Hide the raw "ranks" from the API
+    - Instead use an "insert_after" field, nullable (meaning first in order)
+** TODO Implement a max creature limit
+    - Technically we're more concerned with an initiative limit, but a creature limit should exist anyway
+    - Probably 64, 100, or 128 just to be safe but that's probably overkill
+        - In D&D the DM should switch to "swarm" mechanics to reduce complexity
 
 -----
 

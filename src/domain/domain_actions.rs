@@ -1,3 +1,4 @@
+use crate::domain::records::init_group::InitGroupRecord;
 #[allow(unused_imports)]
 use crate::prelude::*;
 
@@ -97,10 +98,14 @@ impl Domain {
         curr_hp: i32,
         hp_hidden: bool,
         icon: Option<String>,
+        init_group_id: &str,
     ) -> DomainResult<CreatureRecord> {
+        // TODO: Add option around init group; create new when empty
         let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
+        let init_group_id = Uuid::parse_str(init_group_id).map_err(DomainError::InvalidUuid)?;
         let session = SessionRecord::find_by_id_and_secret(&self.db, &id, &secret).await?;
+        let init_group = InitGroupRecord::find_by_id(&self.db, &init_group_id).await?;
         let creature = CreatureRecord {
             rpghp_creature_id: Uuid::new_v4(),
             session_id: session.rpghp_session_id,
@@ -109,6 +114,7 @@ impl Domain {
             curr_hp,
             hp_hidden,
             icon,
+            rpghp_init_group_id: init_group.rpghp_init_group_id,
         };
         creature.save(&self.db).await?;
 
