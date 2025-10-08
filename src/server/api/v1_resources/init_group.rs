@@ -1,14 +1,15 @@
+use crate::domain::DomainError;
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-use crate::domain::DomainError;
-use crate::domain::records::init_group::InitGroupRecord;
+// use crate::domain::DomainError;
+// use crate::domain::records::init_group::InitGroupRecord;
 
 use std::sync::Arc;
 
 use poem::web::Data;
 use poem_openapi::ApiResponse;
-use poem_openapi::Object;
+// use poem_openapi::Object;
 use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
@@ -16,8 +17,8 @@ use poem_openapi::payload::Json;
 use crate::server::shared_state::SharedState;
 
 use super::ApiV1AuthScheme;
-use super::ApiV1AuthSchemeOptional;
-use super::View;
+// use super::ApiV1AuthSchemeOptional;
+// use super::View;
 
 pub struct ApiInitGroupRoutesV1;
 #[OpenApi]
@@ -30,7 +31,14 @@ impl ApiInitGroupRoutesV1 {
         data: Json<CreateInitGroupRequest>,
         auth: ApiV1AuthScheme,
     ) -> CreateInitGroupResponse {
-        todo!()
+        match state
+            .domain
+            .create_init_group(&session_id, &auth.0.token, data.rank)
+            .await
+        {
+            Ok(()) => CreateInitGroupResponse::Created,
+            Err(err) => CreateInitGroupResponse::from_domain_error(&err),
+        }
     }
 }
 
@@ -45,4 +53,19 @@ struct CreateInitGroupRequest {
 enum CreateInitGroupResponse {
     #[oai(status = 201)]
     Created,
+
+    #[oai(status = 400)]
+    BadRequest,
+}
+impl CreateInitGroupResponse {
+    const fn from_domain_error(_err: &DomainError) -> Self {
+        // TODO
+        // match err {
+        //     DomainError::NotFound => todo!(),
+        //     DomainError::Forbidden => todo!(),
+        //     DomainError::SqlxError(error) => todo!(),
+        //     DomainError::InvalidUuid(error) => todo!(),
+        // }
+        Self::BadRequest
+    }
 }

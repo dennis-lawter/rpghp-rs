@@ -10,6 +10,8 @@ use super::Record;
 
 pub struct InitGroupRecord {
     pub rpghp_init_group_id: Uuid,
+    #[allow(dead_code)]
+    pub session_id: Uuid,
     pub rank: i64,
 }
 impl Record for InitGroupRecord {

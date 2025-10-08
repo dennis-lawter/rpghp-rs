@@ -166,3 +166,27 @@ impl Domain {
         Ok(creature)
     }
 }
+
+// Initiative groups
+
+impl Domain {
+    // TODO: Make rank optional, default to a tail insertion
+    pub async fn create_init_group(
+        &self,
+        session_id: &str,
+        secret: &str,
+        rank: i64,
+    ) -> DomainResult<()> {
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
+        let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
+        let _session = SessionRecord::find_by_id_and_secret(&self.db, &session_id, &secret).await?;
+        let id = Uuid::new_v4();
+        let init_group = InitGroupRecord {
+            rpghp_init_group_id: id,
+            session_id,
+            rank,
+        };
+        init_group.save(&self.db).await?;
+        Ok(())
+    }
+}
