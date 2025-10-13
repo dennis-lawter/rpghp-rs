@@ -1,91 +1,12 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
-use sqlx::PgPool;
 use uuid::Uuid;
 
-use crate::config::Config;
+use crate::domain::DomainError;
+use crate::domain::DomainResult;
+use crate::domain::records::Record;
+use crate::domain::records::creature::CreatureRecord;
+use crate::domain::records::session::SessionRecord;
 
-use super::records::Record;
-use super::records::creature::CreatureRecord;
-use super::records::session::SessionRecord;
-
-#[derive(thiserror::Error, Debug)]
-pub enum DomainError {
-    #[error("Not found")]
-    NotFound,
-    // #[error("Invalid auth provided")]
-    // Unauthorized,
-    #[error("Provided auth does not grant permission for requested record")]
-    Forbidden,
-    #[error("SQL error: {0}")]
-    SqlxError(sqlx::Error),
-    #[error("Invalid UUID")]
-    InvalidUuid(uuid::Error),
-}
-pub type DomainResult<T> = Result<T, DomainError>;
-
-#[derive(Clone)]
-pub struct Domain {
-    db: PgPool,
-}
-
-// Creation
-impl Domain {
-    pub async fn new(cfg: &Config) -> CrateResult<Self> {
-        let db = Self::get_db_pool(cfg).await?;
-        Self::migrate_db(&db).await?;
-
-        Ok(Self { db })
-    }
-
-    async fn get_db_pool(cfg: &Config) -> CrateResult<PgPool> {
-        sqlx::Pool::<sqlx::Postgres>::connect(&cfg.db_url)
-            .await
-            .map_err(CrateError::SqlxError)
-    }
-
-    async fn migrate_db(pool: &PgPool) -> CrateResult<()> {
-        sqlx::migrate!("./migrations")
-            .run(pool)
-            .await
-            .map_err(CrateError::SqlxMigrationError)?;
-        Ok(())
-    }
-}
-
-// Utility
-// impl Domain {}
-
-// Session
-impl Domain {
-    pub async fn create_session(&self) -> DomainResult<SessionRecord> {
-        let session_record = SessionRecord::new();
-        session_record.save(&self.db).await?;
-        Ok(session_record)
-    }
-
-    pub async fn get_session(
-        &self,
-        id: &str,
-    ) -> DomainResult<SessionRecord> {
-        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
-        SessionRecord::find_by_id(&self.db, &id).await
-    }
-
-    pub async fn delete_session(
-        &self,
-        id: &str,
-        secret: &str,
-    ) -> DomainResult<()> {
-        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
-        let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
-        let session = SessionRecord::find_by_id_and_secret(&self.db, &id, &secret).await?;
-        session.delete(&self.db).await
-    }
-}
-
-// Creature
+use super::Domain;
 
 impl Domain {
     pub async fn create_creature(

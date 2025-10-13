@@ -1,7 +1,8 @@
-use crate::domain::domain_actions::DomainError;
-use crate::domain::domain_actions::DomainResult;
 #[allow(unused_imports)]
 use crate::prelude::*;
+
+use crate::domain::domain_error::DomainError;
+use crate::domain::domain_error::DomainResult;
 
 use uuid::Uuid;
 

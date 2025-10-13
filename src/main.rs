@@ -13,11 +13,17 @@ use server::WebServer;
 
 #[tokio::main]
 async fn main() -> color_eyre::eyre::Result<()> {
-    color_eyre::install()?;
-    let cfg = Config::new()?;
+    initialize()?;
 
+    let cfg = Config::new()?;
     let server = WebServer::new(cfg);
     server.serve().await?;
 
+    Ok(())
+}
+
+fn initialize() -> color_eyre::eyre::Result<()> {
+    color_eyre::install()?;
+    dotenv::dotenv()?;
     Ok(())
 }

@@ -23,14 +23,13 @@ impl WebServer {
     }
 
     pub async fn serve(self) -> CrateResult<()> {
-        let assets_routes = StaticFilesEndpoint::new("./assets");
-
         let shared_state = SharedState::new(&self.cfg).await?;
-        let shared_state_rc = Arc::new(shared_state);
+        let shared_state_arc = Arc::new(shared_state);
 
-        let api_routes = Api::create_route(&self.cfg, shared_state_rc.clone());
-        let frontend_routes = Frontend::create_route(shared_state_rc.clone());
-        let partials_routes = Partials::create_route(shared_state_rc.clone());
+        let assets_routes = StaticFilesEndpoint::new("./assets");
+        let api_routes = Api::create_route(&self.cfg, shared_state_arc.clone());
+        let frontend_routes = Frontend::create_route(shared_state_arc.clone());
+        let partials_routes = Partials::create_route(shared_state_arc.clone());
 
         let full_routing = Route::new()
             .nest("/assets", assets_routes)

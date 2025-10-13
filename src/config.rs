@@ -1,21 +1,20 @@
-//! Configuration struct for loading required ENV VARs
+//! Module for formalizing and loading the expected environment variables
+//! required to run the webserver.
 
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-/// Contains necessary configurations for the site to function.
-/// Values are loaded via the [dotenv] crate.
+/// Contains every necessary configuration for the site to function.
+/// Values are loaded from current environment variables (ENV VAFs),
+/// or loaded from the `.env` file in the project's root directory.
 #[derive(Debug)]
 pub struct Config {
     /// Full URL to the database
     pub db_url: String,
-
-    /// Hostname to the webserver
+    /// Hostname that the webserver will be served from
     pub base_url: String,
-
-    /// A name used in documentation for who to contact for support
+    /// The name used in documentation for who to contact for support
     pub contact_name: String,
-
     /// An email used in documentation for who to contact for support
     pub contact_email: String,
 }
@@ -25,7 +24,6 @@ impl Config {
     /// Returns `Err(CrateError::DotEnvInstallError)` if the [dotenv] crate fails to load.
     /// Returns `Err(CrateError::EnvMissing)` if a required ENV VAR is not defined.
     pub fn new() -> CrateResult<Self> {
-        Self::init_dot_env()?;
         let db_url = Self::get_env("DATABASE_URL")?;
         let base_url = Self::get_env("BASE_URL")?;
         let contact_name = Self::get_env("CONTACT_NAME")?;
@@ -38,20 +36,10 @@ impl Config {
         })
     }
 
-    /// Initializes the [dotenv] crate.
-    ///
-    /// Dotenv errors are cast to `CrateError::DotEnvInstallError`.
-    fn init_dot_env() -> CrateResult<()> {
-        dotenv::dotenv().map_err(|_| CrateError::DotEnvInstallError)?;
-        Ok(())
-    }
-
     /// Loads an ENV VAR matching the given name.
     ///
     /// Returns `Err(CrateError::EnvMissing)` if the required ENV VAR is not defined.
     fn get_env(var: &str) -> CrateResult<String> {
-        std::env::var(var).map_err(|_| CrateError::EnvMissing {
-            var: var.to_owned(),
-        })
+        std::env::var(var).map_err(|_| CrateError::EnvVarMissing(var.to_owned()))
     }
 }

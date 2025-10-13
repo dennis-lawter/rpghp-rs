@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::prelude::*;
 
-use super::domain_actions::DomainResult;
+use crate::domain::domain_error::DomainResult;
 
 pub mod creature;
 pub mod session;

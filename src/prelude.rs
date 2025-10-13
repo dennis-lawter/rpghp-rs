@@ -1,28 +1,21 @@
+//! Project-wide definitions and utilities.
+
 pub type CrateResult<T> = Result<T, CrateError>;
 
 #[derive(thiserror::Error, Debug)]
 pub enum CrateError {
-    /// Initialization errors
-    #[error("DotEnv install failed")]
-    DotEnvInstallError,
-    #[error("ColorEyre install failed")]
-    ColorEyreInstallError(#[from] color_eyre::eyre::ErrReport),
+    #[error("{0} not set in .env")]
+    EnvVarMissing(String),
 
-    /// Configuration errors
-    #[error("{var} not set in .env")]
-    EnvMissing { var: String },
-
-    /// Runtime framework errors
     #[error("Poem runtime error: {0}")]
     PoemRuntimeError(std::io::Error),
 
-    /// Sqlx errors
     #[error("SQLx Error: {0}")]
     SqlxError(#[from] sqlx::Error),
+
     #[error("SQLx Migration Error: {0}")]
     SqlxMigrationError(#[from] sqlx::migrate::MigrateError),
 
-    /// Handlebars errors
     #[error("Handlebars Error: {0}")]
     HandlebarsTemplateError(#[from] handlebars::TemplateError),
 }

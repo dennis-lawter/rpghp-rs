@@ -16,10 +16,10 @@ pub struct SharedState {
 }
 impl SharedState {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
+        let domain = Domain::new(cfg).await?;
+
         let mut hb = Handlebars::new();
         Self::register_all_templates(&mut hb)?;
-
-        let domain = Domain::new(cfg).await?;
 
         Ok(Self { domain, hb })
     }
