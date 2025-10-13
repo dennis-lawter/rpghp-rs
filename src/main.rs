@@ -17,7 +17,7 @@ async fn main() -> Result<()> {
     initialize()?;
 
     let cfg = Config::new()?;
-    let server = WebServer::new(cfg);
+    let server = WebServer::new(cfg).await?;
     server.serve().await?;
 
     Ok(())

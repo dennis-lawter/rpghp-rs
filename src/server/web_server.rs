@@ -14,15 +14,16 @@ use crate::prelude::*;
 
 pub struct WebServer {
     cfg: Config,
+    shared_state: SharedState,
 }
 impl WebServer {
-    pub const fn new(cfg: Config) -> Self {
-        Self { cfg }
+    pub async fn new(cfg: Config) -> CrateResult<Self> {
+        let shared_state = SharedState::new(&cfg).await?;
+        Ok(Self { cfg, shared_state })
     }
 
     pub async fn serve(self) -> CrateResult<()> {
-        let shared_state = SharedState::new(&self.cfg).await?;
-        let shared_state_arc = Arc::new(shared_state);
+        let shared_state_arc = Arc::new(self.shared_state);
 
         let assets_routes = StaticFilesEndpoint::new("./assets");
         let api_routes = Api::create_route(&self.cfg, shared_state_arc.clone());

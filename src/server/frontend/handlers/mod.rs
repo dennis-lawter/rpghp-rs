@@ -1,1 +1,1 @@
-pub mod index;
+pub(super) mod index;

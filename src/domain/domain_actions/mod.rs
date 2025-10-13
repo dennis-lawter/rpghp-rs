@@ -3,8 +3,8 @@ use sqlx::PgPool;
 use crate::config::Config;
 use crate::prelude::*;
 
-pub mod creature;
-pub mod session;
+mod creature;
+mod session;
 
 #[derive(Clone)]
 pub struct Domain {

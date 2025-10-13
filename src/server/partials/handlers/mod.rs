@@ -1,1 +1,1 @@
-pub mod example;
+pub(super) mod example;
