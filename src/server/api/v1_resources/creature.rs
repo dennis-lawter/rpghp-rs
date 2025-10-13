@@ -1,8 +1,3 @@
-use crate::domain::DomainError;
-use crate::domain::records::creature::CreatureRecord;
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use std::sync::Arc;
 
 use poem::web::Data;
@@ -12,11 +7,12 @@ use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 
-use crate::server::shared_state::SharedState;
-
 use super::ApiV1AuthScheme;
 use super::ApiV1AuthSchemeOptional;
 use super::View;
+use crate::domain::DomainError;
+use crate::domain::records::creature::CreatureRecord;
+use crate::server::shared_state::SharedState;
 
 pub struct ApiCreatureRoutesV1;
 #[OpenApi]

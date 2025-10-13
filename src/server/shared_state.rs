@@ -1,6 +1,3 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use handlebars::Handlebars;
 use poem::IntoResponse;
 use poem::http::StatusCode;
@@ -8,6 +5,7 @@ use poem_openapi::payload;
 
 use crate::Config;
 use crate::domain::Domain;
+use crate::prelude::*;
 
 #[derive(Clone)]
 pub struct SharedState {

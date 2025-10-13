@@ -1,11 +1,4 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use std::sync::Arc;
-
-use crate::domain::DomainError;
-use crate::domain::records::session::SessionRecord;
-use crate::server::shared_state::SharedState;
 
 use poem::web::Data;
 use poem_openapi::ApiResponse;
@@ -15,6 +8,9 @@ use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 
 use super::View;
+use crate::domain::DomainError;
+use crate::domain::records::session::SessionRecord;
+use crate::server::shared_state::SharedState;
 
 pub struct ApiSessionRoutesV1;
 #[OpenApi]

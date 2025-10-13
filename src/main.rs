@@ -3,16 +3,17 @@
 //! Game Masters manage health, status effects, and initiative order.
 //! Players can view the updates made by the Game Masters in real time.
 
+use color_eyre::eyre::Result;
+use config::Config;
+use server::WebServer;
+
 mod config;
 mod domain;
 mod prelude;
 mod server;
 
-use config::Config;
-use server::WebServer;
-
 #[tokio::main]
-async fn main() -> color_eyre::eyre::Result<()> {
+async fn main() -> Result<()> {
     initialize()?;
 
     let cfg = Config::new()?;

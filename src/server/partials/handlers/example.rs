@@ -1,6 +1,3 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use std::sync::Arc;
 
 use poem::IntoResponse;

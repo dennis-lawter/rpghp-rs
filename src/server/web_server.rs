@@ -1,18 +1,16 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use std::sync::Arc;
 
-use super::api::Api;
-use super::frontend::Frontend;
-use super::partials::Partials;
-use super::shared_state::SharedState;
 use poem::Route;
 use poem::Server;
 use poem::endpoint::StaticFilesEndpoint;
 use poem::listener::TcpListener;
 
+use super::api::Api;
+use super::frontend::Frontend;
+use super::partials::Partials;
+use super::shared_state::SharedState;
 use crate::config::Config;
+use crate::prelude::*;
 
 pub struct WebServer {
     cfg: Config,

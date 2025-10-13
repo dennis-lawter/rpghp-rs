@@ -1,9 +1,7 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use sqlx::PgPool;
 
 use crate::config::Config;
+use crate::prelude::*;
 
 pub mod creature;
 pub mod session;

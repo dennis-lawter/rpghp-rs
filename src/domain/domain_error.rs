@@ -1,3 +1,5 @@
+pub type DomainResult<T> = Result<T, DomainError>;
+
 #[derive(thiserror::Error, Debug)]
 pub enum DomainError {
     #[error("Not found")]
@@ -11,4 +13,3 @@ pub enum DomainError {
     #[error("Invalid UUID")]
     InvalidUuid(uuid::Error),
 }
-pub type DomainResult<T> = Result<T, DomainError>;

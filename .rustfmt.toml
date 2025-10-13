@@ -1,2 +1,5 @@
 imports_granularity = "item"
 fn_args_layout = "Vertical"
+group_imports = "StdExternalCrate"
+reorder_impl_items = true
+remove_nested_parens = true

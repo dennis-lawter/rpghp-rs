@@ -1,9 +1,5 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
 use std::sync::Arc;
 
-use super::shared_state::SharedState;
 use poem::EndpointExt;
 use poem::IntoEndpoint;
 use poem::Route;
@@ -13,6 +9,7 @@ use poem_openapi::OpenApiService;
 use v1_resources::creature::ApiCreatureRoutesV1;
 use v1_resources::session::ApiSessionRoutesV1;
 
+use super::shared_state::SharedState;
 use crate::config::Config;
 
 mod v1_resources;

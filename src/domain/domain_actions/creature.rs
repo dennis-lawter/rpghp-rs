@@ -1,12 +1,11 @@
 use uuid::Uuid;
 
+use super::Domain;
 use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::records::Record;
 use crate::domain::records::creature::CreatureRecord;
 use crate::domain::records::session::SessionRecord;
-
-use super::Domain;
 
 impl Domain {
     pub async fn create_creature(
