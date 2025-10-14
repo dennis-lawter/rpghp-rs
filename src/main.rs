@@ -23,7 +23,7 @@ async fn main() -> Result<()> {
     Ok(())
 }
 
-fn initialize() -> color_eyre::eyre::Result<()> {
+fn initialize() -> Result<()> {
     color_eyre::install()?;
     dotenv::dotenv()?;
     Ok(())

@@ -10,7 +10,7 @@
 
 * TODO Add unit testing
 ** TODO Add test coverage tracker
-** TODO Extract sql to a separate mod or something to create an ideal mockable sql interface with good mocking
+** TODO Extract sql to a separate mod or something to create an ideal mockable sql interface
 ** TODO Consider refactoring API & partial input/output schemas out of the endpoint mods
 ** TODO Add unit testing to git automation or github actions
 ** TODO Add httpyac e2e test to git automation or github actions
@@ -95,11 +95,13 @@
 * DONE Extract domain
 
 * DONE Improve session secret/id system
-    - In my previous rpghp project, I created a uuidv4 for the session secret, then the sha1 of that was the session id
-    - Only the session id is stored in the DB, meaning secrets cannot be retrieved
-    - The uuidv4 and sha1 of the uuidv4 can both be represented by a relatively small base64 in the url
-    - Currently the secret being in the URL is insecure; however I don't think too critically today about the security of a tabletop RPG helper...
-    - I recently discovered the path of /session/:session_id/... must always have the same named parameter
+    - In my previous rpghp project, I created a uuidv4 for the session secret.
+    - The sha1 of that was the session id.
+    - Only the session id is stored in the DB, meaning secrets cannot be retrieved.
+    - The uuidv4 and sha1 of the uuidv4 can both be represented by a relatively small base64 in the url.
+    - Currently the secret being in the URL is insecure;
+      however I don't think too critically today about the security of a tabletop RPG helper...
+    - I recently discovered the path of /session/:session_id must always have the same named parameter
         + This means that the random swap between :session_id_or_secret and :secret is not allowed
         + Could move the "admin" endpoints
         + Could make secret an auth header or something

@@ -14,31 +14,32 @@ use crate::prelude::*;
 
 pub struct WebServer {
     cfg: Config,
-    shared_state: SharedState,
+    state: Arc<SharedState>,
 }
 impl WebServer {
     pub async fn new(cfg: Config) -> CrateResult<Self> {
-        let shared_state = SharedState::new(&cfg).await?;
-        Ok(Self { cfg, shared_state })
+        let state = Arc::new(SharedState::new(&cfg).await?);
+        Ok(Self { cfg, state })
     }
 
     pub async fn serve(self) -> CrateResult<()> {
-        let shared_state_arc = Arc::new(self.shared_state);
-
-        let assets_routes = StaticFilesEndpoint::new("./assets");
-        let api_routes = Api::create_route(&self.cfg, shared_state_arc.clone());
-        let frontend_routes = Frontend::create_route(shared_state_arc.clone());
-        let partials_routes = Partials::create_route(shared_state_arc.clone());
-
-        let full_routing = Route::new()
-            .nest("/assets", assets_routes)
-            .nest("/api", api_routes)
-            .nest("/partials", partials_routes)
-            .nest("/", frontend_routes);
+        let routes = self.create_root_route();
 
         Server::new(TcpListener::bind(self.cfg.base_url.clone()))
-            .run(full_routing)
+            .run(routes)
             .await
             .map_err(CrateError::PoemRuntimeError)
+    }
+
+    fn create_root_route(&self) -> Route {
+        Route::new()
+            .nest("/assets", Self::assets_route())
+            .nest("/api", Api::create_route(&self.cfg, self.state.clone()))
+            .nest("/partials", Partials::create_route(self.state.clone()))
+            .nest("/", Frontend::create_route(self.state.clone()))
+    }
+
+    fn assets_route() -> StaticFilesEndpoint {
+        StaticFilesEndpoint::new("./assets")
     }
 }

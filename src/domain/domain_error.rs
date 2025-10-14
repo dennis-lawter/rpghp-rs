@@ -4,8 +4,6 @@ pub type DomainResult<T> = Result<T, DomainError>;
 pub enum DomainError {
     #[error("Not found")]
     NotFound,
-    // #[error("Invalid auth provided")]
-    // Unauthorized,
     #[error("Provided auth does not grant permission for requested record")]
     Forbidden,
     #[error("SQL error: {0}")]
