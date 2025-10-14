@@ -6,8 +6,8 @@ use poem::Route;
 use poem::middleware::AddDataEndpoint;
 use poem_openapi::ContactObject;
 use poem_openapi::OpenApiService;
-use v1_resources::creature::ApiCreatureRoutesV1;
-use v1_resources::session::ApiSessionRoutesV1;
+use v1_resources::creature_endpoints::ApiCreatureRoutesV1;
+use v1_resources::session_endpoints::ApiSessionRoutesV1;
 
 use super::shared_state::SharedState;
 use crate::config::Config;

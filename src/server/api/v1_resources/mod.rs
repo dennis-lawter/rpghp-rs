@@ -1,3 +1,3 @@
 mod auth;
-pub mod creature;
-pub mod session;
+pub mod creature_endpoints;
+pub mod session_endpoints;
