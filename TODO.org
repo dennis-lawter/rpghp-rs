@@ -4,7 +4,8 @@
 
 * TODO First time dev setup script
 
-* TODO Add logging
+* WIP Add logging
+    - need access logs at least
 
 * TODO Consider switching from the uuidv4 dashed hex to a base64
 

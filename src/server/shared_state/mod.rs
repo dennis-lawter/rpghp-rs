@@ -1,3 +1,5 @@
+mod template_registry;
+
 use handlebars::Handlebars;
 use poem::IntoResponse;
 use poem::http::StatusCode;
@@ -17,7 +19,7 @@ impl SharedState {
         let domain = Domain::new(cfg).await?;
 
         let mut hb = Handlebars::new();
-        Self::register_all_templates(&mut hb)?;
+        template_registry::register_hbs_files_from_dir(&mut hb, "./handlebars")?;
 
         Ok(Self { domain, hb })
     }
@@ -33,11 +35,5 @@ impl SharedState {
         })?;
 
         Ok(payload::Html(html))
-    }
-
-    fn register_all_templates(hb: &mut Handlebars) -> CrateResult<()> {
-        hb.register_template_file("index", "./handlebars/index.hbs")?;
-        hb.register_template_file("partials/example", "./handlebars/partials/example.hbs")?;
-        Ok(())
     }
 }

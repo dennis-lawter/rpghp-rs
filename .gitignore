@@ -1,8 +1,11 @@
 # Rust builds
 /target
+
 # App data
 /db-data
 .env
 .env.docker
+
 # Emacs backups
 \#*
+.\#*

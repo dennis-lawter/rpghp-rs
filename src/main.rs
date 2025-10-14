@@ -26,5 +26,6 @@ async fn main() -> Result<()> {
 fn initialize() -> Result<()> {
     color_eyre::install()?;
     dotenv::dotenv()?;
+    env_logger::try_init()?;
     Ok(())
 }
