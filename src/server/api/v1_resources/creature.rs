@@ -7,11 +7,11 @@ use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 
-use super::ApiV1AuthScheme;
-use super::ApiV1AuthSchemeOptional;
-use super::View;
+use super::auth::ApiV1AuthScheme;
+use super::auth::ApiV1AuthSchemeOptional;
 use crate::domain::DomainError;
 use crate::domain::records::creature::CreatureRecord;
+use crate::server::api::view::View;
 use crate::server::shared_state::SharedState;
 
 pub struct ApiCreatureRoutesV1;
@@ -123,8 +123,6 @@ enum CreatureCreateResponse {
     Created,
     #[oai(status = 400)]
     BadRequest,
-    // #[oai(status = 401)]
-    // Unauthorized,
     #[oai(status = 403)]
     Forbidden,
     #[oai(status = 404)]
@@ -136,7 +134,6 @@ impl CreatureCreateResponse {
     const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            // DomainError::Unauthorized => Self::Unauthorized,
             DomainError::Forbidden => Self::Forbidden,
             DomainError::SqlxError(_) => Self::InternalError,
             DomainError::InvalidUuid(_) => Self::BadRequest,
@@ -152,8 +149,6 @@ enum CreatureListResponse {
     Ok(Json<Vec<CreatureView>>),
     #[oai(status = 400)]
     BadRequest,
-    // #[oai(status = 401)]
-    // Unauthorized,
     #[oai(status = 403)]
     Forbidden,
     #[oai(status = 404)]
@@ -165,7 +160,6 @@ impl CreatureListResponse {
     const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            // DomainError::Unauthorized => Self::Unauthorized,
             DomainError::Forbidden => Self::Forbidden,
             DomainError::SqlxError(_) => Self::InternalError,
             DomainError::InvalidUuid(_) => Self::BadRequest,
@@ -181,8 +175,6 @@ enum CreatureGetResponse {
     Ok(Json<CreatureView>),
     #[oai(status = 400)]
     BadRequest,
-    // #[oai(status = 401)]
-    // Unauthorized,
     #[oai(status = 403)]
     Forbidden,
     #[oai(status = 404)]
@@ -194,7 +186,6 @@ impl CreatureGetResponse {
     const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            // DomainError::Unauthorized => Self::Unauthorized,
             DomainError::Forbidden => Self::Forbidden,
             DomainError::SqlxError(_) => Self::InternalError,
             DomainError::InvalidUuid(_) => Self::BadRequest,
@@ -211,7 +202,7 @@ struct CreatureView {
     approx_hp: f32,
     hp_hidden: bool,
 }
-impl super::View<CreatureRecord> for CreatureView {
+impl View<CreatureRecord> for CreatureView {
     fn from_record(record: &CreatureRecord) -> Self {
         let id = format!("{}", record.rpghp_creature_id);
         #[allow(clippy::cast_precision_loss)]

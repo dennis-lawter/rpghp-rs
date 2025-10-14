@@ -13,6 +13,7 @@ use super::shared_state::SharedState;
 use crate::config::Config;
 
 mod v1_resources;
+mod view;
 
 pub struct Api;
 

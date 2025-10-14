@@ -7,9 +7,10 @@ use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 
-use super::View;
+use super::auth::ApiV1AuthScheme;
 use crate::domain::DomainError;
 use crate::domain::records::session::SessionRecord;
+use crate::server::api::view::View;
 use crate::server::shared_state::SharedState;
 
 pub struct ApiSessionRoutesV1;
@@ -49,7 +50,7 @@ impl ApiSessionRoutesV1 {
         &self,
         state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
-        auth: super::ApiV1AuthScheme,
+        auth: ApiV1AuthScheme,
     ) -> SessionDeleteResponse {
         match state
             .domain
@@ -73,13 +74,6 @@ enum SessionCreateResponse {
 }
 impl SessionCreateResponse {
     const fn from_domain_error(_err: &DomainError) -> Self {
-        // match err {
-        //     DomainError::NotFound => Self::NotFound,
-        //     // DomainError::Unauthorized => Self::NotFound,
-        //     DomainError::Forbidden => Self::NotFound,
-        //     DomainError::SqlxError(_) => Self::NotFound,
-        //     DomainError::InvalidUuid(_) => Self::NotFound,
-        // }
         Self::NotFound
     }
 }
@@ -88,7 +82,7 @@ struct SessionWithSecretView {
     pub rpghp_session_id: String,
     pub secret: String,
 }
-impl super::View<SessionRecord> for SessionWithSecretView {
+impl View<SessionRecord> for SessionWithSecretView {
     fn from_record(record: &SessionRecord) -> Self {
         let rpghp_session_id = format!("{}", record.rpghp_session_id);
         let secret = format!("{}", record.secret);
@@ -110,13 +104,6 @@ enum SessionGetResponse {
 }
 impl SessionGetResponse {
     const fn from_domain_error(_err: &DomainError) -> Self {
-        // match err {
-        //     DomainError::NotFound => Self::NotFound,
-        //     // DomainError::Unauthorized => Self::NotFound,
-        //     DomainError::Forbidden => Self::NotFound,
-        //     DomainError::SqlxError(_) => Self::NotFound,
-        //     DomainError::InvalidUuid(_) => Self::NotFound,
-        // }
         Self::NotFound
     }
 }
@@ -124,7 +111,7 @@ impl SessionGetResponse {
 struct SessionView {
     pub rpghp_session_id: String,
 }
-impl super::View<SessionRecord> for SessionView {
+impl View<SessionRecord> for SessionView {
     fn from_record(record: &SessionRecord) -> Self {
         let rpghp_session_id = format!("{}", record.rpghp_session_id);
         Self { rpghp_session_id }
@@ -139,8 +126,6 @@ enum SessionDeleteResponse {
     Ok,
     #[oai(status = 400)]
     BadRequest,
-    // #[oai(status = 401)]
-    // Unauthorized,
     #[oai(status = 403)]
     Forbidden,
     #[oai(status = 404)]
@@ -152,7 +137,6 @@ impl SessionDeleteResponse {
     const fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
-            // DomainError::Unauthorized => Self::Unauthorized,
             DomainError::Forbidden => Self::Forbidden,
             DomainError::SqlxError(_) => Self::InternalError,
             DomainError::InvalidUuid(_) => Self::BadRequest,
