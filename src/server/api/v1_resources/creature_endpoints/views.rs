@@ -28,7 +28,7 @@ impl View<CreatureRecord> for CreatureView {
     }
 }
 impl CreatureView {
-    pub(super) fn simplified_if_hp_hidden(self) -> Self {
+    pub fn restricted_view(self) -> Self {
         if self.hp_hidden {
             Self {
                 creature_id: self.creature_id,

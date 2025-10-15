@@ -31,7 +31,7 @@ impl ApiCreatureRoutesV1 {
             .domain
             .create_creature(
                 &session_id,
-                &auth.0.token,
+                &auth.token(),
                 &data.creature_name,
                 data.max_hp,
                 data.curr_hp,
@@ -52,25 +52,21 @@ impl ApiCreatureRoutesV1 {
         session_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
-        let opt_secret = match &auth {
-            ApiV1AuthSchemeOptional::Bearer(bearer_auth) => Some(bearer_auth.0.token.clone()),
-            ApiV1AuthSchemeOptional::NoAuth => None,
-        };
+        let opt_token = auth.opt_token();
         match state
             .domain
-            .get_all_creatures_for_session(&session_id, opt_secret.as_ref())
+            .get_all_creatures_for_session(&session_id, opt_token.as_ref())
             .await
         {
             Ok(creatures) => {
-                let views: Vec<CreatureView> = match &auth {
-                    ApiV1AuthSchemeOptional::Bearer(_) => {
-                        creatures.iter().map(CreatureView::from_record).collect()
-                    }
-                    ApiV1AuthSchemeOptional::NoAuth => creatures
+                let views: Vec<CreatureView> = if auth.auth_provided() {
+                    creatures.iter().map(CreatureView::from_record).collect()
+                } else {
+                    creatures
                         .iter()
                         .map(CreatureView::from_record)
-                        .map(CreatureView::simplified_if_hp_hidden)
-                        .collect(),
+                        .map(CreatureView::restricted_view)
+                        .collect()
                 };
                 CreatureListResponse::Ok(Json(views))
             }
@@ -86,23 +82,19 @@ impl ApiCreatureRoutesV1 {
         creature_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,
     ) -> CreatureGetResponse {
-        let opt_secret = match &auth {
-            ApiV1AuthSchemeOptional::Bearer(bearer_auth) => Some(bearer_auth.0.token.clone()),
-            ApiV1AuthSchemeOptional::NoAuth => None,
-        };
+        let opt_token = auth.opt_token();
         let record = match state
             .domain
-            .get_creature(&session_id, &creature_id, opt_secret.as_ref())
+            .get_creature(&session_id, &creature_id, opt_token.as_ref())
             .await
         {
             Ok(record) => record,
             Err(err) => return CreatureGetResponse::from_domain_error(&err),
         };
-        let view = match &auth {
-            ApiV1AuthSchemeOptional::Bearer(_) => CreatureView::from_record(&record),
-            ApiV1AuthSchemeOptional::NoAuth => {
-                CreatureView::from_record(&record).simplified_if_hp_hidden()
-            }
+        let view = if auth.auth_provided() {
+            CreatureView::from_record(&record)
+        } else {
+            CreatureView::from_record(&record).restricted_view()
         };
         CreatureGetResponse::Ok(Json(view))
     }

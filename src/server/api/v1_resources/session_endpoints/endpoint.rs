@@ -56,7 +56,7 @@ impl ApiSessionRoutesV1 {
     ) -> SessionDeleteResponse {
         match state
             .domain
-            .delete_session(&session_id, &auth.0.token)
+            .delete_session(&session_id, &auth.token())
             .await
         {
             Ok(()) => SessionDeleteResponse::Ok,

@@ -55,8 +55,11 @@ unused_import_braces = "warn"
 # Allowed because poem::Error extends our err variant to 176+ bytes
 result_large_err = "allow"
 
-# Allowed for domain actions for record instantiation
+# Allowed for domain actions for record instantiation, reconsider in the future
 too_many_arguments = "allow"
+
+# Allowed because it is required by the Data pattern in poem
+needless_pass_by_value = "allow"
 
 # mod.rs usage is expected
 mod_module_files = "allow"
