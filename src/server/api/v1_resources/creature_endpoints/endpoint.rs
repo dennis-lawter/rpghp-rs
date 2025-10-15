@@ -12,6 +12,7 @@ use super::responses::CreatureCreateResponse;
 use super::responses::CreatureGetResponse;
 use super::responses::CreatureListResponse;
 use super::views::CreatureView;
+use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::View;
 use crate::server::shared_state::SharedState;
 

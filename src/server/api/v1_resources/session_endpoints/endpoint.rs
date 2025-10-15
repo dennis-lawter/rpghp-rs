@@ -11,6 +11,7 @@ use super::responses::SessionDeleteResponse;
 use super::responses::SessionGetResponse;
 use super::views::SessionView;
 use super::views::SessionWithSecretView;
+use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::View;
 use crate::server::shared_state::SharedState;
 
