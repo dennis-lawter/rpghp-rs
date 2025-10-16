@@ -19,7 +19,7 @@ pub struct Config {
     pub contact_email: String,
 }
 impl Config {
-    /// Create a new `Config`
+    /// Create a new `Config` by loading the expected ENV VARs
     ///
     /// Returns `Err(CrateError::DotEnvInstallError)` if the [dotenv] crate fails to load.
     /// Returns `Err(CrateError::EnvMissing)` if a required ENV VAR is not defined.
