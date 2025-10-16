@@ -3,7 +3,7 @@ use poem_openapi::Object;
 use crate::domain::records::session::SessionRecord;
 use crate::server::api::view::View;
 
-#[derive(Object, serde::Serialize)]
+#[derive(Object, serde::Serialize, Clone, Debug)]
 pub struct SessionView {
     pub rpghp_session_id: String,
 }
@@ -14,7 +14,7 @@ impl View<SessionRecord> for SessionView {
     }
 }
 
-#[derive(Object, serde::Serialize)]
+#[derive(Object, serde::Serialize, Clone, Debug)]
 pub struct SessionWithSecretView {
     pub rpghp_session_id: String,
     pub secret: String,

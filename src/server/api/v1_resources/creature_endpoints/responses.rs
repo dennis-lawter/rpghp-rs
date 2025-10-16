@@ -5,8 +5,8 @@ use super::views::CreatureView;
 use crate::domain::DomainError;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 
-#[derive(ApiResponse)]
-pub(super) enum CreatureCreateResponse {
+#[derive(ApiResponse, Clone, Copy, Debug)]
+pub enum CreatureCreateResponse {
     #[oai(status = 201)]
     Created,
     #[oai(status = 400)]
@@ -29,8 +29,8 @@ impl FromDomainError for CreatureCreateResponse {
     }
 }
 
-#[derive(ApiResponse)]
-pub(super) enum CreatureListResponse {
+#[derive(ApiResponse, Clone, Debug)]
+pub enum CreatureListResponse {
     #[oai(status = 200)]
     Ok(Json<Vec<CreatureView>>),
     #[oai(status = 400)]
@@ -53,8 +53,8 @@ impl FromDomainError for CreatureListResponse {
     }
 }
 
-#[derive(ApiResponse)]
-pub(super) enum CreatureGetResponse {
+#[derive(ApiResponse, Clone, Debug)]
+pub enum CreatureGetResponse {
     #[oai(status = 200)]
     Ok(Json<CreatureView>),
     #[oai(status = 400)]

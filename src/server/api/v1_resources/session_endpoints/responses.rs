@@ -6,8 +6,8 @@ use super::views::SessionWithSecretView;
 use crate::domain::DomainError;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 
-#[derive(ApiResponse)]
-pub(super) enum SessionCreateResponse {
+#[derive(ApiResponse, Clone, Debug)]
+pub enum SessionCreateResponse {
     #[oai(status = 201)]
     Ok(Json<SessionWithSecretView>),
     #[oai(status = 404)]
@@ -19,8 +19,8 @@ impl FromDomainError for SessionCreateResponse {
     }
 }
 
-#[derive(ApiResponse)]
-pub(super) enum SessionGetResponse {
+#[derive(ApiResponse, Clone, Debug)]
+pub enum SessionGetResponse {
     #[oai(status = 200)]
     Ok(Json<SessionView>),
     #[oai(status = 404)]
@@ -32,8 +32,8 @@ impl FromDomainError for SessionGetResponse {
     }
 }
 
-#[derive(ApiResponse)]
-pub(super) enum SessionDeleteResponse {
+#[derive(ApiResponse, Clone, Copy, Debug)]
+pub enum SessionDeleteResponse {
     #[oai(status = 200)]
     Ok,
     #[oai(status = 400)]

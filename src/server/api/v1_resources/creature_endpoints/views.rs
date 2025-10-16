@@ -3,8 +3,8 @@ use poem_openapi::Object;
 use crate::domain::records::creature::CreatureRecord;
 use crate::server::api::view::View;
 
-#[derive(Object, serde::Serialize)]
-pub(super) struct CreatureView {
+#[derive(Object, serde::Serialize, Clone, Debug)]
+pub struct CreatureView {
     creature_id: String,
     creature_name: String,
     max_hp: Option<i32>,
