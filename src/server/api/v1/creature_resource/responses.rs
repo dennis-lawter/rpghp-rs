@@ -3,7 +3,7 @@ use poem_openapi::payload::Json;
 
 use super::views::CreatureView;
 use crate::domain::DomainError;
-use crate::server::api::v1_resources::error_handling::FromDomainError;
+use crate::server::api::v1::error_handling::FromDomainError;
 
 #[derive(ApiResponse, Clone, Copy, Debug)]
 pub enum CreatureCreateResponse {

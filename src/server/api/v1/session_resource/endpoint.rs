@@ -11,7 +11,7 @@ use super::responses::SessionDeleteResponse;
 use super::responses::SessionGetResponse;
 use super::views::SessionView;
 use super::views::SessionWithSecretView;
-use crate::server::api::v1_resources::error_handling::FromDomainError;
+use crate::server::api::v1::error_handling::FromDomainError;
 use crate::server::api::view::View;
 use crate::server::shared_state::SharedState;
 
@@ -23,9 +23,9 @@ impl ApiSessionRoutesV1 {
         &self,
         state: Data<&Arc<SharedState>>,
     ) -> SessionCreateResponse {
-        match state.domain.create_session().await {
+        match state.domain.session_service.create().await {
             Ok(record) => {
-                let view = SessionWithSecretView::from_record(&record);
+                let view = SessionWithSecretView::from_entity(&record);
                 SessionCreateResponse::Ok(Json(view))
             }
             Err(err) => SessionCreateResponse::from_domain_error(&err),
@@ -38,7 +38,7 @@ impl ApiSessionRoutesV1 {
         state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
-        match state.domain.get_session(&session_id).await {
+        match state.domain.session_service.get(&session_id).await {
             Ok(record) => {
                 let view = SessionView::from_record(&record);
                 SessionGetResponse::Ok(Json(view))
@@ -56,7 +56,8 @@ impl ApiSessionRoutesV1 {
     ) -> SessionDeleteResponse {
         match state
             .domain
-            .delete_session(&session_id, &auth.token())
+            .session_service
+            .delete(&session_id, &auth.token())
             .await
         {
             Ok(()) => SessionDeleteResponse::Ok,

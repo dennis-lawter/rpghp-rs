@@ -1,4 +1,4 @@
-mod handlers;
+mod handler;
 
 use std::sync::Arc;
 
@@ -13,7 +13,7 @@ pub struct Frontend;
 impl Frontend {
     pub fn create_route(state: Arc<SharedState>) -> AddDataEndpoint<Route, Arc<SharedState>> {
         Route::new()
-            .nest("/", get(handlers::index::index))
+            .nest("/", get(handler::index::index))
             .data(state)
     }
 }

@@ -6,13 +6,13 @@ use poem::middleware::AddDataEndpoint;
 
 use super::shared_state::SharedState;
 
-mod handlers;
+mod handler;
 
 pub struct Partials;
 impl Partials {
     pub fn create_route(state: Arc<SharedState>) -> AddDataEndpoint<Route, Arc<SharedState>> {
         Route::new()
-            .nest("example", handlers::example::example)
+            .nest("example", handler::example::example)
             .data(state)
     }
 }
