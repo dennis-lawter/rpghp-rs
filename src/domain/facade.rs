@@ -1,11 +1,14 @@
 use sqlx::PgPool;
 
 use crate::config::Config;
+use crate::domain::service::creature::CreatureService;
+use crate::domain::service::session::SessionService;
 use crate::prelude::*;
 
 #[derive(Clone)]
 pub struct Domain {
-    pub(in crate::domain) db: PgPool,
+    pub session_service: SessionService,
+    pub creature_service: CreatureService,
 }
 
 impl Domain {
@@ -13,7 +16,13 @@ impl Domain {
         let db = Self::get_db_pool(cfg).await?;
         Self::migrate_db(&db).await?;
 
-        Ok(Self { db })
+        let session_service = SessionService::new(db.clone());
+        let creature_service = CreatureService::new(db.clone());
+
+        Ok(Self {
+            session_service,
+            creature_service,
+        })
     }
 
     async fn get_db_pool(cfg: &Config) -> CrateResult<PgPool> {

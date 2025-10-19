@@ -23,7 +23,7 @@ impl ApiSessionRoutesV1 {
         &self,
         state: Data<&Arc<SharedState>>,
     ) -> SessionCreateResponse {
-        match state.domain.create_session().await {
+        match state.domain.session_service.create_session().await {
             Ok(record) => {
                 let view = SessionWithSecretView::from_record(&record);
                 SessionCreateResponse::Ok(Json(view))
@@ -38,7 +38,7 @@ impl ApiSessionRoutesV1 {
         state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
-        match state.domain.get_session(&session_id).await {
+        match state.domain.session_service.get_session(&session_id).await {
             Ok(record) => {
                 let view = SessionView::from_record(&record);
                 SessionGetResponse::Ok(Json(view))
@@ -56,6 +56,7 @@ impl ApiSessionRoutesV1 {
     ) -> SessionDeleteResponse {
         match state
             .domain
+            .session_service
             .delete_session(&session_id, &auth.token())
             .await
         {

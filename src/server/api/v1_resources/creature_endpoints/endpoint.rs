@@ -29,6 +29,7 @@ impl ApiCreatureRoutesV1 {
     ) -> CreatureCreateResponse {
         match state
             .domain
+            .creature_service
             .create_creature(
                 &session_id,
                 &auth.token(),
@@ -55,6 +56,7 @@ impl ApiCreatureRoutesV1 {
         let opt_token = auth.opt_token();
         match state
             .domain
+            .creature_service
             .get_all_creatures_for_session(&session_id, opt_token.as_ref())
             .await
         {
@@ -85,6 +87,7 @@ impl ApiCreatureRoutesV1 {
         let opt_token = auth.opt_token();
         let record = match state
             .domain
+            .creature_service
             .get_creature(&session_id, &creature_id, opt_token.as_ref())
             .await
         {
