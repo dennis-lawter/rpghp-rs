@@ -1,5 +1,5 @@
 use crate::domain::entity::Entity;
 
-pub trait View<T: Entity>: Sized {
+pub trait FromEntity<T: Entity>: Sized {
     fn from_entity(entity: &T) -> Self;
 }

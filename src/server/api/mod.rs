@@ -12,6 +12,7 @@ use v1::session_resource::ApiSessionRoutesV1;
 use super::shared_state::SharedState;
 use crate::config::Config;
 
+mod request;
 mod v1;
 mod view;
 

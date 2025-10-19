@@ -1,7 +1,7 @@
 use poem_openapi::Object;
 
 use crate::domain::entity::creature::Creature;
-use crate::server::api::view::View;
+use crate::server::api::view::FromEntity;
 
 #[derive(Object, serde::Serialize, Clone, Debug)]
 pub struct CreatureView {
@@ -12,7 +12,7 @@ pub struct CreatureView {
     approx_hp: f32,
     hp_hidden: bool,
 }
-impl View<Creature> for CreatureView {
+impl FromEntity<Creature> for CreatureView {
     fn from_entity(entity: &Creature) -> Self {
         let id = format!("{}", entity.id);
         #[allow(clippy::cast_precision_loss)]

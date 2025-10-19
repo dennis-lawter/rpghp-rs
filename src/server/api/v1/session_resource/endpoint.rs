@@ -11,8 +11,11 @@ use super::responses::SessionDeleteResponse;
 use super::responses::SessionGetResponse;
 use super::views::SessionView;
 use super::views::SessionWithSecretView;
+use crate::domain::command::session::create::CreateSessionCommand;
+use crate::domain::command::session::delete::DeleteSessionCommand;
+use crate::domain::command::session::get::GetSessionCommand;
 use crate::server::api::v1::error_handling::FromDomainError;
-use crate::server::api::view::View;
+use crate::server::api::view::FromEntity;
 use crate::server::shared_state::SharedState;
 
 pub struct ApiSessionRoutesV1;
@@ -23,10 +26,10 @@ impl ApiSessionRoutesV1 {
         &self,
         state: Data<&Arc<SharedState>>,
     ) -> SessionCreateResponse {
-        match state.domain.session_service.create().await {
+        let cmd = CreateSessionCommand {};
+        match state.domain.session_service.create(&cmd).await {
             Ok(record) => {
-                let view = SessionWithSecretView::from_entity(&record);
-                SessionCreateResponse::Ok(Json(view))
+                SessionCreateResponse::Ok(Json(SessionWithSecretView::from_entity(&record)))
             }
             Err(err) => SessionCreateResponse::from_domain_error(&err),
         }
@@ -38,9 +41,13 @@ impl ApiSessionRoutesV1 {
         state: Data<&Arc<SharedState>>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
-        match state.domain.session_service.get(&session_id).await {
+        let cmd = match GetSessionCommand::new(&session_id) {
+            Ok(cmd) => cmd,
+            Err(err) => return SessionGetResponse::from_domain_error(&err),
+        };
+        match state.domain.session_service.get(&cmd).await {
             Ok(record) => {
-                let view = SessionView::from_record(&record);
+                let view = SessionView::from_entity(&record);
                 SessionGetResponse::Ok(Json(view))
             }
             Err(err) => SessionGetResponse::from_domain_error(&err),
@@ -54,12 +61,12 @@ impl ApiSessionRoutesV1 {
         session_id: Path<String>,
         auth: ApiV1AuthScheme,
     ) -> SessionDeleteResponse {
-        match state
-            .domain
-            .session_service
-            .delete(&session_id, &auth.token())
-            .await
-        {
+        let domain_auth = match DomainAuth::new(&session_id, &auth.token()) {
+            Ok(valid_format_auth) => valid_format_auth,
+            Err(err) => return CreatureCreateResponse::from_domain_error(&err),
+        };
+        let command = data.0.to_command(&domain_auth);
+        match state.domain.session_service.delete(&cmd).await {
             Ok(()) => SessionDeleteResponse::Ok,
             Err(err) => SessionDeleteResponse::from_domain_error(&err),
         }

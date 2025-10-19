@@ -1,5 +1,6 @@
 //! The sole access point to the database.
 
+pub mod command;
 mod domain_error;
 pub mod entity;
 mod facade;
