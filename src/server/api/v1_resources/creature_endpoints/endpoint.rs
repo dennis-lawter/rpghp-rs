@@ -12,7 +12,8 @@ use super::responses::CreatureCreateResponse;
 use super::responses::CreatureGetResponse;
 use super::responses::CreatureListResponse;
 use super::views::CreatureView;
-use crate::server::api::v1::error_handling::FromDomainError;
+use crate::server::api::v1_resources::error_handling::FromDomainError;
+use crate::server::api::view::View;
 use crate::server::shared_state::SharedState;
 
 pub struct ApiCreatureRoutesV1;
@@ -28,8 +29,7 @@ impl ApiCreatureRoutesV1 {
     ) -> CreatureCreateResponse {
         match state
             .domain
-            .creature_service
-            .create(
+            .create_creature(
                 &session_id,
                 &auth.token(),
                 &data.creature_name,

@@ -6,13 +6,13 @@ use poem::Route;
 use poem::middleware::AddDataEndpoint;
 use poem_openapi::ContactObject;
 use poem_openapi::OpenApiService;
-use v1::creature_resource::ApiCreatureRoutesV1;
-use v1::session_resource::ApiSessionRoutesV1;
+use v1_resources::creature_endpoints::ApiCreatureRoutesV1;
+use v1_resources::session_endpoints::ApiSessionRoutesV1;
 
 use super::shared_state::SharedState;
 use crate::config::Config;
 
-mod v1;
+mod v1_resources;
 mod view;
 
 pub struct Api;

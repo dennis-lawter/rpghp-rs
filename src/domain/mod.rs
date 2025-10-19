@@ -1,10 +1,9 @@
 //! The sole access point to the database.
 
+mod domain_actions;
 mod domain_error;
-pub mod entity;
-mod facade;
-mod repository;
-mod service;
+pub mod records;
 
+pub use domain_actions::Domain;
 pub use domain_error::DomainError;
-pub use facade::Domain;
+pub use domain_error::DomainResult;
