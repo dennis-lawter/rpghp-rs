@@ -62,11 +62,11 @@ impl ApiCreatureRoutesV1 {
         {
             Ok(creatures) => {
                 let views: Vec<CreatureView> = if auth.auth_provided() {
-                    creatures.iter().map(CreatureView::from_record).collect()
+                    creatures.iter().map(CreatureView::from_entity).collect()
                 } else {
                     creatures
                         .iter()
-                        .map(CreatureView::from_record)
+                        .map(CreatureView::from_entity)
                         .map(CreatureView::restricted_view)
                         .collect()
                 };
@@ -95,9 +95,9 @@ impl ApiCreatureRoutesV1 {
             Err(err) => return CreatureGetResponse::from_domain_error(&err),
         };
         let view = if auth.auth_provided() {
-            CreatureView::from_record(&record)
+            CreatureView::from_entity(&record)
         } else {
-            CreatureView::from_record(&record).restricted_view()
+            CreatureView::from_entity(&record).restricted_view()
         };
         CreatureGetResponse::Ok(Json(view))
     }

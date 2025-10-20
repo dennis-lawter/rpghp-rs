@@ -3,7 +3,6 @@
 pub mod core;
 pub mod entity;
 mod error;
-pub mod records;
 mod repository;
 pub mod service;
 

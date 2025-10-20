@@ -1,6 +1,6 @@
 use poem_openapi::Object;
 
-use crate::domain::records::creature::CreatureRecord;
+use crate::domain::entity::creature::CreatureEntity;
 use crate::server::api::view::View;
 
 #[derive(Object, serde::Serialize, Clone, Debug)]
@@ -12,9 +12,9 @@ pub struct CreatureView {
     approx_hp: f32,
     hp_hidden: bool,
 }
-impl View<CreatureRecord> for CreatureView {
-    fn from_record(record: &CreatureRecord) -> Self {
-        let id = format!("{}", record.rpghp_creature_id);
+impl View<CreatureEntity> for CreatureView {
+    fn from_entity(record: &CreatureEntity) -> Self {
+        let id = format!("{}", record.id);
         #[allow(clippy::cast_precision_loss)]
         let approx_hp = record.curr_hp as f32 / record.max_hp as f32;
         Self {

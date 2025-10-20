@@ -1,5 +1,5 @@
-use crate::domain::records::Record;
+use crate::domain::entity::Entity;
 
-pub trait View<T: Record>: Sized {
-    fn from_record(record: &T) -> Self;
+pub trait View<T: Entity>: Sized {
+    fn from_entity(record: &T) -> Self;
 }

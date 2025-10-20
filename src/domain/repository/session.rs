@@ -5,13 +5,19 @@ use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::session::SessionEntity;
 
-#[allow(dead_code)]
+#[derive(Clone)]
 pub struct SessionRepository {
     db: PgPool,
 }
+impl SessionRepository {
+    pub const fn new(db: PgPool) -> Self {
+        Self { db }
+    }
+}
+
 #[allow(dead_code)]
 impl SessionRepository {
-    async fn find_by_id(
+    pub async fn find_by_id(
         &self,
         id: &Uuid,
     ) -> DomainResult<SessionEntity> {
@@ -34,7 +40,7 @@ WHERE
         .ok_or(DomainError::NotFound)
     }
 
-    async fn create(
+    pub async fn create(
         &self,
         entity: &SessionEntity,
     ) -> DomainResult<()> {
@@ -64,8 +70,8 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
         Ok(())
     }
 
-    async fn delete(
-        self,
+    pub async fn delete(
+        &self,
         entity: &SessionEntity,
     ) -> DomainResult<()> {
         sqlx::query!(
