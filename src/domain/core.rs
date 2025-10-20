@@ -14,7 +14,6 @@ pub struct Domain {
 impl Domain {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
         let db = Self::get_db_pool(cfg).await?;
-        Self::migrate_db(&db).await?;
 
         let session_service = SessionService::new(db.clone());
         let creature_service = CreatureService::new(db.clone());
@@ -29,13 +28,5 @@ impl Domain {
         sqlx::Pool::<sqlx::Postgres>::connect(&cfg.db_url)
             .await
             .map_err(CrateError::SqlxError)
-    }
-
-    async fn migrate_db(pool: &PgPool) -> CrateResult<()> {
-        sqlx::migrate!("./migrations")
-            .run(pool)
-            .await
-            .map_err(CrateError::SqlxMigrationError)?;
-        Ok(())
     }
 }

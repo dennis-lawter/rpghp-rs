@@ -15,9 +15,6 @@ pub enum CrateError {
     #[error("SQLx Error: {0}")]
     SqlxError(#[from] sqlx::Error),
 
-    #[error("SQLx Migration Error: {0}")]
-    SqlxMigrationError(#[from] sqlx::migrate::MigrateError),
-
     #[error("Handlebars Error: {0}")]
     HandlebarsTemplateError(#[from] handlebars::TemplateError),
 

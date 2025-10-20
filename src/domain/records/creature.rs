@@ -1,12 +1,8 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
-use crate::domain::domain_error::DomainError;
-use crate::domain::domain_error::DomainResult;
-
 use uuid::Uuid;
 
 use super::Record;
+use crate::domain::error::DomainError;
+use crate::domain::error::DomainResult;
 
 pub struct CreatureRecord {
     pub rpghp_creature_id: Uuid,

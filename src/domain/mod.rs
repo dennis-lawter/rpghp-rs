@@ -1,10 +1,13 @@
 //! Accessor for persistant storage.
 
-mod domain_error;
-pub mod facade;
+pub mod core;
+pub mod entity;
+mod error;
 pub mod records;
+mod repository;
 pub mod service;
 
-pub use domain_error::DomainError;
-pub use domain_error::DomainResult;
-pub use facade::Domain;
+pub use core::Domain;
+
+pub use error::DomainError;
+pub use error::DomainResult;
