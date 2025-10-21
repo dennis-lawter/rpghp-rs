@@ -13,17 +13,17 @@ pub struct CreatureView {
     hp_hidden: bool,
 }
 impl View<CreatureEntity> for CreatureView {
-    fn from_entity(record: &CreatureEntity) -> Self {
-        let id = format!("{}", record.id);
+    fn from_entity(entity: &CreatureEntity) -> Self {
+        let id = format!("{}", entity.rpghp_creature_id);
         #[allow(clippy::cast_precision_loss)]
-        let approx_hp = record.curr_hp as f32 / record.max_hp as f32;
+        let approx_hp = entity.curr_hp as f32 / entity.max_hp as f32;
         Self {
             creature_id: id,
-            creature_name: record.creature_name.clone(),
-            max_hp: Some(record.max_hp),
-            curr_hp: Some(record.curr_hp),
+            creature_name: entity.creature_name.clone(),
+            max_hp: Some(entity.max_hp),
+            curr_hp: Some(entity.curr_hp),
             approx_hp,
-            hp_hidden: record.hp_hidden,
+            hp_hidden: entity.hp_hidden,
         }
     }
 }

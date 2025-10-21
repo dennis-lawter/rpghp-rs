@@ -21,7 +21,7 @@ impl CreatureRepository {
             CreatureEntity,
             r#"
 SELECT
-    rpghp_creature_id as id,
+    rpghp_creature_id,
     session_id,
     creature_name,
     max_hp,
@@ -77,7 +77,7 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
         hp_hidden = $6,
         icon = $7
         "#,
-            entity.id,
+            entity.rpghp_creature_id,
             entity.session_id,
             entity.creature_name,
             entity.max_hp,
@@ -91,24 +91,26 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
         Ok(())
     }
 
-    //     pub async fn delete(
-    //         self,
-    //         entity: CreatureEntity,
-    //     ) -> DomainResult<()> {
-    //         sqlx::query!(
-    //             r#"
-    // DELETE FROM
-    //     rpghp_creature
-    // WHERE
-    //     rpghp_creature_id = $1
-    //         "#,
-    //             entity.id,
-    //         )
-    //         .execute(&self.db)
-    //         .await
-    //         .map_err(DomainError::SqlxError)?;
-    //         Ok(())
-    //     }
+    // TODO: impl delete endpoint, but consider soft deletes?
+    #[allow(dead_code)]
+    pub async fn delete(
+        self,
+        entity: CreatureEntity,
+    ) -> DomainResult<()> {
+        sqlx::query!(
+            r#"
+DELETE FROM
+    rpghp_creature
+WHERE
+    rpghp_creature_id = $1
+        "#,
+            entity.rpghp_creature_id,
+        )
+        .execute(&self.db)
+        .await
+        .map_err(DomainError::SqlxError)?;
+        Ok(())
+    }
 
     pub async fn find_by_session_id(
         &self,
@@ -118,7 +120,7 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
             CreatureEntity,
             r#"
 SELECT
-    rpghp_creature_id as id,
+    rpghp_creature_id,
     session_id,
     creature_name,
     max_hp,

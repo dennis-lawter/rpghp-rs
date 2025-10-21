@@ -13,7 +13,7 @@ pub struct Domain {
 
 impl Domain {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
-        let db = Self::get_db_pool(cfg).await?;
+        let db = Self::create_db_connection(cfg).await?;
 
         let session_service = SessionService::new(db.clone());
         let creature_service = CreatureService::new(db.clone());
@@ -24,7 +24,7 @@ impl Domain {
         })
     }
 
-    async fn get_db_pool(cfg: &Config) -> CrateResult<PgPool> {
+    async fn create_db_connection(cfg: &Config) -> CrateResult<PgPool> {
         sqlx::Pool::<sqlx::Postgres>::connect(&cfg.db_url)
             .await
             .map_err(CrateError::SqlxError)

@@ -3,7 +3,7 @@ use uuid::Uuid;
 use crate::domain::entity::Entity;
 
 pub struct CreatureEntity {
-    pub id: Uuid,
+    pub rpghp_creature_id: Uuid,
     pub session_id: Uuid,
     pub creature_name: String,
     pub max_hp: i32,

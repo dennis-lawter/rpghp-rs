@@ -24,22 +24,22 @@ impl SessionService {
 
     pub async fn get_session(
         &self,
-        id: &str,
+        session_id: &str,
     ) -> DomainResult<SessionEntity> {
-        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
-        self.session_repo.find_by_id(&id).await
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
+        self.session_repo.find_by_id(&session_id).await
     }
 
     pub async fn delete_session(
         &self,
-        id: &str,
+        session_id: &str,
         secret: &str,
     ) -> DomainResult<()> {
-        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let session = self
             .session_repo
-            .find_by_id_and_secret(&id, &secret)
+            .find_by_id_and_secret(&session_id, &secret)
             .await?;
         self.session_repo.delete(&session).await?;
         Ok(())

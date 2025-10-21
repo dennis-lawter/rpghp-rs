@@ -18,13 +18,13 @@ POST http://{{BASE_URL}}/api/v1/session
 
 ###
 # @ref json_session
-GET http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}
+GET http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}
 
 ?? status == 200
 
 ###
 # @ref json_session
-POST http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}/creature
+POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/creature
 Authorization: Bearer {{json_session.secret}}
 Content-Type: application/json
 < {{assetsDir}}jon_visible.json
@@ -33,7 +33,7 @@ Content-Type: application/json
 
 ###
 # @ref json_session
-POST http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}/creature
+POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/creature
 Authorization: Bearer {{json_session.secret}}
 Content-Type: application/json
 < {{assetsDir}}jon_hidden.json
@@ -42,7 +42,7 @@ Content-Type: application/json
 
 ###
 # @ref json_session
-GET http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}/creature
+GET http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/creature
 
 ?? status == 200
 ?? body contains "jon visible"
@@ -50,20 +50,20 @@ GET http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}/creatur
 
 ###
 # @ref json_session
-GET http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}/creature
+GET http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/creature
 Authorization: Bearer {{json_session.secret}}
 
 ?? status == 200
 
 ###
 # @ref json_session
-DELETE http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}
+DELETE http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}
 Authorization: Bearer {{json_session.secret}}
 
 ?? status == 200
 
 ###
 # @ref json_session
-GET http://{{BASE_URL}}/api/v1/session/{{json_session.rpghp_session_id}}
+GET http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}
 
 ?? status == 404

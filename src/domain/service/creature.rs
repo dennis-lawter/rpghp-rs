@@ -24,7 +24,7 @@ impl CreatureService {
 
     pub async fn create_creature(
         &self,
-        id: &str,
+        session_id: &str,
         secret: &str,
         creature_name: &str,
         max_hp: i32,
@@ -32,15 +32,15 @@ impl CreatureService {
         hp_hidden: bool,
         icon: Option<String>,
     ) -> DomainResult<CreatureEntity> {
-        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let session = self
             .session_repo
-            .find_by_id_and_secret(&id, &secret)
+            .find_by_id_and_secret(&session_id, &secret)
             .await?;
         let creature = CreatureEntity {
-            id: Uuid::new_v4(),
-            session_id: session.id,
+            rpghp_creature_id: Uuid::new_v4(),
+            session_id: session.rpghp_session_id,
             creature_name: String::from(creature_name),
             max_hp,
             curr_hp,
@@ -54,19 +54,25 @@ impl CreatureService {
 
     pub async fn get_all_creatures_for_session(
         &self,
-        id: &str,
+        session_id: &str,
         opt_secret: Option<&String>,
     ) -> DomainResult<Vec<CreatureEntity>> {
-        let id = Uuid::parse_str(id).map_err(DomainError::InvalidUuid)?;
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let session = match opt_secret {
-            None => self.session_repo.find_by_id(&id).await?,
+            None => self.session_repo.find_by_id(&session_id).await?,
             Some(token) => {
                 let token = Uuid::parse_str(token).map_err(DomainError::InvalidUuid)?;
-                self.session_repo.find_by_id_and_secret(&id, &token).await?
+                self.session_repo
+                    .find_by_id_and_secret(&session_id, &token)
+                    .await?
             }
         };
 
-        let Ok(creatures) = self.creature_repo.find_by_session_id(&session.id).await else {
+        let Ok(creatures) = self
+            .creature_repo
+            .find_by_session_id(&session.rpghp_session_id)
+            .await
+        else {
             return Err(DomainError::NotFound);
         };
 
@@ -91,7 +97,7 @@ impl CreatureService {
             }
         };
         let creature = self.creature_repo.find_by_id(&creature_id).await?;
-        if creature.session_id != session.id {
+        if creature.session_id != session.rpghp_session_id {
             return Err(DomainError::Forbidden);
         }
         Ok(creature)

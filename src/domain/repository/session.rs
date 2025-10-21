@@ -25,7 +25,7 @@ impl SessionRepository {
             SessionEntity,
             r#"
 SELECT
-    rpghp_session_id as id,
+    rpghp_session_id,
     secret
 FROM
     rpghp_session
@@ -61,7 +61,7 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
     SET
         secret = $2
         "#,
-            entity.id,
+            entity.rpghp_session_id,
             entity.secret
         )
         .execute(&self.db)
@@ -82,7 +82,7 @@ WHERE
     rpghp_session_id=$1
     AND secret=$2
         "#,
-            entity.id,
+            entity.rpghp_session_id,
             entity.secret
         )
         .execute(&self.db)
