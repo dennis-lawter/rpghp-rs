@@ -28,7 +28,10 @@ fn register_recursive(
             register_recursive(hb, base, &path)?;
         } else if path.extension().and_then(|e| e.to_str()) == Some("hbs") {
             let rel = path.strip_prefix(base).map_err(|_| {
-                CrateError::PathStripPrefixError(path.clone(), base.display().to_string())
+                CrateError::PathStripPrefixError(
+                    path.display().to_string(),
+                    base.display().to_string(),
+                )
             })?;
             let name = rel
                 .to_string_lossy()

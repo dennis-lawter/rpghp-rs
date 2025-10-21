@@ -1,7 +1,5 @@
 //! Project-wide definitions and utilities.
 
-use std::path::PathBuf;
-
 pub type CrateResult<T> = Result<T, CrateError>;
 
 #[derive(thiserror::Error, Debug)]
@@ -22,5 +20,5 @@ pub enum CrateError {
     FilesystemError(#[from] std::io::Error),
 
     #[error("Could not strip an expected prefix `{0}` from a directory path `{1}`")]
-    PathStripPrefixError(PathBuf, String),
+    PathStripPrefixError(String, String),
 }
