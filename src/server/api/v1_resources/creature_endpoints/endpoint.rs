@@ -2,16 +2,16 @@ use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
 
-use super::super::auth::ApiV1AuthScheme;
-use super::super::auth::ApiV1AuthSchemeOptional;
-use super::requests::CreatureCreateRequest;
-use super::responses::CreatureCreateResponse;
-use super::responses::CreatureGetResponse;
-use super::responses::CreatureListResponse;
+use super::super::auth::ApiAuthScheme;
+use super::super::auth::ApiOptAuthScheme;
+use super::requests::CreateCreatureRequest;
+use super::responses::CreateCreatureResponse;
+use super::responses::GetCreatureResponse;
+use super::responses::ListCreatureResponse;
 use super::views::CreatureView;
 use crate::server::api::SharedStateCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
-use crate::server::api::view::View;
+use crate::server::api::view::FromEntity;
 
 pub struct ApiCreatureRoutesV1;
 #[OpenApi]
@@ -21,9 +21,9 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: SharedStateCtx<'_>,
         session_id: Path<String>,
-        data: Json<CreatureCreateRequest>,
-        auth: ApiV1AuthScheme,
-    ) -> CreatureCreateResponse {
+        data: Json<CreateCreatureRequest>,
+        auth: ApiAuthScheme,
+    ) -> CreateCreatureResponse {
         match state
             .domain
             .creature_service
@@ -38,8 +38,8 @@ impl ApiCreatureRoutesV1 {
             )
             .await
         {
-            Ok(_) => CreatureCreateResponse::Created,
-            Err(err) => CreatureCreateResponse::from_domain_error(&err),
+            Ok(_) => CreateCreatureResponse::Created,
+            Err(err) => CreateCreatureResponse::from_domain_error(&err),
         }
     }
 
@@ -48,8 +48,8 @@ impl ApiCreatureRoutesV1 {
         &self,
         state: SharedStateCtx<'_>,
         session_id: Path<String>,
-        auth: ApiV1AuthSchemeOptional,
-    ) -> CreatureListResponse {
+        auth: ApiOptAuthScheme,
+    ) -> ListCreatureResponse {
         let opt_token = auth.opt_token();
         match state
             .domain
@@ -64,12 +64,12 @@ impl ApiCreatureRoutesV1 {
                     creatures
                         .iter()
                         .map(CreatureView::from_entity)
-                        .map(CreatureView::restricted_view)
+                        .map(CreatureView::without_hp_details)
                         .collect()
                 };
-                CreatureListResponse::Ok(Json(views))
+                ListCreatureResponse::Ok(Json(views))
             }
-            Err(err) => CreatureListResponse::from_domain_error(&err),
+            Err(err) => ListCreatureResponse::from_domain_error(&err),
         }
     }
 
@@ -79,8 +79,8 @@ impl ApiCreatureRoutesV1 {
         state: SharedStateCtx<'_>,
         session_id: Path<String>,
         creature_id: Path<String>,
-        auth: ApiV1AuthSchemeOptional,
-    ) -> CreatureGetResponse {
+        auth: ApiOptAuthScheme,
+    ) -> GetCreatureResponse {
         let opt_token = auth.opt_token();
         let record = match state
             .domain
@@ -89,13 +89,13 @@ impl ApiCreatureRoutesV1 {
             .await
         {
             Ok(record) => record,
-            Err(err) => return CreatureGetResponse::from_domain_error(&err),
+            Err(err) => return GetCreatureResponse::from_domain_error(&err),
         };
         let view = if auth.auth_provided() {
             CreatureView::from_entity(&record)
         } else {
-            CreatureView::from_entity(&record).restricted_view()
+            CreatureView::from_entity(&record).without_hp_details()
         };
-        CreatureGetResponse::Ok(Json(view))
+        GetCreatureResponse::Ok(Json(view))
     }
 }

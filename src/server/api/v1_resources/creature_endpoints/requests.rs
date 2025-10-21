@@ -1,5 +1,5 @@
 #[derive(serde::Deserialize, poem_openapi::Object)]
-pub struct CreatureCreateRequest {
+pub struct CreateCreatureRequest {
     pub creature_name: String,
     pub max_hp: i32,
     pub curr_hp: i32,

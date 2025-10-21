@@ -1,6 +1,7 @@
 use poem_openapi::Object;
 
 use crate::domain::entity::creature::CreatureEntity;
+use crate::server::api::view::FromEntity;
 use crate::server::api::view::View;
 
 #[derive(Object, serde::Serialize, Clone, Debug)]
@@ -12,7 +13,8 @@ pub struct CreatureView {
     approx_hp: f32,
     hp_hidden: bool,
 }
-impl View<CreatureEntity> for CreatureView {
+impl View for CreatureView {}
+impl FromEntity<CreatureEntity> for CreatureView {
     fn from_entity(entity: &CreatureEntity) -> Self {
         let id = format!("{}", entity.rpghp_creature_id);
         #[allow(clippy::cast_precision_loss)]
@@ -28,7 +30,7 @@ impl View<CreatureEntity> for CreatureView {
     }
 }
 impl CreatureView {
-    pub fn restricted_view(self) -> Self {
+    pub fn without_hp_details(self) -> Self {
         if self.hp_hidden {
             Self {
                 creature_id: self.creature_id,

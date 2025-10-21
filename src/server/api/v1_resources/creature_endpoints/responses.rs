@@ -6,7 +6,7 @@ use crate::domain::DomainError;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 
 #[derive(ApiResponse, Clone, Copy, Debug)]
-pub enum CreatureCreateResponse {
+pub enum CreateCreatureResponse {
     #[oai(status = 201)]
     Created,
     #[oai(status = 400)]
@@ -18,7 +18,7 @@ pub enum CreatureCreateResponse {
     #[oai(status = 500)]
     InternalError,
 }
-impl FromDomainError for CreatureCreateResponse {
+impl FromDomainError for CreateCreatureResponse {
     fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
@@ -30,7 +30,7 @@ impl FromDomainError for CreatureCreateResponse {
 }
 
 #[derive(ApiResponse, Clone, Debug)]
-pub enum CreatureListResponse {
+pub enum ListCreatureResponse {
     #[oai(status = 200)]
     Ok(Json<Vec<CreatureView>>),
     #[oai(status = 400)]
@@ -42,7 +42,7 @@ pub enum CreatureListResponse {
     #[oai(status = 500)]
     InternalError,
 }
-impl FromDomainError for CreatureListResponse {
+impl FromDomainError for ListCreatureResponse {
     fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
@@ -54,7 +54,7 @@ impl FromDomainError for CreatureListResponse {
 }
 
 #[derive(ApiResponse, Clone, Debug)]
-pub enum CreatureGetResponse {
+pub enum GetCreatureResponse {
     #[oai(status = 200)]
     Ok(Json<CreatureView>),
     #[oai(status = 400)]
@@ -66,7 +66,7 @@ pub enum CreatureGetResponse {
     #[oai(status = 500)]
     InternalError,
 }
-impl FromDomainError for CreatureGetResponse {
+impl FromDomainError for GetCreatureResponse {
     fn from_domain_error(err: &DomainError) -> Self {
         match err {
             DomainError::NotFound => Self::NotFound,
