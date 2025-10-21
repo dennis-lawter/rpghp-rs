@@ -1,6 +1,3 @@
-use std::sync::Arc;
-
-use poem::web::Data;
 use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
@@ -11,9 +8,9 @@ use super::responses::SessionDeleteResponse;
 use super::responses::SessionGetResponse;
 use super::views::SessionView;
 use super::views::SessionWithSecretView;
+use crate::server::api::SharedStateCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::View;
-use crate::server::shared_state::SharedState;
 
 pub struct ApiSessionRoutesV1;
 #[OpenApi]
@@ -21,7 +18,7 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session", method = "post")]
     async fn create_session(
         &self,
-        state: Data<&Arc<SharedState>>,
+        state: SharedStateCtx<'_>,
     ) -> SessionCreateResponse {
         match state.domain.session_service.create_session().await {
             Ok(entity) => {
@@ -35,7 +32,7 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session/:session_id", method = "get")]
     async fn get_session(
         &self,
-        state: Data<&Arc<SharedState>>,
+        state: SharedStateCtx<'_>,
         session_id: Path<String>,
     ) -> SessionGetResponse {
         match state.domain.session_service.get_session(&session_id).await {
@@ -50,7 +47,7 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session/:session_id", method = "delete")]
     async fn delete_session(
         &self,
-        state: Data<&Arc<SharedState>>,
+        state: SharedStateCtx<'_>,
         session_id: Path<String>,
         auth: ApiV1AuthScheme,
     ) -> SessionDeleteResponse {

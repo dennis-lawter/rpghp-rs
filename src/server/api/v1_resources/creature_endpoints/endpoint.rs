@@ -1,6 +1,3 @@
-use std::sync::Arc;
-
-use poem::web::Data;
 use poem_openapi::OpenApi;
 use poem_openapi::param::Path;
 use poem_openapi::payload::Json;
@@ -12,9 +9,9 @@ use super::responses::CreatureCreateResponse;
 use super::responses::CreatureGetResponse;
 use super::responses::CreatureListResponse;
 use super::views::CreatureView;
+use crate::server::api::SharedStateCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::View;
-use crate::server::shared_state::SharedState;
 
 pub struct ApiCreatureRoutesV1;
 #[OpenApi]
@@ -22,7 +19,7 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature", method = "post")]
     async fn create_creature(
         &self,
-        state: Data<&Arc<SharedState>>,
+        state: SharedStateCtx<'_>,
         session_id: Path<String>,
         data: Json<CreatureCreateRequest>,
         auth: ApiV1AuthScheme,
@@ -49,7 +46,7 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature", method = "get")]
     async fn list_creature(
         &self,
-        state: Data<&Arc<SharedState>>,
+        state: SharedStateCtx<'_>,
         session_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,
     ) -> CreatureListResponse {
@@ -79,7 +76,7 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature/:creature_id", method = "get")]
     async fn get_creature(
         &self,
-        state: Data<&Arc<SharedState>>,
+        state: SharedStateCtx<'_>,
         session_id: Path<String>,
         creature_id: Path<String>,
         auth: ApiV1AuthSchemeOptional,

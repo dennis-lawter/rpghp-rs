@@ -4,6 +4,7 @@ use poem::EndpointExt;
 use poem::IntoEndpoint;
 use poem::Route;
 use poem::middleware::AddDataEndpoint;
+use poem::web::Data;
 use poem_openapi::ContactObject;
 use poem_openapi::OpenApiService;
 use v1_resources::creature_endpoints::ApiCreatureRoutesV1;
@@ -16,6 +17,8 @@ mod v1_resources;
 mod view;
 
 pub struct Api;
+
+type SharedStateCtx<'a> = Data<&'a Arc<SharedState>>;
 
 impl Api {
     pub fn create_route(
