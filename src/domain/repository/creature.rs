@@ -1,32 +1,33 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
+use sqlx::PgPool;
 
-use crate::domain::domain_error::DomainError;
-use crate::domain::domain_error::DomainResult;
+use crate::domain::DomainError;
+use crate::domain::DomainResult;
+use crate::domain::entity::creature::CreatureEntity;
 
-use uuid::Uuid;
-
-use super::Record;
-
-pub struct CreatureRecord {
-    pub rpghp_creature_id: Uuid,
-    pub session_id: Uuid,
-    pub creature_name: String,
-    pub max_hp: i32,
-    pub curr_hp: i32,
-    pub hp_hidden: bool,
-    pub icon: Option<String>,
+#[derive(Clone)]
+pub struct CreatureRepository {
+    db: PgPool,
 }
-impl Record for CreatureRecord {
-    async fn find_by_id(
-        conn: &sqlx::PgPool,
+impl CreatureRepository {
+    pub const fn new(db: PgPool) -> Self {
+        Self { db }
+    }
+
+    pub async fn find_by_id(
+        &self,
         id: &uuid::Uuid,
-    ) -> DomainResult<Self> {
+    ) -> DomainResult<CreatureEntity> {
         sqlx::query_as!(
-            Self,
+            CreatureEntity,
             r#"
 SELECT
-    *
+    rpghp_creature_id,
+    session_id,
+    creature_name,
+    max_hp,
+    curr_hp,
+    hp_hidden,
+    icon
 FROM
     rpghp_creature
 WHERE
@@ -34,15 +35,15 @@ WHERE
         "#,
             id
         )
-        .fetch_optional(conn)
+        .fetch_optional(&self.db)
         .await
         .map_err(DomainError::SqlxError)?
         .ok_or(DomainError::NotFound)
     }
 
-    async fn save(
+    pub async fn create(
         &self,
-        conn: &sqlx::PgPool,
+        entity: &CreatureEntity,
     ) -> DomainResult<()> {
         sqlx::query!(
             r#"
@@ -76,23 +77,25 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
         hp_hidden = $6,
         icon = $7
         "#,
-            self.rpghp_creature_id,
-            self.session_id,
-            self.creature_name,
-            self.max_hp,
-            self.curr_hp,
-            self.hp_hidden,
-            self.icon,
+            entity.rpghp_creature_id,
+            entity.session_id,
+            entity.creature_name,
+            entity.max_hp,
+            entity.curr_hp,
+            entity.hp_hidden,
+            entity.icon,
         )
-        .execute(conn)
+        .execute(&self.db)
         .await
         .map_err(DomainError::SqlxError)?;
         Ok(())
     }
 
-    async fn delete(
+    // TODO: impl delete endpoint, but consider soft deletes?
+    #[allow(dead_code)]
+    pub async fn delete(
         self,
-        conn: &sqlx::PgPool,
+        entity: CreatureEntity,
     ) -> DomainResult<()> {
         sqlx::query!(
             r#"
@@ -101,25 +104,29 @@ DELETE FROM
 WHERE
     rpghp_creature_id = $1
         "#,
-            self.rpghp_creature_id,
+            entity.rpghp_creature_id,
         )
-        .execute(conn)
+        .execute(&self.db)
         .await
         .map_err(DomainError::SqlxError)?;
         Ok(())
     }
-}
 
-impl CreatureRecord {
     pub async fn find_by_session_id(
-        conn: &sqlx::PgPool,
+        &self,
         session_id: &uuid::Uuid,
-    ) -> DomainResult<Vec<Self>> {
+    ) -> DomainResult<Vec<CreatureEntity>> {
         sqlx::query_as!(
-            Self,
+            CreatureEntity,
             r#"
 SELECT
-    *
+    rpghp_creature_id,
+    session_id,
+    creature_name,
+    max_hp,
+    curr_hp,
+    hp_hidden,
+    icon
 FROM
     rpghp_creature
 WHERE
@@ -127,7 +134,7 @@ WHERE
             "#,
             session_id,
         )
-        .fetch_all(conn)
+        .fetch_all(&self.db)
         .await
         .map_err(DomainError::SqlxError)
     }

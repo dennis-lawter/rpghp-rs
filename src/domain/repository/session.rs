@@ -1,26 +1,28 @@
-#[allow(unused_imports)]
-use crate::prelude::*;
-
-use crate::domain::domain_error::DomainError;
-use crate::domain::domain_error::DomainResult;
-
 use sqlx::PgPool;
 use uuid::Uuid;
 
-use super::Record;
+use crate::domain::DomainError;
+use crate::domain::DomainResult;
+use crate::domain::entity::session::SessionEntity;
 
-#[derive(sqlx::FromRow)]
-pub struct SessionRecord {
-    pub rpghp_session_id: Uuid,
-    pub secret: Uuid,
+#[derive(Clone)]
+pub struct SessionRepository {
+    db: PgPool,
 }
-impl super::Record for SessionRecord {
-    async fn find_by_id(
-        conn: &PgPool,
+impl SessionRepository {
+    pub const fn new(db: PgPool) -> Self {
+        Self { db }
+    }
+}
+
+#[allow(dead_code)]
+impl SessionRepository {
+    pub async fn find_by_id(
+        &self,
         id: &Uuid,
-    ) -> DomainResult<Self> {
+    ) -> DomainResult<SessionEntity> {
         sqlx::query_as!(
-            Self,
+            SessionEntity,
             r#"
 SELECT
     rpghp_session_id,
@@ -32,15 +34,15 @@ WHERE
         "#,
             id
         )
-        .fetch_optional(conn)
+        .fetch_optional(&self.db)
         .await
         .map_err(DomainError::SqlxError)?
         .ok_or(DomainError::NotFound)
     }
 
-    async fn save(
+    pub async fn create(
         &self,
-        conn: &PgPool,
+        entity: &SessionEntity,
     ) -> DomainResult<()> {
         sqlx::query!(
             r#"
@@ -59,51 +61,42 @@ ON CONFLICT (rpghp_session_id) DO UPDATE
     SET
         secret = $2
         "#,
-            self.rpghp_session_id,
-            self.secret
+            entity.rpghp_session_id,
+            entity.secret
         )
-        .execute(conn)
+        .execute(&self.db)
         .await
         .map_err(DomainError::SqlxError)?;
         Ok(())
     }
 
-    async fn delete(
-        self,
-        conn: &PgPool,
+    pub async fn delete(
+        &self,
+        entity: &SessionEntity,
     ) -> DomainResult<()> {
         sqlx::query!(
             r#"
 DELETE FROM
     rpghp_session
 WHERE
-    secret=$1
+    rpghp_session_id=$1
+    AND secret=$2
         "#,
-            self.secret
+            entity.rpghp_session_id,
+            entity.secret
         )
-        .execute(conn)
+        .execute(&self.db)
         .await
         .map_err(DomainError::SqlxError)?;
         Ok(())
     }
-}
-
-impl SessionRecord {
-    pub fn new() -> Self {
-        let rpghp_session_id = Uuid::new_v4();
-        let secret = Uuid::new_v4();
-        Self {
-            rpghp_session_id,
-            secret,
-        }
-    }
 
     pub async fn find_by_id_and_secret(
-        pool: &PgPool,
+        &self,
         id: &Uuid,
         secret: &Uuid,
-    ) -> DomainResult<Self> {
-        let Ok(session) = Self::find_by_id(pool, id).await else {
+    ) -> DomainResult<SessionEntity> {
+        let Ok(session) = self.find_by_id(id).await else {
             return Err(DomainError::NotFound);
         };
 

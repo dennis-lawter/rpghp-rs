@@ -1,30 +1,32 @@
 use poem_openapi::Object;
 
-use crate::domain::records::session::SessionRecord;
+use crate::domain::entity::session::SessionEntity;
 use crate::server::api::view::View;
 
 #[derive(Object, serde::Serialize, Clone, Debug)]
 pub struct SessionView {
-    pub rpghp_session_id: String,
+    pub session_id: String,
 }
-impl View<SessionRecord> for SessionView {
-    fn from_record(record: &SessionRecord) -> Self {
-        let rpghp_session_id = format!("{}", record.rpghp_session_id);
-        Self { rpghp_session_id }
+impl View<SessionEntity> for SessionView {
+    fn from_entity(entity: &SessionEntity) -> Self {
+        let rpghp_session_id = format!("{}", entity.rpghp_session_id);
+        Self {
+            session_id: rpghp_session_id,
+        }
     }
 }
 
 #[derive(Object, serde::Serialize, Clone, Debug)]
 pub struct SessionWithSecretView {
-    pub rpghp_session_id: String,
+    pub session_id: String,
     pub secret: String,
 }
-impl View<SessionRecord> for SessionWithSecretView {
-    fn from_record(record: &SessionRecord) -> Self {
-        let rpghp_session_id = format!("{}", record.rpghp_session_id);
-        let secret = format!("{}", record.secret);
+impl View<SessionEntity> for SessionWithSecretView {
+    fn from_entity(session: &SessionEntity) -> Self {
+        let rpghp_session_id = format!("{}", session.rpghp_session_id);
+        let secret = format!("{}", session.secret);
         Self {
-            rpghp_session_id,
+            session_id: rpghp_session_id,
             secret,
         }
     }

@@ -4,9 +4,6 @@
 
 * TODO First time dev setup script
 
-* WIP Add logging
-    - need access logs at least
-
 * TODO Consider switching from the uuidv4 dashed hex to a base64
 
 * TODO Add unit testing
@@ -34,6 +31,9 @@
 ** TODO See if there's any way to DRY or otherwise organize the responses
 
 -----
+
+* WIP Add logging
+    - need access logs at least
 
 * WIP In-code docs
 
