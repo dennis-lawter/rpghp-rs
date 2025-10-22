@@ -45,6 +45,11 @@ cargo-build:
 ## @Buildchain Run the server executable
 cargo-run:
 	@printf "$(banner)Running...$(reset)\\n"
+	cargo run --release
+
+## @Buildchain Run the server executable in debug mode
+cargo-debug:
+	@printf "$(banner)Running...$(reset)\\n"
 	cargo run
 
 ## @Buildchain Prepare a report of macro checking
