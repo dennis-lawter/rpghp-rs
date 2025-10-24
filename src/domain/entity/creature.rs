@@ -10,5 +10,6 @@ pub struct CreatureEntity {
     pub curr_hp: i32,
     pub hp_hidden: bool,
     pub icon: Option<String>,
+    pub init_group_id: Uuid,
 }
 impl Entity for CreatureEntity {}

@@ -12,6 +12,7 @@ use v1_resources::session_endpoints::ApiSessionRoutesV1;
 
 use super::shared_state::SharedState;
 use crate::config::Config;
+use crate::server::api::v1_resources::init_group_endpoints::ApiInitGroupRoutesV1;
 
 mod v1_resources;
 mod view;
@@ -36,8 +37,19 @@ impl Api {
 
     fn build_v1_service(
         cfg: &Config
-    ) -> OpenApiService<(ApiSessionRoutesV1, ApiCreatureRoutesV1), ()> {
-        let v1_endpoints = (ApiSessionRoutesV1, ApiCreatureRoutesV1);
+    ) -> OpenApiService<
+        (
+            ApiSessionRoutesV1,
+            ApiCreatureRoutesV1,
+            ApiInitGroupRoutesV1,
+        ),
+        (),
+    > {
+        let v1_endpoints = (
+            ApiSessionRoutesV1,
+            ApiCreatureRoutesV1,
+            ApiInitGroupRoutesV1,
+        );
 
         OpenApiService::new(v1_endpoints, "RPGHP API", "1.0")
             .server("/api/v1")

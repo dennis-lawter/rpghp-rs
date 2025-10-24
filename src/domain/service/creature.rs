@@ -5,20 +5,24 @@ use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::creature::CreatureEntity;
 use crate::domain::repository::creature::CreatureRepository;
+// use crate::domain::repository::init_group::InitGroupRepository;
 use crate::domain::repository::session::SessionRepository;
 
 #[derive(Clone)]
 pub struct CreatureService {
     creature_repo: CreatureRepository,
     session_repo: SessionRepository,
+    // init_group_repo: InitGroupRepository,
 }
 impl CreatureService {
     pub fn new(db: PgPool) -> Self {
         let creature_repo = CreatureRepository::new(db.clone());
-        let session_repo = SessionRepository::new(db);
+        let session_repo = SessionRepository::new(db.clone());
+        // let init_group_repo = InitGroupRepository::new(db);
         Self {
             creature_repo,
             session_repo,
+            // init_group_repo,
         }
     }
 
@@ -26,6 +30,7 @@ impl CreatureService {
         &self,
         session_id: &str,
         secret: &str,
+        init_group_id: &str,
         creature_name: &str,
         max_hp: i32,
         curr_hp: i32,
@@ -34,6 +39,7 @@ impl CreatureService {
     ) -> DomainResult<CreatureEntity> {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
+        let init_group_id = Uuid::parse_str(init_group_id).map_err(DomainError::InvalidUuid)?;
         let session = self
             .session_repo
             .find_by_id_and_secret(&session_id, &secret)
@@ -46,6 +52,7 @@ impl CreatureService {
             curr_hp,
             hp_hidden,
             icon,
+            init_group_id,
         };
         self.creature_repo.create(&creature).await?;
 

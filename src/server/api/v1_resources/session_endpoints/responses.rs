@@ -50,7 +50,10 @@ impl FromDomainError for DeleteSessionResponse {
         match err {
             DomainError::NotFound => Self::NotFound,
             DomainError::Forbidden => Self::Forbidden,
-            DomainError::SqlxError(_) => Self::InternalError,
+            DomainError::SqlxError(e) => {
+                log::error!("{e}");
+                Self::InternalError
+            }
             DomainError::InvalidUuid(_) => Self::BadRequest,
         }
     }

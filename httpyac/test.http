@@ -24,7 +24,18 @@ GET http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}
 
 ###
 # @ref json_session
-POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/creature
+# @name json_init_group
+POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/init_group
+Authorization: Bearer {{json_session.secret}}
+Content-Type: application/json
+< {{assetsDir}}init_group.json
+
+?? status == 201
+
+###
+# @ref json_session
+# @ref json_init_group
+POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/init_group/{{json_init_group.id}}/creature
 Authorization: Bearer {{json_session.secret}}
 Content-Type: application/json
 < {{assetsDir}}jon_visible.json
@@ -33,7 +44,7 @@ Content-Type: application/json
 
 ###
 # @ref json_session
-POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/creature
+POST http://{{BASE_URL}}/api/v1/session/{{json_session.session_id}}/init_group/{{json_init_group.id}}/creature
 Authorization: Bearer {{json_session.secret}}
 Content-Type: application/json
 < {{assetsDir}}jon_hidden.json

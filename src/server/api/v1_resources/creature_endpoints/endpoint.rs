@@ -16,11 +16,15 @@ use crate::server::api::view::FromEntity;
 pub struct ApiCreatureRoutesV1;
 #[OpenApi]
 impl ApiCreatureRoutesV1 {
-    #[oai(path = "/session/:session_id/creature", method = "post")]
+    #[oai(
+        path = "/session/:session_id/init_group/:init_group_id/creature",
+        method = "post"
+    )]
     async fn create_creature(
         &self,
         state: SharedStateCtx<'_>,
         session_id: Path<String>,
+        init_group_id: Path<String>,
         data: Json<CreateCreatureRequest>,
         auth: ApiAuthScheme,
     ) -> CreateCreatureResponse {
@@ -30,6 +34,7 @@ impl ApiCreatureRoutesV1 {
             .create_creature(
                 &session_id,
                 &auth.token(),
+                &init_group_id,
                 &data.creature_name,
                 data.max_hp,
                 data.curr_hp,

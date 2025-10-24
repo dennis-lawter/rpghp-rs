@@ -27,7 +27,8 @@ SELECT
     max_hp,
     curr_hp,
     hp_hidden,
-    icon
+    icon,
+    init_group_id
 FROM
     rpghp_creature
 WHERE
@@ -56,7 +57,8 @@ INSERT INTO
         max_hp,
         curr_hp,
         hp_hidden,
-        icon
+        icon,
+        init_group_id
     )
     VALUES
     (
@@ -66,7 +68,8 @@ INSERT INTO
         $4,
         $5,
         $6,
-        $7
+        $7,
+        $8
     )
 ON CONFLICT (rpghp_creature_id) DO UPDATE
     SET
@@ -75,7 +78,8 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
         max_hp = $4,
         curr_hp = $5,
         hp_hidden = $6,
-        icon = $7
+        icon = $7,
+        init_group_id = $8
         "#,
             entity.rpghp_creature_id,
             entity.session_id,
@@ -84,6 +88,7 @@ ON CONFLICT (rpghp_creature_id) DO UPDATE
             entity.curr_hp,
             entity.hp_hidden,
             entity.icon,
+            entity.init_group_id,
         )
         .execute(&self.db)
         .await
@@ -126,7 +131,8 @@ SELECT
     max_hp,
     curr_hp,
     hp_hidden,
-    icon
+    icon,
+    init_group_id
 FROM
     rpghp_creature
 WHERE
