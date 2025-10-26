@@ -21,7 +21,7 @@ db-down:
 ########################################
 
 ## @Devtools Run the server locally
-local-run: cargo-clippy cargo-build cargo-run
+local-debug: cargo-clippy cargo-build cargo-debug
 
 ## @Devtools Run the server locally with hot reloading
 hot-reload:
@@ -43,7 +43,7 @@ cargo-build:
 	cargo build
 
 ## @Buildchain Run the server executable
-cargo-run:
+cargo-release:
 	@printf "$(banner)Running...$(reset)\\n"
 	cargo run --release
 

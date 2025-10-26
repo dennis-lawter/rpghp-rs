@@ -40,13 +40,12 @@ impl CreatureService {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let init_group_id = Uuid::parse_str(init_group_id).map_err(DomainError::InvalidUuid)?;
-        let session = self
+        let _session = self
             .session_repo
             .find_by_id_and_secret(&session_id, &secret)
             .await?;
         let creature = CreatureEntity {
             rpghp_creature_id: Uuid::new_v4(),
-            session_id: session.rpghp_session_id,
             creature_name: String::from(creature_name),
             max_hp,
             curr_hp,
@@ -94,7 +93,7 @@ impl CreatureService {
     ) -> DomainResult<CreatureEntity> {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let creature_id = Uuid::parse_str(creature_id).map_err(DomainError::InvalidUuid)?;
-        let session = match opt_secret {
+        let _session = match opt_secret {
             None => self.session_repo.find_by_id(&session_id).await?,
             Some(token) => {
                 let token = Uuid::parse_str(token).map_err(DomainError::InvalidUuid)?;
@@ -104,9 +103,9 @@ impl CreatureService {
             }
         };
         let creature = self.creature_repo.find_by_id(&creature_id).await?;
-        if creature.session_id != session.rpghp_session_id {
-            return Err(DomainError::Forbidden);
-        }
+        // if creature.session_id != session.rpghp_session_id {
+        //     return Err(DomainError::Forbidden);
+        // }
         Ok(creature)
     }
 }

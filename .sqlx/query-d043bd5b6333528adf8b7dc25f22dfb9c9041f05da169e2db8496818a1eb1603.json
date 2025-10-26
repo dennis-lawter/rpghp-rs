@@ -1,0 +1,16 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nINSERT INTO\n    rpghp_init_group\n    (\n        rpghp_init_group_id,\n        session_id,\n        rank\n    )\n    VALUES\n    (\n        $1,\n        $2,\n        $3\n    )\nON CONFLICT (rpghp_init_group_id) DO UPDATE\n    SET\n        session_id = $2,\n        rank = $3\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid",
+        "Int8"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "d043bd5b6333528adf8b7dc25f22dfb9c9041f05da169e2db8496818a1eb1603"
+}

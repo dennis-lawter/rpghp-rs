@@ -22,7 +22,6 @@ impl CreatureRepository {
             r#"
 SELECT
     rpghp_creature_id,
-    session_id,
     creature_name,
     max_hp,
     curr_hp,
@@ -52,7 +51,6 @@ INSERT INTO
     rpghp_creature
     (
         rpghp_creature_id,
-        session_id,
         creature_name,
         max_hp,
         curr_hp,
@@ -68,21 +66,18 @@ INSERT INTO
         $4,
         $5,
         $6,
-        $7,
-        $8
+        $7
     )
 ON CONFLICT (rpghp_creature_id) DO UPDATE
     SET
-        session_id = $2,
-        creature_name = $3,
-        max_hp = $4,
-        curr_hp = $5,
-        hp_hidden = $6,
-        icon = $7,
-        init_group_id = $8
+        creature_name = $2,
+        max_hp = $3,
+        curr_hp = $4,
+        hp_hidden = $5,
+        icon = $6,
+        init_group_id = $7
         "#,
             entity.rpghp_creature_id,
-            entity.session_id,
             entity.creature_name,
             entity.max_hp,
             entity.curr_hp,
@@ -125,18 +120,20 @@ WHERE
             CreatureEntity,
             r#"
 SELECT
-    rpghp_creature_id,
-    session_id,
-    creature_name,
-    max_hp,
-    curr_hp,
-    hp_hidden,
-    icon,
-    init_group_id
+    c.rpghp_creature_id,
+    c.creature_name,
+    c.max_hp,
+    c.curr_hp,
+    c.hp_hidden,
+    c.icon,
+    c.init_group_id
 FROM
-    rpghp_creature
+    rpghp_creature c
+LEFT JOIN
+    rpghp_init_group ig
+    ON c.init_group_id = ig.rpghp_init_group_id
 WHERE
-    session_id = $1
+    ig.session_id = $1
             "#,
             session_id,
         )

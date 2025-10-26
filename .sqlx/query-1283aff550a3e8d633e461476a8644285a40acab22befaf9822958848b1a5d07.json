@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\nDELETE FROM\n    rpghp_session\nWHERE\n    rpghp_session_id=$1\n    AND secret=$2\n        ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "1283aff550a3e8d633e461476a8644285a40acab22befaf9822958848b1a5d07"
+}
