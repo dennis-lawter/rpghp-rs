@@ -47,4 +47,26 @@ ON CONFLICT (rpghp_init_group_id) DO UPDATE
         .map_err(DomainError::SqlxError)?;
         Ok(())
     }
+
+    pub(crate) async fn find_by_id(
+        &self,
+        id: uuid::Uuid,
+    ) -> DomainResult<InitGroupEntity> {
+        sqlx::query_as!(
+            InitGroupEntity,
+            r#"
+SELECT
+    *
+FROM
+    rpghp_init_group
+WHERE
+    rpghp_init_group_id = $1
+            "#,
+            id,
+        )
+        .fetch_optional(&self.db)
+        .await
+        .map_err(DomainError::SqlxError)?
+        .ok_or(DomainError::NotFound)
+    }
 }

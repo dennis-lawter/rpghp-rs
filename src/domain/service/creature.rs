@@ -5,24 +5,24 @@ use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::creature::CreatureEntity;
 use crate::domain::repository::creature::CreatureRepository;
-// use crate::domain::repository::init_group::InitGroupRepository;
+use crate::domain::repository::init_group::InitGroupRepository;
 use crate::domain::repository::session::SessionRepository;
 
 #[derive(Clone)]
 pub struct CreatureService {
     creature_repo: CreatureRepository,
     session_repo: SessionRepository,
-    // init_group_repo: InitGroupRepository,
+    init_group_repo: InitGroupRepository,
 }
 impl CreatureService {
     pub fn new(db: PgPool) -> Self {
         let creature_repo = CreatureRepository::new(db.clone());
         let session_repo = SessionRepository::new(db.clone());
-        // let init_group_repo = InitGroupRepository::new(db);
+        let init_group_repo = InitGroupRepository::new(db);
         Self {
             creature_repo,
             session_repo,
-            // init_group_repo,
+            init_group_repo,
         }
     }
 
@@ -93,7 +93,7 @@ impl CreatureService {
     ) -> DomainResult<CreatureEntity> {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let creature_id = Uuid::parse_str(creature_id).map_err(DomainError::InvalidUuid)?;
-        let _session = match opt_secret {
+        let session = match opt_secret {
             None => self.session_repo.find_by_id(&session_id).await?,
             Some(token) => {
                 let token = Uuid::parse_str(token).map_err(DomainError::InvalidUuid)?;
@@ -103,9 +103,14 @@ impl CreatureService {
             }
         };
         let creature = self.creature_repo.find_by_id(&creature_id).await?;
-        // if creature.session_id != session.rpghp_session_id {
-        //     return Err(DomainError::Forbidden);
-        // }
+        let init_group = self
+            .init_group_repo
+            .find_by_id(creature.init_group_id)
+            .await?;
+        if init_group.session_id != session.rpghp_session_id {
+            return Err(DomainError::Forbidden);
+        }
+
         Ok(creature)
     }
 }
