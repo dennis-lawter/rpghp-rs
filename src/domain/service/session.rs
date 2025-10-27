@@ -1,24 +1,22 @@
-use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::session::SessionEntity;
-use crate::domain::repository::session::SessionRepository;
+use crate::domain::repository::core::RepositoryRegistry;
 
 #[derive(Clone)]
 pub struct SessionService {
-    session_repo: SessionRepository,
+    repos: RepositoryRegistry,
 }
 impl SessionService {
-    pub const fn new(db: PgPool) -> Self {
-        let session_repo = SessionRepository::new(db);
-        Self { session_repo }
+    pub const fn new(repos: RepositoryRegistry) -> Self {
+        Self { repos }
     }
 
     pub async fn create_session(&self) -> DomainResult<SessionEntity> {
         let session_entity = SessionEntity::new();
-        self.session_repo.create(&session_entity).await?;
+        self.repos.session.create(&session_entity).await?;
         Ok(session_entity)
     }
 
@@ -27,7 +25,7 @@ impl SessionService {
         session_id: &str,
     ) -> DomainResult<SessionEntity> {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
-        self.session_repo.find_by_id(&session_id).await
+        self.repos.session.find_by_id(&session_id).await
     }
 
     pub async fn delete_session(
@@ -38,10 +36,11 @@ impl SessionService {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let session = self
-            .session_repo
+            .repos
+            .session
             .find_by_id_and_secret(&session_id, &secret)
             .await?;
-        self.session_repo.delete(&session).await?;
+        self.repos.session.delete(&session).await?;
         Ok(())
     }
 }

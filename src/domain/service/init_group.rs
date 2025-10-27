@@ -1,30 +1,18 @@
-use sqlx::PgPool;
 use uuid::Uuid;
 
 use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::init_group::InitGroupEntity;
-use crate::domain::repository::creature::CreatureRepository;
-use crate::domain::repository::init_group::InitGroupRepository;
-use crate::domain::repository::session::SessionRepository;
+use crate::domain::repository::core::RepositoryRegistry;
 
 #[derive(Clone)]
 #[allow(dead_code)]
 pub struct InitGroupService {
-    init_group_repo: InitGroupRepository,
-    creature_repo: CreatureRepository,
-    session_repo: SessionRepository,
+    repos: RepositoryRegistry,
 }
 impl InitGroupService {
-    pub fn new(db: PgPool) -> Self {
-        let init_group_repo = InitGroupRepository::new(db.clone());
-        let creature_repo = CreatureRepository::new(db.clone());
-        let session_repo = SessionRepository::new(db);
-        Self {
-            init_group_repo,
-            creature_repo,
-            session_repo,
-        }
+    pub const fn new(repos: RepositoryRegistry) -> Self {
+        Self { repos }
     }
 
     pub async fn create_init_group(
@@ -36,7 +24,8 @@ impl InitGroupService {
         let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
         let session = self
-            .session_repo
+            .repos
+            .session
             .find_by_id_and_secret(&session_id, &secret)
             .await?;
         // TODO: proper tree appending
@@ -47,7 +36,7 @@ impl InitGroupService {
             rank,
         };
 
-        self.init_group_repo.create(&init_group).await?;
+        self.repos.init_group.create(&init_group).await?;
 
         Ok(init_group)
     }
