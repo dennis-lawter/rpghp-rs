@@ -22,8 +22,8 @@ impl ApiInitGroupRoutesV1 {
         auth: ApiAuthScheme,
     ) -> CreateInitGroupResponse {
         match state
-            .domain
-            .init_group_service
+            .services
+            .init_group
             .create_init_group(&session_id, &auth.token(), data.rank)
             .await
         {

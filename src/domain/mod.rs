@@ -6,7 +6,7 @@ mod error;
 mod repository;
 pub mod service;
 
-pub use core::Domain;
+pub use core::ServiceRegistry;
 
 pub use error::DomainError;
 pub use error::DomainResult;

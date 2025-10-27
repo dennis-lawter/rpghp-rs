@@ -8,13 +8,13 @@ use crate::domain::service::session::SessionService;
 use crate::prelude::*;
 
 #[derive(Clone)]
-pub struct Domain {
-    pub session_service: SessionService,
-    pub creature_service: CreatureService,
-    pub init_group_service: InitGroupService,
+pub struct ServiceRegistry {
+    pub session: SessionService,
+    pub creature: CreatureService,
+    pub init_group: InitGroupService,
 }
 
-impl Domain {
+impl ServiceRegistry {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
         let db = Self::create_db_connection(cfg).await?;
 
@@ -25,9 +25,9 @@ impl Domain {
         let init_group_service = InitGroupService::new(repos.clone());
 
         Ok(Self {
-            session_service,
-            creature_service,
-            init_group_service,
+            session: session_service,
+            creature: creature_service,
+            init_group: init_group_service,
         })
     }
 

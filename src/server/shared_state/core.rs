@@ -4,22 +4,25 @@ use poem::http::StatusCode;
 use poem_openapi::payload;
 
 use crate::Config;
-use crate::domain::Domain;
+use crate::domain::ServiceRegistry;
 use crate::prelude::*;
 
 #[derive(Clone)]
 pub struct SharedState {
-    pub domain: Domain,
+    pub services: ServiceRegistry,
     pub hb: Handlebars<'static>,
 }
 impl SharedState {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
-        let domain = Domain::new(cfg).await?;
+        let domain = ServiceRegistry::new(cfg).await?;
 
         let mut hb = Handlebars::new();
         super::template_registry::register_hbs_files_from_dir(&mut hb, "./handlebars")?;
 
-        Ok(Self { domain, hb })
+        Ok(Self {
+            services: domain,
+            hb,
+        })
     }
 
     pub fn render(
