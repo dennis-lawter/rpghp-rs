@@ -6,7 +6,6 @@ use crate::domain::entity::init_group::InitGroupEntity;
 use crate::domain::repository::core::RepositoryRegistry;
 
 #[derive(Clone)]
-#[allow(dead_code)]
 pub struct InitGroupService {
     repos: RepositoryRegistry,
 }

@@ -13,10 +13,7 @@ impl SessionRepository {
     pub const fn new(db: PgPool) -> Self {
         Self { db }
     }
-}
 
-#[allow(dead_code)]
-impl SessionRepository {
     pub async fn find_by_id(
         &self,
         id: &Uuid,

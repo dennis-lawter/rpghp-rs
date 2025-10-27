@@ -5,7 +5,6 @@ use crate::domain::DomainResult;
 use crate::domain::entity::init_group::InitGroupEntity;
 
 #[derive(Clone)]
-#[allow(dead_code)]
 pub struct InitGroupRepository {
     db: PgPool,
 }
