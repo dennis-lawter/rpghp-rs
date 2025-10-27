@@ -5,10 +5,10 @@ use poem::handler;
 use poem::web::Data;
 use serde_json::json;
 
-use crate::server::shared_state::SharedState;
+use crate::server::application_context::ApplicationContext;
 
 #[handler]
-pub fn example(state: Data<&Arc<SharedState>>) -> poem::Result<impl IntoResponse> {
+pub fn example(state: Data<&Arc<ApplicationContext>>) -> poem::Result<impl IntoResponse> {
     let data = json!({
         "icon": "/assets/ext/game-icons.net.svg/icons/ffffff/transparent/1x1/lorc/pummeled.svg",
         "name": "Low HP Guy",

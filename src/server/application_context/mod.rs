@@ -1,4 +1,4 @@
 pub mod core;
 mod template_registry;
 
-pub use core::SharedState;
+pub use core::ApplicationContext;

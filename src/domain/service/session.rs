@@ -3,14 +3,14 @@ use uuid::Uuid;
 use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::session::SessionEntity;
-use crate::domain::repository::core::RepositoryRegistry;
+use crate::domain::repository::core::RepositoryContext;
 
 #[derive(Clone)]
 pub struct SessionService {
-    repos: RepositoryRegistry,
+    repos: RepositoryContext,
 }
 impl SessionService {
-    pub const fn new(repos: RepositoryRegistry) -> Self {
+    pub const fn new(repos: RepositoryContext) -> Self {
         Self { repos }
     }
 

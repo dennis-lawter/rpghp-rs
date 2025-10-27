@@ -4,7 +4,7 @@ use poem_openapi::payload::Json;
 
 use super::super::auth::ApiAuthScheme;
 use super::requests::CreateInitGroupRequest;
-use crate::server::api::SharedStateCtx;
+use crate::server::api::AppCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::v1_resources::init_group_endpoints::responses::CreateInitGroupResponse;
 use crate::server::api::v1_resources::init_group_endpoints::views::InitGroupView;
@@ -16,7 +16,7 @@ impl ApiInitGroupRoutesV1 {
     #[oai(path = "/session/:session_id/init_group", method = "post")]
     async fn create_init_group(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         data: Json<CreateInitGroupRequest>,
         auth: ApiAuthScheme,

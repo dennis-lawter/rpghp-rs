@@ -5,12 +5,12 @@ use crate::domain::repository::init_group::InitGroupRepository;
 use crate::domain::repository::session::SessionRepository;
 
 #[derive(Clone)]
-pub struct RepositoryRegistry {
+pub struct RepositoryContext {
     pub session: SessionRepository,
     pub init_group: InitGroupRepository,
     pub creature: CreatureRepository,
 }
-impl RepositoryRegistry {
+impl RepositoryContext {
     pub fn new(db: PgPool) -> Self {
         Self {
             session: SessionRepository::new(db.clone()),

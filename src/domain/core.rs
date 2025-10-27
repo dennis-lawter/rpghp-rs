@@ -1,24 +1,24 @@
 use sqlx::PgPool;
 
 use crate::config::Config;
-use crate::domain::repository::core::RepositoryRegistry;
+use crate::domain::repository::core::RepositoryContext;
 use crate::domain::service::creature::CreatureService;
 use crate::domain::service::init_group::InitGroupService;
 use crate::domain::service::session::SessionService;
 use crate::prelude::*;
 
 #[derive(Clone)]
-pub struct ServiceRegistry {
+pub struct ServiceContext {
     pub session: SessionService,
     pub creature: CreatureService,
     pub init_group: InitGroupService,
 }
 
-impl ServiceRegistry {
+impl ServiceContext {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
         let db = Self::create_db_connection(cfg).await?;
 
-        let repos = RepositoryRegistry::new(db);
+        let repos = RepositoryContext::new(db);
 
         let session_service = SessionService::new(repos.clone());
         let creature_service = CreatureService::new(repos.clone());

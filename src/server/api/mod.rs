@@ -10,7 +10,7 @@ use poem_openapi::OpenApiService;
 use v1_resources::creature_endpoints::ApiCreatureRoutesV1;
 use v1_resources::session_endpoints::ApiSessionRoutesV1;
 
-use super::shared_state::SharedState;
+use super::application_context::ApplicationContext;
 use crate::config::Config;
 use crate::server::api::v1_resources::init_group_endpoints::ApiInitGroupRoutesV1;
 
@@ -19,13 +19,13 @@ mod view;
 
 pub struct Api;
 
-type SharedStateCtx<'a> = Data<&'a Arc<SharedState>>;
+type AppCtx<'a> = Data<&'a Arc<ApplicationContext>>;
 
 impl Api {
     pub fn create_route(
         cfg: &Config,
-        shared_state: Arc<SharedState>,
-    ) -> AddDataEndpoint<Route, Arc<SharedState>> {
+        shared_state: Arc<ApplicationContext>,
+    ) -> AddDataEndpoint<Route, Arc<ApplicationContext>> {
         let v1 = Self::build_v1_service(cfg);
         let docs = v1.rapidoc();
 

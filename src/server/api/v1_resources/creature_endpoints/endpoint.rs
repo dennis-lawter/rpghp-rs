@@ -9,7 +9,7 @@ use super::responses::CreateCreatureResponse;
 use super::responses::GetCreatureResponse;
 use super::responses::ListCreatureResponse;
 use super::views::CreatureView;
-use crate::server::api::SharedStateCtx;
+use crate::server::api::AppCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::FromEntity;
 
@@ -22,7 +22,7 @@ impl ApiCreatureRoutesV1 {
     )]
     async fn create_creature(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         init_group_id: Path<String>,
         data: Json<CreateCreatureRequest>,
@@ -51,7 +51,7 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature", method = "get")]
     async fn list_creature(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         auth: ApiOptAuthScheme,
     ) -> ListCreatureResponse {
@@ -81,7 +81,7 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature/:creature_id", method = "get")]
     async fn get_creature(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         creature_id: Path<String>,
         auth: ApiOptAuthScheme,

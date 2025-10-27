@@ -3,14 +3,14 @@ use uuid::Uuid;
 use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::creature::CreatureEntity;
-use crate::domain::repository::core::RepositoryRegistry;
+use crate::domain::repository::core::RepositoryContext;
 
 #[derive(Clone)]
 pub struct CreatureService {
-    repos: RepositoryRegistry,
+    repos: RepositoryContext,
 }
 impl CreatureService {
-    pub const fn new(repos: RepositoryRegistry) -> Self {
+    pub const fn new(repos: RepositoryContext) -> Self {
         Self { repos }
     }
 

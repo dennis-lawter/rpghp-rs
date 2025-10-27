@@ -3,14 +3,14 @@ use uuid::Uuid;
 use crate::domain::DomainError;
 use crate::domain::DomainResult;
 use crate::domain::entity::init_group::InitGroupEntity;
-use crate::domain::repository::core::RepositoryRegistry;
+use crate::domain::repository::core::RepositoryContext;
 
 #[derive(Clone)]
 pub struct InitGroupService {
-    repos: RepositoryRegistry,
+    repos: RepositoryContext,
 }
 impl InitGroupService {
-    pub const fn new(repos: RepositoryRegistry) -> Self {
+    pub const fn new(repos: RepositoryContext) -> Self {
         Self { repos }
     }
 
