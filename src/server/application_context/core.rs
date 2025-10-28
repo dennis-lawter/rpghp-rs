@@ -1,27 +1,28 @@
-mod template_registry;
-
 use handlebars::Handlebars;
 use poem::IntoResponse;
 use poem::http::StatusCode;
 use poem_openapi::payload;
 
 use crate::Config;
-use crate::domain::Domain;
+use crate::domain::ServiceContext;
 use crate::prelude::*;
 
 #[derive(Clone)]
-pub struct SharedState {
-    pub domain: Domain,
+pub struct ApplicationContext {
+    pub services: ServiceContext,
     pub hb: Handlebars<'static>,
 }
-impl SharedState {
+impl ApplicationContext {
     pub async fn new(cfg: &Config) -> CrateResult<Self> {
-        let domain = Domain::new(cfg).await?;
+        let domain = ServiceContext::new(cfg).await?;
 
         let mut hb = Handlebars::new();
-        template_registry::register_hbs_files_from_dir(&mut hb, "./handlebars")?;
+        super::template_registry::register_hbs_files_from_dir(&mut hb, "./handlebars")?;
 
-        Ok(Self { domain, hb })
+        Ok(Self {
+            services: domain,
+            hb,
+        })
     }
 
     pub fn render(

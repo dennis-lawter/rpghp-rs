@@ -6,19 +6,19 @@ use poem::endpoint::StaticFilesEndpoint;
 use poem::listener::TcpListener;
 
 use super::api::Api;
+use super::application_context::ApplicationContext;
 use super::frontend::Frontend;
 use super::partials::Partials;
-use super::shared_state::SharedState;
 use crate::config::Config;
 use crate::prelude::*;
 
 pub struct WebServer {
     cfg: Config,
-    state: Arc<SharedState>,
+    state: Arc<ApplicationContext>,
 }
 impl WebServer {
     pub async fn new(cfg: Config) -> CrateResult<Self> {
-        let state = Arc::new(SharedState::new(&cfg).await?);
+        let state = Arc::new(ApplicationContext::new(&cfg).await?);
         Ok(Self { cfg, state })
     }
 

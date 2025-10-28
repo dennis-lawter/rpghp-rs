@@ -9,27 +9,32 @@ use super::responses::CreateCreatureResponse;
 use super::responses::GetCreatureResponse;
 use super::responses::ListCreatureResponse;
 use super::views::CreatureView;
-use crate::server::api::SharedStateCtx;
+use crate::server::api::AppCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::FromEntity;
 
 pub struct ApiCreatureRoutesV1;
 #[OpenApi]
 impl ApiCreatureRoutesV1 {
-    #[oai(path = "/session/:session_id/creature", method = "post")]
+    #[oai(
+        path = "/session/:session_id/init_group/:init_group_id/creature",
+        method = "post"
+    )]
     async fn create_creature(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
+        init_group_id: Path<String>,
         data: Json<CreateCreatureRequest>,
         auth: ApiAuthScheme,
     ) -> CreateCreatureResponse {
         match state
-            .domain
-            .creature_service
+            .services
+            .creature
             .create_creature(
                 &session_id,
                 &auth.token(),
+                &init_group_id,
                 &data.creature_name,
                 data.max_hp,
                 data.curr_hp,
@@ -46,14 +51,14 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature", method = "get")]
     async fn list_creature(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         auth: ApiOptAuthScheme,
     ) -> ListCreatureResponse {
         let opt_token = auth.opt_token();
         match state
-            .domain
-            .creature_service
+            .services
+            .creature
             .get_all_creatures_for_session(&session_id, opt_token.as_ref())
             .await
         {
@@ -76,15 +81,15 @@ impl ApiCreatureRoutesV1 {
     #[oai(path = "/session/:session_id/creature/:creature_id", method = "get")]
     async fn get_creature(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         creature_id: Path<String>,
         auth: ApiOptAuthScheme,
     ) -> GetCreatureResponse {
         let opt_token = auth.opt_token();
         let record = match state
-            .domain
-            .creature_service
+            .services
+            .creature
             .get_creature(&session_id, &creature_id, opt_token.as_ref())
             .await
         {

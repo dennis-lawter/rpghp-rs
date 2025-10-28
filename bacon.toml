@@ -6,7 +6,7 @@ command = ["pkill", "rpghp-rs"]
 background = true
 
 [jobs.run]
-command = ["make", "local-run"]
+command = ["make", "local-debug"]
 need_stdout = true
 background = false
 on_change_strategy = "kill_then_restart"
@@ -22,7 +22,7 @@ need_stdout = false
 [jobs.doc-open]
 command = ["cargo", "doc", "--no-deps", "--open"]
 need_stdout = false
-on_success = "back" # so that we don't open the browser at each change
+on_success = "back"                               # so that we don't open the browser at each change
 
 # You may define here keybindings that would be specific to
 # a project, for example a shortcut to launch a specific job.

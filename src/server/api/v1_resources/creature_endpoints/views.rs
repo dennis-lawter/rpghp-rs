@@ -7,6 +7,7 @@ use crate::server::api::view::View;
 #[derive(Object, serde::Serialize, Clone, Debug)]
 pub struct CreatureView {
     creature_id: String,
+    init_group_id: String,
     creature_name: String,
     max_hp: Option<i32>,
     curr_hp: Option<i32>,
@@ -17,10 +18,12 @@ impl View for CreatureView {}
 impl FromEntity<CreatureEntity> for CreatureView {
     fn from_entity(entity: &CreatureEntity) -> Self {
         let id = format!("{}", entity.rpghp_creature_id);
+        let init_group_id = format!("{}", entity.init_group_id);
         #[allow(clippy::cast_precision_loss)]
         let approx_hp = entity.curr_hp as f32 / entity.max_hp as f32;
         Self {
             creature_id: id,
+            init_group_id,
             creature_name: entity.creature_name.clone(),
             max_hp: Some(entity.max_hp),
             curr_hp: Some(entity.curr_hp),
@@ -34,6 +37,7 @@ impl CreatureView {
         if self.hp_hidden {
             Self {
                 creature_id: self.creature_id,
+                init_group_id: self.init_group_id,
                 creature_name: self.creature_name,
                 max_hp: None,
                 curr_hp: None,

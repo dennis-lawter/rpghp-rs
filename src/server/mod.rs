@@ -3,9 +3,9 @@
 //! Utilizes the domain to store and retrieve data.
 
 mod api;
+mod application_context;
 mod core;
 mod frontend;
 mod partials;
-mod shared_state;
 
 pub use core::WebServer;

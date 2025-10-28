@@ -7,11 +7,13 @@ use poem::Route;
 use poem::get;
 use poem::middleware::AddDataEndpoint;
 
-use super::shared_state::SharedState;
+use super::application_context::ApplicationContext;
 
 pub struct Frontend;
 impl Frontend {
-    pub fn create_route(state: Arc<SharedState>) -> AddDataEndpoint<Route, Arc<SharedState>> {
+    pub fn create_route(
+        state: Arc<ApplicationContext>
+    ) -> AddDataEndpoint<Route, Arc<ApplicationContext>> {
         Route::new()
             .nest("/", get(handlers::index::index))
             .data(state)

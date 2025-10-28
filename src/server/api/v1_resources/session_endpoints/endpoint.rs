@@ -8,7 +8,7 @@ use super::responses::DeleteSessionResponse;
 use super::responses::GetSessionResponse;
 use super::views::SessionWithSecretView;
 use super::views::SessionWithoutSecretView;
-use crate::server::api::SharedStateCtx;
+use crate::server::api::AppCtx;
 use crate::server::api::v1_resources::error_handling::FromDomainError;
 use crate::server::api::view::FromEntity;
 
@@ -18,9 +18,9 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session", method = "post")]
     async fn create_session(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
     ) -> CreateSessionResponse {
-        match state.domain.session_service.create_session().await {
+        match state.services.session.create_session().await {
             Ok(entity) => {
                 let view = SessionWithSecretView::from_entity(&entity);
                 CreateSessionResponse::Ok(Json(view))
@@ -32,10 +32,10 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session/:session_id", method = "get")]
     async fn get_session(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
     ) -> GetSessionResponse {
-        match state.domain.session_service.get_session(&session_id).await {
+        match state.services.session.get_session(&session_id).await {
             Ok(record) => {
                 let view = SessionWithoutSecretView::from_entity(&record);
                 GetSessionResponse::Ok(Json(view))
@@ -47,13 +47,13 @@ impl ApiSessionRoutesV1 {
     #[oai(path = "/session/:session_id", method = "delete")]
     async fn delete_session(
         &self,
-        state: SharedStateCtx<'_>,
+        state: AppCtx<'_>,
         session_id: Path<String>,
         auth: ApiAuthScheme,
     ) -> DeleteSessionResponse {
         match state
-            .domain
-            .session_service
+            .services
+            .session
             .delete_session(&session_id, &auth.token())
             .await
         {
