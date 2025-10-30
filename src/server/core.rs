@@ -1,9 +1,11 @@
 use std::sync::Arc;
 
+use poem::EndpointExt;
 use poem::Route;
 use poem::Server;
 use poem::endpoint::StaticFilesEndpoint;
 use poem::listener::TcpListener;
+use poem::middleware::Tracing;
 
 use super::api::Api;
 use super::application_context::ApplicationContext;
@@ -24,6 +26,7 @@ impl WebServer {
 
     pub async fn serve(self) -> CrateResult<()> {
         let routes = self.create_root_route();
+        let routes = routes.with(Tracing);
 
         Server::new(TcpListener::bind(self.cfg.base_url.clone()))
             .run(routes)
