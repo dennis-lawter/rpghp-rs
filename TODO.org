@@ -69,9 +69,6 @@
     - Probably 64, 100, or 128 just to be safe but that's probably overkill
         - In D&D the DM should switch to "swarm" mechanics to reduce complexity
 
-* WIP Add logging
-    - need access logs at least
-
 * WIP In-code docs
 
 * WIP Create a new mockup
@@ -123,6 +120,9 @@
 ** DONE Add an icon url to the creature, must be a local url
 
 -----
+
+* DONE Add logging
+    - need access logs at least
 
 * DONE Write a design pattern overview
 
