@@ -17,8 +17,8 @@ pub struct CreatureView {
 impl View for CreatureView {}
 impl FromEntity<CreatureEntity> for CreatureView {
     fn from_entity(entity: &CreatureEntity) -> Self {
-        let id = format!("{}", entity.rpghp_creature_id);
-        let init_group_id = format!("{}", entity.init_group_id);
+        let id = format!("{}", entity.rpghp_creature_id.as_simple());
+        let init_group_id = format!("{}", entity.init_group_id.as_simple());
         #[allow(clippy::cast_precision_loss)]
         let approx_hp = entity.curr_hp as f32 / entity.max_hp as f32;
         Self {

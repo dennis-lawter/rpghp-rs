@@ -4,14 +4,15 @@
 
 * TODO First time dev setup script
 
-* TODO Consider switching from the uuidv4 dashed hex to a base64
+* WIP Switch from hyphenated to simple when viewing every UUID...
+    - Consider even further reducing this hex view to base64 or a similarly highly compressed string
 
 * TODO Add unit testing
 ** TODO Add test coverage tracker
 ** TODO Extract sql to a separate mod or something to create an ideal mockable sql interface
 ** TODO Consider refactoring API & partial input/output schemas out of the endpoint mods
 ** TODO Add unit testing to git automation or github actions
-** TODO Add httpyac e2e test to git automation or github actions
+** TODO Add the current httpyac e2e test to git automation or github actions
 
 * TODO Implement string limits
 ** TODO Switch to max width varchars for most strings
@@ -19,6 +20,7 @@
 
 * TODO Consider switching from double uuidv4 creation to a hashing algorithm
     - Creating simultaneous uuidv4 values doesn't create much entropy between the two values
+    - It could be that non-v4 UUIDs could create entropy though (for the secret), use one without time-based encoding
 
 * TODO Consider adding creatures to a detailed session view and attach it to the GET endpoint
     - This is kind of a violation of the "resource" aspect of the API
@@ -27,7 +29,7 @@
     - For internal use, I expect the partials layer will do much of the aggregation
 
 * TODO Improve domain error handling
-** TODO Introduce a trait for the ApiResponses to enforce from_domain_error
+** DONE Introduce a trait for the ApiResponses to enforce from_domain_error
 ** TODO See if there's any way to DRY or otherwise organize the responses
 
 -----

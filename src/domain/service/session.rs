@@ -33,8 +33,8 @@ impl SessionService {
         session_id: &str,
         secret: &str,
     ) -> DomainResult<()> {
-        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let secret = Uuid::parse_str(secret).map_err(DomainError::InvalidUuid)?;
+        let session_id = Uuid::parse_str(session_id).map_err(DomainError::InvalidUuid)?;
         let session = self
             .repos
             .session

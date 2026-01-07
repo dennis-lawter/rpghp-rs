@@ -11,7 +11,7 @@ pub struct SessionWithoutSecretView {
 impl View for SessionWithoutSecretView {}
 impl FromEntity<SessionEntity> for SessionWithoutSecretView {
     fn from_entity(entity: &SessionEntity) -> Self {
-        let rpghp_session_id = format!("{}", entity.rpghp_session_id);
+        let rpghp_session_id = format!("{}", entity.rpghp_session_id.as_simple());
         Self {
             session_id: rpghp_session_id,
         }
@@ -26,8 +26,8 @@ pub struct SessionWithSecretView {
 impl View for SessionWithSecretView {}
 impl FromEntity<SessionEntity> for SessionWithSecretView {
     fn from_entity(session: &SessionEntity) -> Self {
-        let rpghp_session_id = format!("{}", session.rpghp_session_id);
-        let secret = format!("{}", session.secret);
+        let rpghp_session_id = format!("{}", session.rpghp_session_id.as_simple());
+        let secret = format!("{}", session.secret.as_simple());
         Self {
             session_id: rpghp_session_id,
             secret,

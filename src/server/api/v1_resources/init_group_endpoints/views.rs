@@ -13,7 +13,7 @@ impl View for InitGroupView {}
 impl FromEntity<InitGroupEntity> for InitGroupView {
     fn from_entity(entity: &InitGroupEntity) -> Self {
         Self {
-            id: format!("{}", entity.rpghp_init_group_id),
+            id: format!("{}", entity.rpghp_init_group_id.as_simple()),
             rank: entity.rank,
         }
     }

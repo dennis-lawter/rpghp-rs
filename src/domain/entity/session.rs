@@ -9,9 +9,11 @@ pub struct SessionEntity {
 impl Entity for SessionEntity {}
 impl SessionEntity {
     pub fn new() -> Self {
+        let rpghp_session_id = Uuid::new_v4();
+        let secret = Uuid::new_v4();
         Self {
-            rpghp_session_id: Uuid::new_v4(),
-            secret: Uuid::new_v4(),
+            rpghp_session_id,
+            secret,
         }
     }
 }
