@@ -20,6 +20,7 @@ nix develop --command codium .
 Start your DB:
 #+begin_src bash :eval no
 make db-up
+make migrate
 #+end_src
 
 Then start the server:

@@ -16,6 +16,9 @@ db-up:
 db-down:
 	docker compose down db
 
+migrate:
+	sqlx migrate run
+
 ########################################
 #   Devtools                          #
 ########################################
